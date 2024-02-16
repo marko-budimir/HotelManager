@@ -6,6 +6,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,7 +72,7 @@ namespace HotelManager.Repository
                 insertCommand.Parameters.Add("@Id", NpgsqlDbType.Uuid).Value = newProfile.Id;
                 insertCommand.Parameters.Add("@FirstName", NpgsqlDbType.Char).Value = newProfile.FirstName;
                 insertCommand.Parameters.Add("@LastName", NpgsqlDbType.Char).Value = newProfile.LastName;
-                insertCommand.Parameters.Add("@Email", NpgsqlDbType.Text).Value = newProfile    .Email;
+                insertCommand.Parameters.Add("@Email", NpgsqlDbType.Text).Value = newProfile.Email;
                 insertCommand.Parameters.Add("@Password", NpgsqlDbType.Text).Value = newProfile.Password;
                 insertCommand.Parameters.Add("@CreatedBy", NpgsqlDbType.Uuid).Value = newProfile.CreatedBy;
                 insertCommand.Parameters.Add("@UpdatedBy", NpgsqlDbType.Uuid).Value = newProfile.UpdatedBy;
@@ -164,6 +165,42 @@ namespace HotelManager.Repository
                 {
                     throw ex;
                 }
+            }
+        }
+
+        public async Task<IProfile> ValidateUserAsync(string email, string password)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            {
+                IProfile profile = null;
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\"  FROM \"User\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+                using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
+                {
+                    npgsqlCommand.Parameters.AddWithValue("@Email", email);
+                    npgsqlCommand.Parameters.AddWithValue("@Password", password);
+                    try
+                    {
+                        await connection.OpenAsync();
+                        using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
+                        {
+                            if (reader.Read())
+                            {
+                                profile = new Profile()
+                                {
+                                    Id = (Guid)reader["Id"],
+                                    Email = (String)reader["Email"],
+                                    Password = (String)reader["Password"],
+                                    RoleId = (Guid)reader["RoleId"],
+                                };
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+                return profile;
             }
         }
 
