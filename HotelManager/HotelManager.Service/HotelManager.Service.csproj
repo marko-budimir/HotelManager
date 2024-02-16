@@ -71,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomService.cs" />
     <Compile Include="RoomTypeService.cs" />
+    <Compile Include="ReceiptService.cs" />
     <Compile Include="ServiceModules.cs" />
   </ItemGroup>
   <ItemGroup>

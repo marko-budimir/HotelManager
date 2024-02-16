@@ -185,6 +185,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DashBoardRoomController.cs" />
+    <Compile Include="Controllers\DashboardReceiptController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
@@ -344,7 +345,7 @@
       <Name>HotelManager.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HotelManager.Model.Common\HotelManager.Model.Common.csproj">
-      <Project>{81d7db50-2aab-4f51-8674-c7df48c209cb}</Project>
+      <Project>{81D7DB50-2AAB-4F51-8674-C7DF48C209CB}</Project>
       <Name>HotelManager.Model.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HotelManager.Model\HotelManager.Model.csproj">

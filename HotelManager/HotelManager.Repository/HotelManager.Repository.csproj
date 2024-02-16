@@ -96,6 +96,7 @@
     <Compile Include="HotelServiceRepository.cs" />
     <Compile Include="ProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReceiptRepository.cs" />
     <Compile Include="RepositoryModules.cs" />
     <Compile Include="RoomRepository.cs" />
     <Compile Include="RoomTypeRepository.cs" />
@@ -120,6 +121,10 @@
     <ProjectReference Include="..\HotelManager.Repository.Common\HotelManager.Repository.Common.csproj">
       <Project>{c2be7ac5-775f-4f9a-be9c-40d0d5f053ab}</Project>
       <Name>HotelManager.Repository.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HotelManager.Service.Common\HotelManager.Service.Common.csproj">
+      <Project>{33BC6012-0727-48E0-8FB0-C082551D8A9F}</Project>
+      <Name>HotelManager.Service.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

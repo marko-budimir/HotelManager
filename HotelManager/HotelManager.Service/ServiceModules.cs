@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using HotelManager.Service.Common;
 
+
 namespace HotelManager.Service
 {
     public class ServiceModules : Module
@@ -11,6 +12,7 @@ namespace HotelManager.Service
             builder.RegisterType<RoomService>().As<IRoomService>();
             builder.RegisterType<HotelServiceService>().As<IHotelServiceService>();
             builder.RegisterType<RoomTypeService>().As<IRoomTypeService>();
+            builder.RegisterType<ReceiptService>().As<IReceiptService>();
         }
     }
 }
