@@ -100,5 +100,17 @@ namespace HotelManager.Service
                 throw ex;
             }
         }
+
+        public async Task<IProfile> ValidateUserAsync(string email, string password)
+        {
+            try
+            {
+                return await profileRepository.ValidateUserAsync(email, password);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }   
     }
 }
