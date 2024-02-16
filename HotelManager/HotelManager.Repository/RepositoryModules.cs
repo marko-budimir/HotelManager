@@ -8,6 +8,7 @@ namespace HotelManager.Repository
         protected override void Load(ContainerBuilder builder)
         { 
             builder.RegisterType<ProfileRepository>().As<IProfileRepository>();
+            builder.RegisterType<RoomRepository>().As<IRoomRepository>();
         }
     }
 }
