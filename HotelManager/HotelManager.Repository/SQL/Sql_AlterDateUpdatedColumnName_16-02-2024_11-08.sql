@@ -1,20 +1,20 @@
 -- Rename "DatedUpdated" to "DateUpdated" in all tables
-ALTER TABLE "Role" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Role" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "User" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "User" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "RoomType" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "RoomType" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Room" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Room" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Review" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Review" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Reservation" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Reservation" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Discount" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Discount" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Invoice" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Invoice" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "Service" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "Service" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
 
-ALTER TABLE "InvoiceService" RENAME COLUMN "DatedUpdated" TO "DateUpdated";
+ALTER TABLE IF EXISTS "InvoiceService" RENAME COLUMN IF EXISTS "DatedUpdated" TO "DateUpdated";
