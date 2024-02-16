@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HotelManager.Repository.Common;
 
 namespace HotelManager.Repository
 {
@@ -6,7 +7,7 @@ namespace HotelManager.Repository
     {
         protected override void Load(ContainerBuilder builder)
         { 
-        
+            builder.RegisterType<ProfileRepository>().As<IProfileRepository>();
         }
     }
 }

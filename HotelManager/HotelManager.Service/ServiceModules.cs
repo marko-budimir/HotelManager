@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HotelManager.Service.Common;
 
 
 namespace HotelManager.Service
@@ -7,7 +8,7 @@ namespace HotelManager.Service
     {
         protected override void Load(ContainerBuilder builder)
         {
-
+            builder.RegisterType<ProfileService>().As<IProfileService>();
         }
     }
 }
