@@ -13,5 +13,6 @@ namespace HotelManager.Service.Common
         Task<bool> CreateProfile(IProfile profile);
         Task<bool> UpdateProfile(Guid Id, IProfile profile);
         Task<bool> DeleteProfile(Guid Id);
+        Task<IProfile> ValidateUserAsync(string username, string password);
     }
 }

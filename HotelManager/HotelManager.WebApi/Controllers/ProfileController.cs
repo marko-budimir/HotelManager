@@ -44,12 +44,25 @@ namespace HotelManager.WebApi.Controllers
         // POST api/values
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateProfileAsync([FromBody] Profile profile)
+        public async Task<HttpResponseMessage> CreateProfileAsync([FromBody] ProfileRegistered newProfile)
         {
-            if(profile == null)
+            if(newProfile == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
+            Guid id = Guid.NewGuid();
+            IProfile profile = new Profile
+            {
+                Id = id,
+                FirstName = newProfile.FirstName,
+                LastName = newProfile.LastName,
+                Email = newProfile.Email,
+                Password = newProfile.Password,
+                Phone = newProfile.Phone,
+                CreatedBy = id,
+                UpdatedBy = id,
+                IsActive = true
+            };
             try
             {
                 bool created = await profileService.CreateProfile(profile);
