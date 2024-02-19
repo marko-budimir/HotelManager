@@ -1,20 +1,18 @@
-﻿using HotelManager.Service.Common;
+﻿using HotelManager.Repository;
+using HotelManager.Service;
+using HotelManager.Service.Common;
 using Microsoft.Owin.Security.OAuth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace HotelManager.WebApi.Authorization
 {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
         private readonly IProfileService _profileService;
-        AuthorizationServerProvider(IProfileService profileservice)
+        public AuthorizationServerProvider()
         {
-            _profileService = profileservice;
+            _profileService = new ProfileService(new ProfileRepository(), new RoleTypeRepository());
         }
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
@@ -29,9 +27,9 @@ namespace HotelManager.WebApi.Authorization
                 return;
             }
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            identity.AddClaim(new Claim(ClaimTypes.Role, user.RoleId));
-            identity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
-            identity.AddClaim(new Claim("Email", user.Email));
+            var role = await _profileService.GetRoleTypeByIdAsync(user.RoleId);
+            identity.AddClaim(new Claim(ClaimTypes.Role, role));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             context.Validated(identity);
             
         }
