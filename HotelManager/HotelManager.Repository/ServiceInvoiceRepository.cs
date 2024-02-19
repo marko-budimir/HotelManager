@@ -23,7 +23,7 @@ namespace HotelManager.Repository
             {
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
-                command.CommandText = $"SELECT * FROM \"InvoiceService\" WHERE 1=1";
+                command.CommandText = $"SELECT * FROM \"InvoiceService\" WHERE \"InvoiceService\".\"IsActive\"=true";
                 ApplySorting(command, sorting);
                 int itemCount = await GetItemCountAsync();
                 ApplyPaging(command, paging, itemCount);
@@ -63,6 +63,7 @@ namespace HotelManager.Repository
         
         public async Task<string> CreateInvoiceAsync(IServiceInvoice newServiceInvoice)
         {
+
             if (newServiceInvoice == null)
             {
                 return "Invoice object is null";
@@ -72,7 +73,7 @@ namespace HotelManager.Repository
 
             using (connection)
             {
-                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, @isActive)";
+                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DatedUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, @isActive)";
                 NpgsqlCommand command = new NpgsqlCommand(insert, connection);
                 connection.Open();
                 command.Parameters.AddWithValue("id", newServiceInvoice.Id);

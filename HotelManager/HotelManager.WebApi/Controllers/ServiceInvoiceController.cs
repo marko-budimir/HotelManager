@@ -1,4 +1,5 @@
 ﻿using HotelManager.Common;
+using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Service.Common;
 using System;
@@ -64,8 +65,21 @@ namespace HotelManager.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpResponseMessage> CreateInvoiceAsync([FromBody]IServiceInvoice invoice)
+        public async Task<HttpResponseMessage> CreateInvoiceAsync([FromBody]ServiceInvoice invoiceCreate)
         {
+            IServiceInvoice invoice = new ServiceInvoice
+            {
+                Id = Guid.NewGuid(),
+                NumberOfService = invoiceCreate.NumberOfService,
+                InvoiceId = invoiceCreate.InvoiceId,
+                ServiceId = invoiceCreate.ServiceId,
+                CreatedBy = invoiceCreate.CreatedBy,
+                UpdatedBy = invoiceCreate.UpdatedBy,
+                DateCreated = invoiceCreate.DateCreated,
+                DateUpdated = invoiceCreate.DateUpdated,
+                IsActive = invoiceCreate.IsActive
+            };
+
             string result = await _receiptService.CreateInvoiceAsync(invoice);
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
