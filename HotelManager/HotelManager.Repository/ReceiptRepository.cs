@@ -45,10 +45,10 @@ namespace HotelManager.Repository
                             CreatedBy = (Guid)reader["CreatedBy"],
                             UpdatedBy = (Guid)reader["UpdatedBy"],
                             DateCreated = (DateTime)reader["DateCreated"],
-                            DateUpdated = (DateTime)reader["DateUpdated"],
+                            DateUpdated = (DateTime)reader["DatedUpdated"],
                             IsActive = (bool)reader["IsActive"],
-                            InvoiceNumber = (Guid)reader["InvoiceNumber"]
-    });
+                            InvoiceNumber = (string)reader["InvoiceNumber"]
+            });
                     }
                 }
                 catch (NpgsqlException e)
@@ -62,15 +62,11 @@ namespace HotelManager.Repository
             }
             return receipts;
         }
-
-
-
-
         public async Task<IReceipt> GetByIdAsync(Guid id)
         {
             IReceipt receipt = null;
             NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-            string commandText = $"SELECT * FROM \"Receipt\" WHERE \"Id\" = @id";
+            string commandText = $"SELECT * FROM \"Invoice\" WHERE \"Id\" = @id AND \"Invoice\".\"IsActive\"=true ";
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
@@ -87,17 +83,17 @@ namespace HotelManager.Repository
                         {
                             receipt = new Receipt()
                             {
-                                Id = (Guid)reader["Id"],
+                                Id = (Guid)reader.GetGuid(reader.GetOrdinal("Id")),
                                 TotalPrice = (decimal)reader["TotalPrice"],
                                 IsPaid = (bool)reader["IsPaid"],
-                                ReservationId = (Guid)reader["ReservationId"],
-                                DiscountId = (Guid)reader["DiscountId"],
-                                CreatedBy = (Guid)reader["CreatedBy"],
-                                UpdatedBy = (Guid)reader["UpdatedBy"],
-                                DateCreated = (DateTime)reader["DateCreated"],
-                                DateUpdated = (DateTime)reader["DateUpdated"],
+                                ReservationId = reader.GetGuid(reader.GetOrdinal("ReservationId")),
+                                DiscountId = reader.GetGuid(reader.GetOrdinal("DiscountId")),
+                                CreatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("CreatedBy")),
+                                UpdatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
+                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
+                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DatedUpdated")),
                                 IsActive = (bool)reader["IsActive"],
-                                InvoiceNumber = (Guid)reader["InvoiceNumber"]
+                                InvoiceNumber = (string)reader["InvoiceNumber"]
                             };
                         }
                     }
@@ -114,68 +110,50 @@ namespace HotelManager.Repository
             return receipt;
         }
 
-
-        public async Task<int> UpdateAsync(Guid id, IReceipt newReceipt)
-        {
-            IReceipt receipt = await GetByIdAsync(id);
-            if (receipt == null)
-            {
-                return 0;
-            }
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-            using (connection)
-            {
-                NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = $"UPDATE \"Receipt\" " +
-                    $"SET \"IsActive\" = @isActive " + $"WHERE \"Id\" = @id";
-                command.Connection = connection;
-                command.Parameters.AddWithValue("id", id);
-                command.Parameters.AddWithValue("isActive", newReceipt.IsActive ? receipt.IsActive : false);
-                try
-                {
-                    await connection.OpenAsync();
-                    return await command.ExecuteNonQueryAsync();
-                }
-                catch (NpgsqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    await connection.CloseAsync();
-                }
-            }
-        }
         private void ApplyFilter(NpgsqlCommand command, ReceiptFilter filter)
         {
-            StringBuilder commandText = new StringBuilder(command.CommandText);
+            StringBuilder commandText = new StringBuilder();
+            if (string.IsNullOrEmpty(filter.userEmailQuery))
+            {
+                commandText.Append("SELECT * FROM \"Invoice\" WHERE \"Invoice\".\"IsActive\"=true");
+            }
+            else
+            {
+                commandText.Append("SELECT * FROM \"Invoice\" ");
+            }
 
-            commandText.Append($"SELECT * FROM \"Invoice\"");
             if (filter.minPrice > 0 && filter.maxPrice < 1000)
             {
-                commandText.Append(" WHERE 1=1");
-                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice AND @maxPrice");
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice::money AND @maxPrice::money");
                 command.Parameters.AddWithValue("minPrice", filter.minPrice);
                 command.Parameters.AddWithValue("maxPrice", filter.maxPrice);
             }
-            if (filter.userEmailQuery != null)
+
+            if (!string.IsNullOrEmpty(filter.userEmailQuery))
             {
-                commandText.Append($" LEFT JOIN \"Reservation\" ON \"Invoice\".\"ReservationId\" = \"Reservation\".\"Id\" LEFT JOIN \"User\" ON \"Reservation\".\"UserId\" = \"User\".\"Id\" WHERE \"User\".\"Email\" LIKE @emailQuery");
+                commandText.Append(" LEFT JOIN \"Reservation\" ON \"Invoice\".\"ReservationId\" = \"Reservation\".\"Id\"");
+                commandText.Append(" LEFT JOIN \"User\" ON \"Reservation\".\"UserId\" = \"User\".\"Id\"");
+                commandText.Append(" WHERE \"User\".\"Email\" LIKE @emailQuery");
+                commandText.Append(" AND \"Invoice\".\"IsActive\"=true");
                 command.Parameters.AddWithValue("@emailQuery", $"%{filter.userEmailQuery}%");
             }
-            if (filter.isPaid != false)
+            if (filter.isPaid.HasValue)
             {
-                commandText.Append(" WHERE 1=1");
                 commandText.Append(" AND \"Invoice\".\"IsPaid\" = @isPaid");
-                command.Parameters.AddWithValue("isPaid", filter.isPaid);
+                command.Parameters.AddWithValue("isPaid", NpgsqlTypes.NpgsqlDbType.Boolean).Value = filter.isPaid.Value;
             }
-            if(filter.dateCreated != null && filter.dateUpdated != null)
+
+            if (filter.dateCreated != null)
             {
-                commandText.Append(" WHERE 1=1");
-                commandText.Append(" AND \"Invoice\".\"DateCreated\" BETWEEN @startDate AND @endDate");
+                commandText.Append(" AND \"Invoice\".\"DateCreated\" <= @startDate");
                 command.Parameters.AddWithValue("startDate", filter.dateCreated);
+            }
+            if (filter.dateUpdated != null)
+            {
+                commandText.Append(" AND \"Invoice\".\"DatedUpdated\"=@endDate");
                 command.Parameters.AddWithValue("endDate", filter.dateUpdated);
             }
+
             command.CommandText = commandText.ToString();
         }
 
@@ -210,7 +188,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Receipt\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Invoice\"";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try

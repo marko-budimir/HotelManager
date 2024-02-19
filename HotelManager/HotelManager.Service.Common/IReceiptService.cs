@@ -13,6 +13,8 @@ namespace HotelManager.Service.Common
 
         Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging);
         Task<IReceipt> GetByIdAsync(Guid id);
-        Task<int> DeleteAsync(Guid id, IReceipt newReceipt);
+        Task<int> DeleteAsync(Guid id);
+        Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
+        Task<string>CreateInvoiceAsync(IServiceInvoice invoice);
     }
 }
