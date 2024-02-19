@@ -21,17 +21,17 @@ namespace HotelManager.WebApi.Controllers
         }
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync(
-            [FromUri] int pageNumber = 1,
-            [FromUri] int pageSize = 10,
-            [FromUri] string sortBy = "",
-            [FromUri] string isAsc = "ASC",
-            [FromUri] string SearchQuery = null,
-            [FromUri] DateTime? StartDate = null,
-            [FromUri] DateTime? EndDate = null,
-            [FromUri] decimal? MinPrice = null,
-            [FromUri] decimal? MaxPrice = null,
-            [FromUri] int? MinBeds = null,
-            [FromUri] Guid? RoomTypeId = null)
+            int pageNumber = 1,
+            int pageSize = 10,
+            string sortBy = "",
+            string isAsc = "ASC",
+            string SearchQuery = null,
+            DateTime? StartDate = null,
+            DateTime? EndDate = null,
+            decimal? MinPrice = null,
+            decimal? MaxPrice = null,
+            int? MinBeds = null,
+            Guid? RoomTypeId = null)
         {
             try { 
                 Paging paging = new Paging() { PageNum=pageNumber,PageSize=pageSize};
@@ -55,11 +55,7 @@ namespace HotelManager.WebApi.Controllers
             )
         {
             try
-            {
-                if (id.Equals(Guid.Empty))
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
-
-
+            { 
                 return Request.CreateResponse(HttpStatusCode.OK, await RoomService.GetByIdAsync(id));
             }
 

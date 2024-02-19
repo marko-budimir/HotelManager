@@ -45,6 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="RoomFilter.cs" />
+    <Compile Include="RoomType.cs" />
+    <Compile Include="RoomTypePost.cs" />
+    <Compile Include="RoomTypeUpdate.cs" />
     <Compile Include="RoomUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
