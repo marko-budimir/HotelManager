@@ -11,5 +11,9 @@ namespace HotelManager.Service.Common
     public interface IHotelServiceService
     {
         Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter);
+        Task<HotelService> GetByIdAsync(Guid id);
+        Task<bool> CreateServiceAsync(HotelService hotelService);
+        Task<bool> UpdateServiceAsync(Guid Id,HotelService hotelService);
+        Task<bool> DeleteServiceAsync(Guid Id);
     }
 }

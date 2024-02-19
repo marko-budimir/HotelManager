@@ -11,5 +11,10 @@ namespace HotelManager.Repository.Common
     public interface IHotelServiceRepository
     {
         Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter);
+        Task<HotelService> GetByIdAsync(Guid id);
+
+        Task<bool> CreateServiceAsync(HotelService hotelService);
+        Task<bool> UpdateServiceAsync(Guid Id, HotelService service);
+        Task<bool> DeleteServiceAsync(Guid Id);
     }
 }
