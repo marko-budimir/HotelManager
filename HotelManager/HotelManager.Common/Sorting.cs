@@ -9,6 +9,6 @@ namespace HotelManager.Common
     public class Sorting
     {
         public string SortBy { get; set; }
-        public string SortOrder = "ASC";
+        public string SortOrder { get; set; }
     }
 }

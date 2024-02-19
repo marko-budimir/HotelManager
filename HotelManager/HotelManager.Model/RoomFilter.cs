@@ -19,6 +19,7 @@ namespace HotelManager.Model
         public RoomFilter()
         {
             MinBeds = 1;
+            MinPrice = 0;
         }
     }
 
