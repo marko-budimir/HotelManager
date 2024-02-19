@@ -46,6 +46,8 @@
     <Compile Include="Room.cs" />
     <Compile Include="RoomFilter.cs" />
     <Compile Include="RoomUpdate.cs" />
+    <Compile Include="HotelService.cs" />
+    <Compile Include="HotelServiceFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HotelManager.Model.Common\HotelManager.Model.Common.csproj">
