@@ -8,7 +8,7 @@ namespace HotelManager.Model
 {
     public class Room
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public int Number { get; set; }
         public int BedCount { get; set; }
         public decimal Price { get; set; }

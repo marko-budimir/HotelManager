@@ -11,13 +11,34 @@ using System.Web.Http;
 
 namespace HotelManager.WebApi.Controllers
 {
-    public class RoomController : ApiController
+    public class DashBoardRoomController : ApiController
     {
+
         private readonly IRoomService RoomService;
 
-        public RoomController(IRoomService roomService)
+        public DashBoardRoomController(IRoomService roomService)
         {
             RoomService = roomService;
+        }
+
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateRoom(
+            [FromUri] Guid id
+           , [FromBody] RoomUpdate roomUpdate
+           )
+        {
+            try
+            {
+                if (id.Equals(Guid.Empty))
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
+                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.UpdateRoom(id, roomUpdate));
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
         }
         [HttpGet]
         public async Task<HttpResponseMessage> GetAll(
@@ -33,24 +54,24 @@ namespace HotelManager.WebApi.Controllers
             [FromUri] int? MinBeds = null,
             [FromUri] Guid? RoomTypeId = null)
         {
-            try { 
-                Paging paging = new Paging() { PageNum=pageNumber,PageSize=pageSize};
+            try
+            {
+                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
-                RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery,StartDate=StartDate,EndDate=EndDate,MinBeds=MinBeds,MaxPrice=MaxPrice,MinPrice=MinPrice,RoomTypeId=RoomTypeId };
-                var rooms = await RoomService.GetAllAsync(paging, sorting,roomFilter);
-                if(rooms.Any())
+                RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery, StartDate = StartDate, EndDate = EndDate, MinBeds = MinBeds, MaxPrice = MaxPrice, MinPrice = MinPrice, RoomTypeId = RoomTypeId };
+                var roomsUpdated = await RoomService.GetUpdatedRooms(paging, sorting, roomFilter);
+                if (roomsUpdated.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, rooms);
+                    return Request.CreateResponse(HttpStatusCode.OK, roomsUpdated);
                 }
-                return  Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!");
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-        [HttpGet]
-        public async Task<HttpResponseMessage> GetById(
+        public async Task<HttpResponseMessage> GetRoomsUpdateById(
             [FromUri] Guid id
             )
         {
@@ -60,16 +81,13 @@ namespace HotelManager.WebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
 
 
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.GetByIdAsync(id));
+                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.GetRoomUpdateById(id));
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-      
-
-
-    }
+        }
 }
