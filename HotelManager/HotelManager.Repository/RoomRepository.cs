@@ -60,8 +60,27 @@ namespace HotelManager.Repository
 
                         if (roomFilter.RoomTypeId != null)
                         {
-                            cmd.Parameters.AddWithValue("@uuid", roomFilter.RoomTypeId);
-                            queryBuilder.Append(" AND CAST(r.\"TypeId\" AS UUID) = @uuid");
+                            cmd.Parameters.AddWithValue("@RoomTypeId", roomFilter.RoomTypeId);
+                            queryBuilder.Append(" AND r.\"TypeId\" = @RoomTypeId");
+                        }
+                        if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
+                        {
+                            queryBuilder.Append(" ORDER BY ");
+                            queryBuilder.Append(sorting.SortBy);
+
+                            if (!string.IsNullOrEmpty(sorting.SortOrder))
+                            {
+                                queryBuilder.Append(" ");
+                                queryBuilder.Append(sorting.SortOrder);
+                            }
+                        }
+
+
+                        if (paging != null)
+                        {
+                            cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
+                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                            queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
                         }
 
 
@@ -229,16 +248,102 @@ namespace HotelManager.Repository
 
         public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
         {
-            List<RoomUpdate> roomsUpdate = new List<RoomUpdate>();
-            var rooms = await GetAllAsync(paging, sorting, roomsFilter);
-            foreach (var room in rooms)
+            var updatedRooms = new List<RoomUpdate>();
+
+            if (roomsFilter != null)
             {
-                var roomUpdate = new RoomUpdate();
-                SetValues(room, roomUpdate);
-                roomsUpdate.Add(roomUpdate);
+                using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+                {
+                    await connection.OpenAsync();
+
+                    var queryBuilder = new StringBuilder();
+                    queryBuilder.AppendLine("SELECT r.*, rt.\"Name\", res.\"CheckInDate\", res.\"CheckInDate\"");
+                    queryBuilder.AppendLine(" FROM \"Room\" r");
+                    queryBuilder.AppendLine(" JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\"");
+                    queryBuilder.AppendLine(" LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\"");
+                    queryBuilder.AppendLine(" WHERE 1=1");
+                    queryBuilder.AppendLine(" AND r.\"IsActive\" = true");
+
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        if (roomsFilter.StartDate != null && roomsFilter.EndDate != null)
+                        {
+                            cmd.Parameters.AddWithValue("@StartDate", roomsFilter.StartDate);
+                            cmd.Parameters.AddWithValue("@EndDate", roomsFilter.EndDate);
+                            queryBuilder.AppendLine(" AND (res.\"CheckInDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
+                        }
+
+                        if (roomsFilter.MinPrice != null && roomsFilter.MaxPrice != null)
+                        {
+                            cmd.Parameters.AddWithValue("@MinPrice", roomsFilter.MinPrice);
+                            cmd.Parameters.AddWithValue("@MaxPrice", roomsFilter.MaxPrice);
+                            queryBuilder.AppendLine(" AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+                        }
+
+                        if (roomsFilter.MinBeds > 0)
+                        {
+                            cmd.Parameters.AddWithValue("@MinBeds", roomsFilter.MinBeds);
+                            queryBuilder.AppendLine(" AND r.\"BedCount\" >= @MinBeds");
+                        }
+
+                        if (roomsFilter.RoomTypeId != null)
+                        {
+                            cmd.Parameters.AddWithValue("@RoomTypeId", roomsFilter.RoomTypeId);
+                            queryBuilder.AppendLine(" AND r.\"TypeId\" = @RoomTypeId");
+                        }
+
+                        if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
+                        {
+                            queryBuilder.Append(" ORDER BY ");
+                            queryBuilder.Append(sorting.SortBy);
+
+                            if (!string.IsNullOrEmpty(sorting.SortOrder))
+                            {
+                                queryBuilder.Append(" ");
+                                queryBuilder.Append(sorting.SortOrder);
+                            }
+                        }
+
+                        if (paging != null)
+                        {
+                            cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
+                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                            queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
+                        }
+
+                        cmd.Connection = connection;
+                        cmd.CommandText = queryBuilder.ToString();
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var roomUpdate = new RoomUpdate();
+                                SetValues(new Room
+                                {
+                                    Id = (Guid)reader["Id"],
+                                    Number = (int)reader["Number"],
+                                    BedCount = (int)reader["BedCount"],
+                                    Price = (decimal)reader["Price"],
+                                    ImageUrl = (string)reader["ImageUrl"],
+                                    TypeId = (Guid)reader["TypeId"],
+                                    CreatedBy = (Guid)reader["CreatedBy"],
+                                    UpdatedBy = (Guid)reader["UpdatedBy"],
+                                    DateCreated = (DateTime)reader["DateCreated"],
+                                    DateUpdated = (DateTime)reader["DateUpdated"],
+                                    IsActive = (bool)reader["IsActive"]
+                                }, roomUpdate);
+
+                                updatedRooms.Add(roomUpdate);
+                            }
+                        }
+                    }
+                }
             }
-            return roomsUpdate;
+
+            return updatedRooms;
         }
+
+
 
 
         private static void SetValues(Room room, RoomUpdate roomUpdate)
@@ -252,9 +357,5 @@ namespace HotelManager.Repository
             roomUpdate.IsActive = room.IsActive;
             roomUpdate.TypeId = room.TypeId;
         }
-
-        
-
-        
     }
 }
