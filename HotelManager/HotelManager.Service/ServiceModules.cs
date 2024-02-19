@@ -9,6 +9,7 @@ namespace HotelManager.Service
         {
             builder.RegisterType<ProfileService>().As<IProfileService>();
             builder.RegisterType<RoomService>().As<IRoomService>();
+            builder.RegisterType<HotelServiceService>().As<IHotelServiceService>();
         }
     }
 }

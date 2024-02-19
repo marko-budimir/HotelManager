@@ -9,6 +9,7 @@ namespace HotelManager.Repository
         { 
             builder.RegisterType<ProfileRepository>().As<IProfileRepository>();
             builder.RegisterType<RoomRepository>().As<IRoomRepository>();
+            builder.RegisterType<HotelServiceRepository>().As<IHotelServiceRepository>();
         }
     }
 }
