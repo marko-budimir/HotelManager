@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using HotelManager.Model.Common;
 using HotelManager.Repository.Common;
 
 
@@ -13,6 +14,7 @@ namespace HotelManager.Repository
             builder.RegisterType<HotelServiceRepository>().As<IHotelServiceRepository>();
             builder.RegisterType<RoomTypeRepository>().As<IRoomTypeRepository>();
             builder.RegisterType<ReceiptRepository>().As<IReceiptRepository>();
+            builder.RegisterType<ServiceInvoiceRepository>().As<IServiceInvoiceRepository>();
         }     
     }
 }

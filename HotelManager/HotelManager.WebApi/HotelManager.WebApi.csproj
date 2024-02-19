@@ -191,6 +191,7 @@
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\HotelServiceController.cs" />
     <Compile Include="Controllers\RoomTypeController.cs" />
+    <Compile Include="Controllers\ServiceInvoiceController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
