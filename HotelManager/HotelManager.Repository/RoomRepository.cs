@@ -49,7 +49,7 @@ namespace HotelManager.Repository
                         {
                             cmd.Parameters.AddWithValue("@MinPrice", roomFilter.MinPrice);
                             cmd.Parameters.AddWithValue("@MaxPrice", roomFilter.MaxPrice);
-                            queryBuilder.Append(" AND r.\"Price\" BETWEEN @MinPrice AND @MaxPrice");
+                            queryBuilder.Append(" AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money");
                         }
 
                         if (roomFilter.MinBeds > 0)
@@ -135,5 +135,126 @@ namespace HotelManager.Repository
 
             return room;
         }
+
+        //Need to update parametar UpdatedBy
+        public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate)
+        { 
+            Room room = await GetByIdAsync(id);
+
+            if (roomUpdate == null)
+                return null;
+            if (room == null)
+                return null;
+
+
+            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            {
+                await connection.OpenAsync();
+                var queryBuilder = new StringBuilder();
+                queryBuilder.AppendLine("UPDATE \"Room\" SET ");
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    if (roomUpdate.Number != null)
+                    {
+                        cmd.Parameters.AddWithValue("@Number", roomUpdate.Number);
+                        queryBuilder.AppendLine(" \"Number\" = @Number,");
+                    }
+
+                    if (roomUpdate.BedCount != null)
+                    {
+                        cmd.Parameters.AddWithValue("@BedCount", roomUpdate.BedCount);
+                        queryBuilder.AppendLine(" \"BedCount\" = @BedCount,");
+                    }
+
+                    if (roomUpdate.Price != null)
+                    {
+                        cmd.Parameters.AddWithValue("@Price", roomUpdate.Price);
+                        queryBuilder.AppendLine(" \"Price\" = @Price,");
+                    }
+
+                    if (roomUpdate.ImageUrl != null)
+                    {
+                        cmd.Parameters.AddWithValue("@ImageUrl", roomUpdate.ImageUrl);
+                        queryBuilder.AppendLine(" \"ImageUrl\" = @ImageUrl,");
+                    }
+
+                    if (roomUpdate.TypeId != null)
+                    {
+                        cmd.Parameters.AddWithValue("@TypeId", roomUpdate.TypeId);
+                        queryBuilder.AppendLine(" \"TypeId\" = @TypeId,");
+                    }
+
+                    if (roomUpdate.IsActive != null)
+                    {
+                        cmd.Parameters.AddWithValue("@IsActive", roomUpdate.IsActive);
+                        queryBuilder.AppendLine(" \"IsActive\" = @IsActive,");
+                    }
+
+
+                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);
+                    queryBuilder.AppendLine(" \"DateUpdated\" = @DateUpdated,");
+
+                    //Updated by should be admin id who updated it
+                    cmd.Parameters.AddWithValue("@UpdatedBy", room.CreatedBy) ;
+                    queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
+
+                    cmd.Parameters.AddWithValue("@id", id);
+                    queryBuilder.AppendLine(" WHERE \"Id\" = @id");
+
+
+                    cmd.Connection = connection;
+                    cmd.CommandText = queryBuilder.ToString();
+                    await cmd.ExecuteNonQueryAsync();
+
+                }
+            }
+
+            Room editedRoom = await GetByIdAsync(id);
+            RoomUpdate roomUpdated = new RoomUpdate();
+            SetValues(editedRoom,roomUpdated);
+            return roomUpdated;
+        }
+
+
+        public  async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
+        {
+            Room room = await GetByIdAsync(id);
+            RoomUpdate roomUpdate = new RoomUpdate();
+
+            SetValues(room, roomUpdate);
+
+            return roomUpdate;
+        }
+
+        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        {
+            List<RoomUpdate> roomsUpdate = new List<RoomUpdate>();
+            var rooms = await GetAllAsync(paging, sorting, roomsFilter);
+            foreach (var room in rooms)
+            {
+                var roomUpdate = new RoomUpdate();
+                SetValues(room, roomUpdate);
+                roomsUpdate.Add(roomUpdate);
+            }
+            return roomsUpdate;
+        }
+
+
+        private static void SetValues(Room room, RoomUpdate roomUpdate)
+        {
+            roomUpdate.BedCount = room.BedCount;
+            roomUpdate.Number = room.Number;
+            roomUpdate.DateUpdated = room.DateUpdated;
+            roomUpdate.UpdatedBy = room.UpdatedBy;
+            roomUpdate.Price = room.Price;
+            roomUpdate.ImageUrl = room.ImageUrl;
+            roomUpdate.IsActive = room.IsActive;
+            roomUpdate.TypeId = room.TypeId;
+        }
+
+        
+
+        
     }
 }

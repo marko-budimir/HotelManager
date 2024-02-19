@@ -34,5 +34,32 @@ namespace HotelManager.Service
                 throw new ArgumentException("Room not found");
             return room;
         }
+
+        public async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
+        {
+            var roomUpdated = await RoomRepository.GetRoomUpdateByIdAsync(id);
+           if(roomUpdated == null)
+                return null;
+            return roomUpdated;
+
+        }
+
+        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        {
+            var roomsUpdated = await RoomRepository.GetUpdatedRoomsAsync(paging, sorting, roomsFilter);
+            if (roomsUpdated == null)
+                return null;
+            return roomsUpdated;
+            
+        }
+
+        public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate)
+        {
+            var room = await RoomRepository.GetByIdAsync(id);
+            if(room == null)
+                throw new ArgumentException("Room not found");
+
+            return await RoomRepository.UpdateRoomAsync(id,roomUpdate);
+        }
     }
 }
