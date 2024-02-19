@@ -27,7 +27,7 @@ namespace HotelManager.WebApi.Authorization
                 return;
             }
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            var role = await _profileService.GetRoleTypeByIdAsync(user.RoleId);
+            var role = await _profileService.GetRoleTypeByRoleIdAsync(user.RoleId);
             identity.AddClaim(new Claim(ClaimTypes.Role, role));
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             context.Validated(identity);

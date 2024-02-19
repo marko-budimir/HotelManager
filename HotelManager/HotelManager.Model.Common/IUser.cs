@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelManager.Model.Common
 {
-    public interface IProfile
+    public interface IUser
     {
         Guid Id { get; set; }
         string FirstName { get; set; }

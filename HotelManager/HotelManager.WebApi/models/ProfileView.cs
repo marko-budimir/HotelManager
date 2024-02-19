@@ -12,13 +12,5 @@ namespace HotelManager.WebApi.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Phone {  get; set; }
-
-        public ProfileView(IProfile profile)
-        {
-            FirstName = profile.FirstName;
-            LastName = profile.LastName;
-            Email = profile.Email;
-            Phone = profile.Phone;
-        }
     }
 }

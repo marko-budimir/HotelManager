@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 using HotelManager.Repository;
 using HotelManager.Service;
 using System;
@@ -21,6 +22,7 @@ namespace HotelManager.WebApi.App_Start
             builder.RegisterModule(new ServiceModules());
             builder.RegisterModule(new RepositoryModules());
 
+            builder.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var contrainer = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(contrainer);

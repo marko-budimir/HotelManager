@@ -15,11 +15,11 @@ namespace HotelManager.Repository
     public class ProfileRepository : IProfileRepository
     {
         private string _ConnectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
-        public async Task<IProfile> GetProfileById(Guid id)
+        public async Task<IUser> GetProfileByIdAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
             {
-                IProfile profile = null;
+                IUser profile = null;
                 string commandText = "SELECT * FROM \"User\" WHERE \"Id\" = @Id";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
@@ -32,7 +32,7 @@ namespace HotelManager.Repository
                         {
                             if(await reader.ReadAsync())
                             {
-                                profile = new Profile()
+                                profile = new User()
                                 {
                                     Id = (Guid)reader["Id"],
                                     FirstName = (String)reader["FirstName"],
@@ -58,7 +58,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> CreateProfile(IProfile newProfile)
+        public async Task<bool> CreateProfileAsync(IUser newProfile)
         {
             int rowChanged;
             NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
@@ -100,11 +100,11 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> UpdateProfile(Guid id, IProfile updatedProfile)
+        public async Task<bool> UpdateProfileAsync(Guid id, IUser updatedProfile)
         {
             int rowsChanged;
 
-            Task<IProfile> profile = GetProfileById(id);
+            IUser profile = await GetProfileByIdAsync(id);
             if (profile == null)
             {
                 throw new Exception("No user with such ID in the database!");
@@ -145,7 +145,7 @@ namespace HotelManager.Repository
             return rowsChanged != 0;
         }
 
-        public async Task<bool> DeleteProfile(Guid id)
+        public async Task<bool> DeleteProfileAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
             {
@@ -168,11 +168,11 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<IProfile> ValidateUserAsync(string email, string password)
+        public async Task<IUser> ValidateUserAsync(string email, string password)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
             {
-                IProfile profile = null;
+                IUser profile = null;
                 string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\"  FROM \"User\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
@@ -185,7 +185,7 @@ namespace HotelManager.Repository
                         {
                             if (reader.Read())
                             {
-                                profile = new Profile()
+                                profile = new User()
                                 {
                                     Id = (Guid)reader["Id"],
                                     Email = (String)reader["Email"],
@@ -204,7 +204,7 @@ namespace HotelManager.Repository
             }
         }
 
-        private void AddProfileParameters(NpgsqlCommand command, Guid id, IProfile updatedProfile)
+        private void AddProfileParameters(NpgsqlCommand command, Guid id, IUser updatedProfile)
         {
             command.Parameters.AddWithValue("@Id", id);
             if (!string.IsNullOrEmpty(updatedProfile.FirstName))
