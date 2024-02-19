@@ -35,25 +35,25 @@ namespace HotelManager.Service
             return room;
         }
 
-        public async Task<RoomUpdate> GetRoomUpdateById(Guid id)
+        public async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
         {
-            var roomUpdated = await RoomRepository.GetRoomUpdateById(id);
+            var roomUpdated = await RoomRepository.GetRoomUpdateByIdAsync(id);
            if(roomUpdated == null)
                 return null;
             return roomUpdated;
 
         }
 
-        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRooms(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
         {
-            var roomsUpdated = await RoomRepository.GetUpdatedRooms(paging, sorting, roomsFilter);
+            var roomsUpdated = await RoomRepository.GetUpdatedRoomsAsync(paging, sorting, roomsFilter);
             if (roomsUpdated == null)
                 return null;
             return roomsUpdated;
             
         }
 
-        public async Task<RoomUpdate> UpdateRoom(Guid id, RoomUpdate roomUpdate)
+        public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate)
         {
             var room = await RoomRepository.GetByIdAsync(id);
             if(room == null)

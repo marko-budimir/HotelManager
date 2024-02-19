@@ -15,8 +15,8 @@ namespace HotelManager.Repository.Common
         Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter);
 
         Task <RoomUpdate> UpdateRoomAsync(Guid id,RoomUpdate roomUpdate);
-        Task <RoomUpdate> GetRoomUpdateById(Guid id);
-        Task<IEnumerable<RoomUpdate>> GetUpdatedRooms(Paging paging, Sorting sorting, RoomFilter roomsFilter);
+        Task <RoomUpdate> GetRoomUpdateByIdAsync(Guid id);
+        Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter);
     }
 }
 

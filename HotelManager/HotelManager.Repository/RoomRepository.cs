@@ -217,7 +217,7 @@ namespace HotelManager.Repository
         }
 
 
-        public  async Task<RoomUpdate> GetRoomUpdateById(Guid id)
+        public  async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
         {
             Room room = await GetByIdAsync(id);
             RoomUpdate roomUpdate = new RoomUpdate();
@@ -227,7 +227,7 @@ namespace HotelManager.Repository
             return roomUpdate;
         }
 
-        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRooms(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
         {
             List<RoomUpdate> roomsUpdate = new List<RoomUpdate>();
             var rooms = await GetAllAsync(paging, sorting, roomsFilter);

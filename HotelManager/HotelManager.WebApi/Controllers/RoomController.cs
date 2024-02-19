@@ -20,7 +20,7 @@ namespace HotelManager.WebApi.Controllers
             RoomService = roomService;
         }
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAll(
+        public async Task<HttpResponseMessage> GetAllAsync(
             [FromUri] int pageNumber = 1,
             [FromUri] int pageSize = 10,
             [FromUri] string sortBy = "",
@@ -50,7 +50,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
         [HttpGet]
-        public async Task<HttpResponseMessage> GetById(
+        public async Task<HttpResponseMessage> GetByIdAsync(
             [FromUri] Guid id
             )
         {
