@@ -12,23 +12,20 @@ namespace HotelManager.Service
 {
     public class ProfileService : IProfileService
     {
-        private readonly IProfileRepository profileRepository;
+        private readonly IProfileRepository _profileRepository;
+        private readonly IRoleTypeRepository _roleTypeRepository;
 
-        public ProfileService(IProfileRepository profileRepository)
+        public ProfileService(IProfileRepository profileRepository, IRoleTypeRepository roleTypeRepository)
         {
-            this.profileRepository = profileRepository;
-        }
-
-        public ProfileService()
-        {
-            profileRepository = new ProfileRepository(); 
+            _profileRepository = profileRepository;
+            _roleTypeRepository = roleTypeRepository;
         }
 
         public Task<IProfile> GetProfileById(Guid id)
         {
             try
             {
-                return profileRepository.GetProfileById(id);
+                return _profileRepository.GetProfileById(id);
             }
             catch (Exception ex)
             {
@@ -40,7 +37,7 @@ namespace HotelManager.Service
         {
             try
             {
-                return profileRepository.CreateProfile(profile);
+                return _profileRepository.CreateProfile(profile);
             }
             catch(Exception ex)
             {
@@ -52,7 +49,7 @@ namespace HotelManager.Service
         {
             try
             {
-                return profileRepository.UpdateProfile(id, profile);
+                return _profileRepository.UpdateProfile(id, profile);
             }catch(Exception ex)
             {
                 throw ex;
@@ -63,7 +60,7 @@ namespace HotelManager.Service
         {
             try
             {
-                return profileRepository.DeleteProfile(id);
+                return _profileRepository.DeleteProfile(id);
             }
             catch(Exception ex)
             {
@@ -75,12 +72,24 @@ namespace HotelManager.Service
         {
             try
             {
-                return await profileRepository.ValidateUserAsync(email, password);
+                return await _profileRepository.ValidateUserAsync(email, password);
             }
             catch(Exception ex)
             {
                 throw ex;
             }
-        }   
+        }
+
+        public async Task<string> GetRoleTypeByIdAsync(Guid id)
+        {
+            try
+            {
+                return await _roleTypeRepository.GetByIdAsync(id);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
