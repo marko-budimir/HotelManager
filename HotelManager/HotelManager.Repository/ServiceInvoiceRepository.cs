@@ -73,7 +73,7 @@ namespace HotelManager.Repository
 
             using (connection)
             {
-                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DatedUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, @isActive)";
+                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DatedUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, true)";
                 NpgsqlCommand command = new NpgsqlCommand(insert, connection);
                 connection.Open();
                 command.Parameters.AddWithValue("id", newServiceInvoice.Id);
@@ -84,7 +84,6 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("updatedBy", newServiceInvoice.UpdatedBy);
                 command.Parameters.AddWithValue("dateCreated", newServiceInvoice.DateCreated);
                 command.Parameters.AddWithValue("dateUpdated", newServiceInvoice.DateUpdated);
-                command.Parameters.AddWithValue("isActive", newServiceInvoice.IsActive);
                 numberOfAffectedRows = await command.ExecuteNonQueryAsync();
                 connection.Close();
             }

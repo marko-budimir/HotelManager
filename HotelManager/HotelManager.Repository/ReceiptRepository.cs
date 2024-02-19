@@ -122,13 +122,6 @@ namespace HotelManager.Repository
                 commandText.Append("SELECT * FROM \"Invoice\" ");
             }
 
-            if (filter.minPrice > 0 && filter.maxPrice < 1000)
-            {
-                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice::money AND @maxPrice::money");
-                command.Parameters.AddWithValue("minPrice", filter.minPrice);
-                command.Parameters.AddWithValue("maxPrice", filter.maxPrice);
-            }
-
             if (!string.IsNullOrEmpty(filter.userEmailQuery))
             {
                 commandText.Append(" LEFT JOIN \"Reservation\" ON \"Invoice\".\"ReservationId\" = \"Reservation\".\"Id\"");
@@ -137,6 +130,14 @@ namespace HotelManager.Repository
                 commandText.Append(" AND \"Invoice\".\"IsActive\"=true");
                 command.Parameters.AddWithValue("@emailQuery", $"%{filter.userEmailQuery}%");
             }
+
+            if (filter.minPrice > 0 && filter.maxPrice < 1000)
+            {
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice::money AND @maxPrice::money");
+                command.Parameters.AddWithValue("minPrice", filter.minPrice);
+                command.Parameters.AddWithValue("maxPrice", filter.maxPrice);
+            }
+
             if (filter.isPaid.HasValue)
             {
                 commandText.Append(" AND \"Invoice\".\"IsPaid\" = @isPaid");
@@ -145,7 +146,7 @@ namespace HotelManager.Repository
 
             if (filter.dateCreated != null)
             {
-                commandText.Append(" AND \"Invoice\".\"DateCreated\" <= @startDate");
+                commandText.Append(" AND \"Invoice\".\"DateCreated\"=@startDate");
                 command.Parameters.AddWithValue("startDate", filter.dateCreated);
             }
             if (filter.dateUpdated != null)
