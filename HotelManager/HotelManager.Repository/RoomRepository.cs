@@ -82,7 +82,7 @@ namespace HotelManager.Repository
                                     CreatedBy = (Guid)reader["CreatedBy"],
                                     UpdatedBy = (Guid)reader["UpdatedBy"],
                                     DateCreated = (DateTime)reader["DateCreated"],
-                                    DateUpdated = (DateTime)reader["DatedUpdated"],
+                                    DateUpdated = (DateTime)reader["DateUpdated"],
                                     IsActive = (bool)reader["IsActive"]
 
                                 });
@@ -125,7 +125,7 @@ namespace HotelManager.Repository
                                 CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                 UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
-                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DatedUpdated")),
+                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
                                 IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
                             };
                         }
