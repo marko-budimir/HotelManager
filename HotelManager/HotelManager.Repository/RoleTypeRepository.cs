@@ -1,13 +1,14 @@
 ﻿using HotelManager.Repository.Common;
 using Npgsql;
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace HotelManager.Repository
 {
     public class RoleTypeRepository : IRoleTypeRepository
     {
-        private string _connectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
         public async Task<string> GetByIdAsync(Guid id)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);

@@ -5,6 +5,7 @@ using HotelManager.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +15,7 @@ namespace HotelManager.Repository
 {
     public class ReceiptRepository : IReceiptRepository
     {
-        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
-
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
         public async Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging)
         {
             List<IReceipt> receipts = new List<IReceipt>();

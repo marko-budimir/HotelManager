@@ -5,6 +5,7 @@ using HotelManager.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace HotelManager.Repository
 {
     public class ServiceInvoiceRepository : IServiceInvoiceRepository
     {
-        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
 
         public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging)
         {

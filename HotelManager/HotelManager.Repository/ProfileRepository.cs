@@ -5,6 +5,7 @@ using Npgsql;
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -14,7 +15,7 @@ namespace HotelManager.Repository
 {
     public class ProfileRepository : IProfileRepository
     {
-        private string _connectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
         public async Task<IUser> GetProfileByIdAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))

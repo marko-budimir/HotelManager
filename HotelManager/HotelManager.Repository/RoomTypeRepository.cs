@@ -5,6 +5,7 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,7 +15,7 @@ namespace HotelManager.Repository
 {
     public class RoomTypeRepository : IRoomTypeRepository
     {
-        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
         public async Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
         {
             var roomTypes = new List<RoomType>();
