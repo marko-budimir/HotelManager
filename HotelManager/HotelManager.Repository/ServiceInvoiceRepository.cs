@@ -63,7 +63,7 @@ namespace HotelManager.Repository
         }
 
         
-        public async Task<string> CreateInvoiceAsync(IServiceInvoice newServiceInvoice)
+        public async Task<string> CreateInvoiceServiceAsync(IServiceInvoice newServiceInvoice)
         {
 
             if (newServiceInvoice == null)
@@ -218,5 +218,7 @@ namespace HotelManager.Repository
                 }
             }
         }
+
+       
     }
 }

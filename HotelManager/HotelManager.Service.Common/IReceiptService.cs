@@ -1,4 +1,5 @@
 ﻿using HotelManager.Common;
+using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.WebApi.Models;
 using System;
@@ -16,7 +17,8 @@ namespace HotelManager.Service.Common
         Task<IReceipt> GetByIdAsync(Guid id);
         Task<int> DeleteAsync(Guid id);
         Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
-        Task<string>CreateInvoiceAsync(IServiceInvoice invoice);
-        Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id);
+        Task<string> CreateInvoiceServiceAsync(IServiceInvoice invoice);
+        Task<Invoice> CreateInvoiceAsync(Invoice invoice);
+
     }
 }
