@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="HotelServiceRepository.cs" />
     <Compile Include="ProfileRepository.cs" />
+    <Compile Include="ReservationRepository.cs" />
     <Compile Include="ServiceInvoiceRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceiptRepository.cs" />

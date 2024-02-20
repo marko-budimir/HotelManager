@@ -178,7 +178,7 @@ namespace HotelManager.Repository
                         queryBuilder.AppendLine(" \"Description\" = @Description,");
                     }
 
-                    if (roomTypeUpdate.IsActive != null)
+                    if (roomTypeUpdate.IsActive != default)
                     {
                         cmd.Parameters.AddWithValue("@IsActive", roomTypeUpdate.IsActive);
                         queryBuilder.AppendLine(" \"IsActive\" = @IsActive,");

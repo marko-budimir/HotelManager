@@ -209,5 +209,52 @@ namespace HotelManager.Repository
                 }
             }
         }
+        public async Task<Invoice> CreateInvoiceAsync(Invoice invoice)
+        {
+            var invoiceId = Guid.NewGuid();
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = @"
+            INSERT INTO ""Invoice"" (""Id"", ""TotalPrice"", ""IsPaid"", ""ReservationId"", ""DiscountId"", 
+                                     ""CreatedBy"", ""UpdatedBy"", ""DateCreated"", ""DateUpdated"", 
+                                     ""IsActive"", ""InvoiceNumber"")
+            VALUES (@Id, @TotalPrice, @IsPaid, @ReservationId, @DiscountId, 
+                    @CreatedBy, @UpdatedBy, @DateCreated, @DateUpdated, 
+                    @IsActive, @InvoiceNumber)";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Id", invoiceId);
+                command.Parameters.AddWithValue("@TotalPrice", invoice.TotalPrice);
+                command.Parameters.AddWithValue("@IsPaid", invoice.IsPaid);
+                command.Parameters.AddWithValue("@ReservationId", invoice.ReservationId);
+                command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
+                command.Parameters.AddWithValue("@CreatedBy", invoice.CreatedBy);
+                command.Parameters.AddWithValue("@UpdatedBy", invoice.UpdatedBy);
+                command.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@IsActive", invoice.IsActive);
+                command.Parameters.AddWithValue("@InvoiceNumber", invoice.InvoiceNumber);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    if (rowsAffected > 0)
+                    {
+                        return invoice;
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to create the invoice.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while creating the invoice.", ex);
+                }
+
+            }
+        }
     }
 }
