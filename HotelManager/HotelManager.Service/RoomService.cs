@@ -2,11 +2,14 @@
 using HotelManager.Model;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace HotelManager.Service
 {
@@ -59,7 +62,8 @@ namespace HotelManager.Service
             if(room == null)
                 throw new ArgumentException("Room not found");
 
-            return await RoomRepository.UpdateRoomAsync(id,roomUpdate);
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            return await RoomRepository.UpdateRoomAsync(id,roomUpdate, userId);
         }
     }
 }

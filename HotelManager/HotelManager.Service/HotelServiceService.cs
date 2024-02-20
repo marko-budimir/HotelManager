@@ -1,13 +1,12 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model;
-using HotelManager.Repository;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace HotelManager.Service
 {
@@ -44,7 +43,8 @@ namespace HotelManager.Service
         {
             try
             {
-                return _HotelServiceRepository.CreateServiceAsync(hotelService);
+                var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+                return _HotelServiceRepository.CreateServiceAsync(hotelService, userId);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,8 @@ namespace HotelManager.Service
         {
             try
             {
-                return _HotelServiceRepository.UpdateServiceAsync(Id, hotelService);
+                var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+                return _HotelServiceRepository.UpdateServiceAsync(Id, hotelService, userId);
             }
             catch(Exception ex)
             {
@@ -68,7 +69,8 @@ namespace HotelManager.Service
         {
             try
             {
-                return _HotelServiceRepository.DeleteServiceAsync(Id);
+                var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+                return _HotelServiceRepository.DeleteServiceAsync(Id, userId);
             }
             catch (Exception ex)
             {

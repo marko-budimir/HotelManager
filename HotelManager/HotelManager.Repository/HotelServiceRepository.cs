@@ -129,7 +129,7 @@ namespace HotelManager.Repository
             return service;
         }
 
-        public async Task<bool> CreateServiceAsync(HotelService newService)
+        public async Task<bool> CreateServiceAsync(HotelService newService, Guid userId)
         {
             int rowsChanged;
             NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
@@ -149,10 +149,10 @@ namespace HotelManager.Repository
                 insertCommand.Parameters.AddWithValue("@Name", newService.Name);
                 insertCommand.Parameters.AddWithValue("@Description", newService.Description);
                 insertCommand.Parameters.AddWithValue("@Price", newService.Price);
-                insertCommand.Parameters.AddWithValue("@CreatedBy", newService.CreatedBy);
-                insertCommand.Parameters.AddWithValue("@UpdatedBy", newService.UpdatedBy);
-                insertCommand.Parameters.AddWithValue("@DateCreated", newService.DateCreated);
-                insertCommand.Parameters.AddWithValue("@DateUpdated", newService.DateUpdated);
+                insertCommand.Parameters.AddWithValue("@CreatedBy", userId);
+                insertCommand.Parameters.AddWithValue("@UpdatedBy", userId);
+                insertCommand.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);
+                insertCommand.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
                 insertCommand.Parameters.AddWithValue("@IsActive", newService.IsActive);
 
                 try
@@ -172,7 +172,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> UpdateServiceAsync(Guid id, HotelService service)
+        public async Task<bool> UpdateServiceAsync(Guid id, HotelService service, Guid userId)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
 
@@ -209,7 +209,7 @@ namespace HotelManager.Repository
                 {
                     return false;
                 }
-
+                updateQuery += ", \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated";
                 updateQuery += " WHERE \"Id\" = @Id";
 
                 using (connection)
@@ -221,6 +221,8 @@ namespace HotelManager.Repository
                     updateCommand.Parameters.AddWithValue("@Name", service.Name ?? (object)DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@Description", service.Description ?? (object)DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@Price", service.Price != default(decimal) ? service.Price : (object)DBNull.Value);
+                    updateCommand.Parameters.AddWithValue("@UpdatedBy", userId);
+                    updateCommand.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
 
                     await connection.OpenAsync();
                     int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
@@ -238,19 +240,21 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> DeleteServiceAsync(Guid id)
+        public async Task<bool> DeleteServiceAsync(Guid id, Guid userId)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
 
             try
             {
-                string updateQuery = "UPDATE \"Service\" SET \"IsActive\" = FALSE WHERE \"Id\" = @Id";
+                string updateQuery = "UPDATE \"Service\" SET \"IsActive\" = FALSE, \"DateUpdated\" = @DateUpdated, \"UpdatedBy\" = @UpdatedBy WHERE \"Id\" = @Id";
 
                 using (connection)
                 {
                     NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, connection);
 
                     updateCommand.Parameters.AddWithValue("@Id", id);
+                    updateCommand.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                    updateCommand.Parameters.AddWithValue("@UpdatedBy", userId);
 
                     await connection.OpenAsync();
                     int rowsAffected = await updateCommand.ExecuteNonQueryAsync();

@@ -4,12 +4,9 @@ using HotelManager.Model.Common;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 namespace HotelManager.WebApi.Controllers
@@ -22,7 +19,6 @@ namespace HotelManager.WebApi.Controllers
         public ProfileController(IProfileService profileService, IMapper mapper) {
             _profileService = profileService;
             _mapper = mapper;
-            profileService.CurrentUser = (ClaimsIdentity)User.Identity;
         }
 
         // GET api/Prfile/5
@@ -33,7 +29,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                IUser profile = await _profileService.GetProfileByIdAsync();
+                IUser profile = await _profileService.GetProfileAsync();
 
                 if (profile == null)
                 {
@@ -80,7 +76,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<IUser> profileInBase = _profileService.GetProfileByIdAsync();
+            Task<IUser> profileInBase = _profileService.GetProfileAsync();
             if(profileInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);

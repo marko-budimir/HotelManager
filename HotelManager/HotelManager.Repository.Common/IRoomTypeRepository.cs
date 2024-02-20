@@ -13,7 +13,7 @@ namespace HotelManager.Repository.Common
         Task<RoomType> GetByIdAsync(Guid id);
         Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
 
-        Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate);
-        Task<RoomType> PostAsync(RoomTypePost roomTypePost);
+        Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate, Guid roomId);
+        Task<RoomType> PostAsync(RoomTypePost roomTypePost, Guid roomId);
     }
 }

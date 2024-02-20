@@ -1,33 +1,33 @@
-﻿using HotelManager.Model;
-using HotelManager.Model.Common;
-using HotelManager.Repository.Common;
+﻿using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace HotelManager.Service
 {
     public class ProfileService : IProfileService
     {
-        private readonly IProfileRepository _profileRepository;
+        private readonly IUserRepository _profileRepository;
         private readonly IRoleTypeRepository _roleTypeRepository;
         public ClaimsIdentity CurrentUser { get; set; }
         
 
-        public ProfileService(IProfileRepository profileRepository, IRoleTypeRepository roleTypeRepository)
+        public ProfileService(IUserRepository profileRepository, IRoleTypeRepository roleTypeRepository)
         {
             _profileRepository = profileRepository;
             _roleTypeRepository = roleTypeRepository;
         }
 
-        public Task<IUser> GetProfileByIdAsync()
+        public async Task<Model.Common.IUser> GetProfileAsync()
         {
-            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return _profileRepository.GetProfileByIdAsync(id);
+                return await _profileRepository.GetByIdAsync(userId);
             }
             catch (Exception ex)
             {
@@ -35,16 +35,16 @@ namespace HotelManager.Service
             }
         }
 
-        public Task<bool> CreateProfileAsync(IUser profile)
+        public async Task<bool> CreateProfileAsync(Model.Common.IUser profile)
         {
-            Guid id = Guid.NewGuid();
+            var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             profile.CreatedBy = id;
             profile.UpdatedBy = id;
             profile.Id = id;
             profile.IsActive = true;
             try
             {
-                return _profileRepository.CreateProfileAsync(profile);
+                return await _profileRepository.CreateAsync(profile);
             }
             catch(Exception ex)
             {
@@ -52,24 +52,24 @@ namespace HotelManager.Service
             }
         }
 
-        public Task<bool> UpdateProfileAsync (IUser profile)
+        public async Task<bool> UpdateProfileAsync (Model.Common.IUser profile)
         {
-            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return _profileRepository.UpdateProfileAsync(id, profile);
+                return await _profileRepository.UpdateAsync(id, profile);
             }catch(Exception ex)
             {
                 throw ex;
             }
         }
 
-        public Task<bool> DeleteProfileAsync()
+        public async Task<bool> DeleteProfileAsync()
         {
-            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return _profileRepository.DeleteProfileAsync(id);
+                return await _profileRepository.DeleteAsync(id);
             }
             catch(Exception ex)
             {
@@ -77,7 +77,7 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<IUser> ValidateUserAsync(string email, string password)
+        public async Task<Model.Common.IUser> ValidateUserAsync(string email, string password)
         {
             try
             {
@@ -96,6 +96,19 @@ namespace HotelManager.Service
                 return await _roleTypeRepository.GetByIdAsync(id);
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> GetUserEmailByIdAsync(Guid id)
+        {
+            try
+            {
+                var user = await _profileRepository.GetByIdAsync(id);
+                return user.Email;
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

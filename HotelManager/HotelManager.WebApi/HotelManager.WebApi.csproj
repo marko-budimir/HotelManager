@@ -250,6 +250,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="AutoMapper\ReceiptMapperProfile.cs" />
     <Compile Include="Controllers\DashBoardRoomController.cs" />
     <Compile Include="Controllers\DashboardReceiptController.cs" />
     <Compile Include="Authorization\AuthorizationServerProvider.cs" />
@@ -270,6 +271,7 @@
     <Compile Include="Models\ProfileRegistered.cs" />
     <Compile Include="Models\ProfileUpdated.cs" />
     <Compile Include="Models\ProfileView.cs" />
+    <Compile Include="Models\ReceiptView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

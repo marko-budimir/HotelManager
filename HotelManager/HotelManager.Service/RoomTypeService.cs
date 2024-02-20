@@ -2,11 +2,11 @@
 using HotelManager.Model;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace HotelManager.Service
 {
@@ -31,12 +31,14 @@ namespace HotelManager.Service
 
         public async Task<RoomType> PostAsync(RoomTypePost roomTypePost)
         {
-            return await RoomTypeRepository.PostAsync(roomTypePost);
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            return await RoomTypeRepository.PostAsync(roomTypePost, userId);
         }
 
         public  async Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate)
         {
-            return await RoomTypeRepository.UpdateAsync(id, roomTypeUpdate);    
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            return await RoomTypeRepository.UpdateAsync(id, roomTypeUpdate, userId);    
         }
        
     }
