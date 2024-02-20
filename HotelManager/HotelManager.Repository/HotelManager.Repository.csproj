@@ -124,7 +124,7 @@
       <Name>HotelManager.Repository.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HotelManager.Service.Common\HotelManager.Service.Common.csproj">
-      <Project>{33BC6012-0727-48E0-8FB0-C082551D8A9F}</Project>
+      <Project>{33bc6012-0727-48e0-8fb0-c082551d8a9f}</Project>
       <Name>HotelManager.Service.Common</Name>
     </ProjectReference>
   </ItemGroup>

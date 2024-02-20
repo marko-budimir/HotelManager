@@ -346,7 +346,7 @@
       <Name>HotelManager.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HotelManager.Model.Common\HotelManager.Model.Common.csproj">
-      <Project>{81D7DB50-2AAB-4F51-8674-C7DF48C209CB}</Project>
+      <Project>{81d7db50-2aab-4f51-8674-c7df48c209cb}</Project>
       <Name>HotelManager.Model.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HotelManager.Model\HotelManager.Model.csproj">

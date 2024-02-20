@@ -73,11 +73,7 @@ namespace HotelManager.Repository
 
             using (connection)
             {
-<<<<<<< HEAD
                 string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, true)";
-=======
-                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DatedUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, true)";
->>>>>>> e924900e1e9434113a7c7352fd728dd087ad141f
                 NpgsqlCommand command = new NpgsqlCommand(insert, connection);
                 connection.Open();
                 command.Parameters.AddWithValue("id", newServiceInvoice.Id);
