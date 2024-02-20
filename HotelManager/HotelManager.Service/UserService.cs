@@ -34,7 +34,7 @@ namespace HotelManager.Service
 
         public async Task<bool> CreateUserAsync(Model.Common.IUser profile)
         {
-            var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            var id = Guid.NewGuid();
             profile.CreatedBy = id;
             profile.UpdatedBy = id;
             profile.Id = id;
