@@ -1,9 +1,7 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model;
-using HotelManager.Service;
 using HotelManager.Service.Common;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +13,6 @@ namespace HotelManager.WebApi.Controllers
     public class RoomTypeController : ApiController
     {
 
-
         private readonly IRoomTypeService RoomTypeService;
 
         public RoomTypeController(IRoomTypeService roomTypeService)
@@ -23,6 +20,7 @@ namespace HotelManager.WebApi.Controllers
             RoomTypeService = roomTypeService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync(
             int pageNumber = 1,
@@ -49,6 +47,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetById(
                 [FromUri] Guid id)
@@ -70,6 +69,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateAsync(
             [FromUri] Guid id
@@ -88,6 +88,7 @@ namespace HotelManager.WebApi.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostAsync(
             [FromBody] RoomTypePost roomTypePost

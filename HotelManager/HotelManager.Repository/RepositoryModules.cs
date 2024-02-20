@@ -9,7 +9,7 @@ namespace HotelManager.Repository
     {
         protected override void Load(ContainerBuilder builder)
         { 
-            builder.RegisterType<ProfileRepository>().As<IProfileRepository>();
+            builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<RoomRepository>().As<IRoomRepository>();
             builder.RegisterType<HotelServiceRepository>().As<IHotelServiceRepository>();
             builder.RegisterType<RoomTypeRepository>().As<IRoomTypeRepository>();

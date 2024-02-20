@@ -19,6 +19,7 @@ namespace HotelManager.WebApi.Controllers
         {
             RoomService = roomService;
         }
+
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync(
             int pageNumber = 1,
@@ -49,6 +50,7 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpGet]
         public async Task<HttpResponseMessage> GetByIdAsync(
             [FromUri] Guid id

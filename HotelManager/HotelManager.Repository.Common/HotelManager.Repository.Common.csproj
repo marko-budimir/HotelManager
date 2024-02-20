@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IHotelServiceRepository.cs" />
-    <Compile Include="IProfileRepository.cs" />
+    <Compile Include="IUserRepository.cs" />
     <Compile Include="IRoomRepository.cs" />
     <Compile Include="IRoomTypeRepository.cs" />
     <Compile Include="IServiceInvoiceRepository.cs" />

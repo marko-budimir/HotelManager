@@ -154,7 +154,7 @@ namespace HotelManager.Repository
         }
 
         //Need to update parametar UpdatedBy
-        public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate)
+        public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate, Guid userId)
         { 
             Room room = await GetByIdAsync(id);
 
@@ -209,11 +209,10 @@ namespace HotelManager.Repository
                     }
 
 
-                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
                     queryBuilder.AppendLine(" \"DateUpdated\" = @DateUpdated,");
 
-                    //Updated by should be admin id who updated it
-                    cmd.Parameters.AddWithValue("@UpdatedBy", room.CreatedBy) ;
+                    cmd.Parameters.AddWithValue("@UpdatedBy", userId) ;
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);

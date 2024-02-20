@@ -50,6 +50,7 @@ namespace HotelManager.WebApi.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, invoices);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<HttpResponseMessage> Delete(Guid id)
         {
@@ -64,6 +65,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<HttpResponseMessage> CreateInvoiceAsync([FromBody]ServiceInvoice invoiceCreate)
         {
