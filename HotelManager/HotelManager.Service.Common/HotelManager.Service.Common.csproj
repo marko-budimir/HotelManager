@@ -43,8 +43,8 @@
   <ItemGroup>
     <Compile Include="IDiscountService.cs" />
     <Compile Include="IHotelServiceService.cs" />
-    <Compile Include="IProfileService.cs" />
     <Compile Include="IReviewService.cs" />
+    <Compile Include="IUserService.cs" />
     <Compile Include="IRoomService.cs" />
     <Compile Include="IRoomTypeService.cs" />
     <Compile Include="IReceiptService.cs" />

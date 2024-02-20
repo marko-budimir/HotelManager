@@ -17,9 +17,9 @@ namespace HotelManager.WebApi.Controllers
     {
 
         private readonly IReceiptService _receiptService;
-        private readonly IProfileService _profileService;
+        private readonly IUserService _profileService;
         private readonly IMapper _mapper;
-        public DashboardReceiptController(IReceiptService receiptService, IProfileService profileService, IMapper mapper)
+        public DashboardReceiptController(IReceiptService receiptService, IUserService profileService, IMapper mapper)
         {
             _receiptService = receiptService;
             _profileService = profileService;
