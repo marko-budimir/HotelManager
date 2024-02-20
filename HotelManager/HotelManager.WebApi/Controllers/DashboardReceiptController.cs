@@ -1,13 +1,12 @@
-﻿using HotelManager.Common;
-using HotelManager.Model;
+﻿using AutoMapper;
+using HotelManager.Common;
 using HotelManager.Model.Common;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -18,11 +17,16 @@ namespace HotelManager.WebApi.Controllers
     {
 
         private readonly IReceiptService _receiptService;
-        public DashboardReceiptController(IReceiptService receiptService)
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        public DashboardReceiptController(IReceiptService receiptService, IUserService profileService, IMapper mapper)
         {
             _receiptService = receiptService;
+            _userService = profileService;
+            _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         // GET: api/DashboardReceipt
         public async Task<HttpResponseMessage> GetReceipts([FromUri] int minPrice = 0, int maxPrice = 100, bool? isPaid = null, string userEmailQuery = null, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "TotalPrice", DateTime? dateCreated = null, DateTime? dateUpdated = null)
@@ -59,10 +63,19 @@ namespace HotelManager.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
             }
+ 
+            List<ReceiptView> receiptViews = new List<ReceiptView>();
+            foreach (var receipt in receipts)
+            {
+                var receiptView = _mapper.Map<ReceiptView>(receipt);
+                receiptView.UserEmail = await _userService.GetUserEmailByIdAsync(receipt.CreatedBy);
+                receiptViews.Add(receiptView);
+            }
 
-            return Request.CreateResponse(HttpStatusCode.OK, receipts);
+            return Request.CreateResponse(HttpStatusCode.OK, receiptViews);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         // GET: api/DashboardReceipt/5
         public async Task<HttpResponseMessage> GetReceipt(Guid id)

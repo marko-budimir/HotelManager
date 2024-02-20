@@ -109,10 +109,9 @@ namespace HotelManager.Repository
             }
             return roomType;
         }
-        //Need to set who created roomtype
-        public async Task<RoomType> PostAsync(RoomTypePost roomTypePost)
+
+        public async Task<RoomType> PostAsync(RoomTypePost roomTypePost, Guid userId)
         {
-            Guid userId = new Guid("73dd2485-b158-420a-86ca-599c3abba0aa");
             Guid creationId = Guid.NewGuid();
 
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -131,8 +130,8 @@ namespace HotelManager.Repository
                     // set user who created
                     cmd.Parameters.AddWithValue("@CreatedBy", userId);
                     cmd.Parameters.AddWithValue("@UpdatedBy", userId);
-                    cmd.Parameters.AddWithValue("@DateCreated", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);
+                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
 
                     cmd.Connection = connection;
                     cmd.CommandText = query.ToString();
@@ -144,11 +143,7 @@ namespace HotelManager.Repository
 
         }
 
-        
-
-
-        //Need to update parametar UpdatedBy
-        public async Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate)
+        public async Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate, Guid userId)
         {
             RoomType roomType = await GetByIdAsync(id);
 
@@ -184,11 +179,11 @@ namespace HotelManager.Repository
                         queryBuilder.AppendLine(" \"IsActive\" = @IsActive,");
                     }
 
-                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
                     queryBuilder.AppendLine(" \"DateUpdated\" = @DateUpdated,");
 
                     // need update on userId who updated
-                    cmd.Parameters.AddWithValue("@UpdatedBy", roomType.CreatedBy);
+                    cmd.Parameters.AddWithValue("@UpdatedBy", userId);
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);

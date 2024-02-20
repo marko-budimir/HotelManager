@@ -6,17 +6,14 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HotelManager.Repository
 {
-    public class ProfileRepository : IProfileRepository
+    public class UserRepository : IUserRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-        public async Task<IUser> GetProfileByIdAsync(Guid id)
+        public async Task<IUser> GetByIdAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
@@ -59,7 +56,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> CreateProfileAsync(IUser newProfile)
+        public async Task<bool> CreateAsync(IUser newProfile)
         {
             int rowChanged;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -101,11 +98,11 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> UpdateProfileAsync(Guid id, IUser updatedProfile)
+        public async Task<bool> UpdateAsync(Guid id, IUser updatedProfile)
         {
             int rowsChanged;
 
-            IUser profile = await GetProfileByIdAsync(id);
+            IUser profile = await GetByIdAsync(id);
             if (profile == null)
             {
                 throw new Exception("No user with such ID in the database!");
@@ -146,11 +143,11 @@ namespace HotelManager.Repository
             return rowsChanged != 0;
         }
 
-        public async Task<bool> DeleteProfileAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string deleteQuery = "DELETE FROM \"User\" WHERE \"Id\" = @Id";
+                string deleteQuery = "UPDATE \"User\" SET \"IsActive\" = false WHERE \"Id\" = @Id";
                 NpgsqlCommand deleteCommand = new NpgsqlCommand(deleteQuery, connection);
                 deleteCommand.Parameters.AddWithValue("@Id", id);
 

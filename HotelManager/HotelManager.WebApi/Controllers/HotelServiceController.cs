@@ -2,9 +2,6 @@
 using HotelManager.Model;
 using HotelManager.Service.Common;
 using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,14 +13,15 @@ namespace HotelManager.WebApi.Controllers
     [RoutePrefix("api/HotelService")]
     public class HotelServiceController : ApiController
     {
-        private readonly IHotelServiceService _HotelServiceService;
+        private readonly IHotelServiceService _hotelServiceService;
 
-        public HotelServiceController(IHotelServiceService HotelServiceService)
+        public HotelServiceController(IHotelServiceService hotelServiceService)
         {
-            _HotelServiceService = HotelServiceService;
+            _hotelServiceService = hotelServiceService;
         }
 
         // GET api/values
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("")]
         public async Task<HttpResponseMessage> GetAllServicesAsync(
@@ -41,7 +39,7 @@ namespace HotelManager.WebApi.Controllers
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 HotelServiceFilter hotelServiceFilter = new HotelServiceFilter() { SearchQuery = searchQuery, MinPrice = minPrice, MaxPrice = maxPrice };
-                var services = await _HotelServiceService.GetAllAsync(paging, sorting, hotelServiceFilter);
+                var services = await _hotelServiceService.GetAllAsync(paging, sorting, hotelServiceFilter);
                 if (services.Any())
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, services);
@@ -56,6 +54,7 @@ namespace HotelManager.WebApi.Controllers
         }
 
         // GET api/values/5
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("{id:guid}")]
         public async Task<HttpResponseMessage> GetServiceByIdAsync([FromUri] Guid id)
@@ -66,7 +65,7 @@ namespace HotelManager.WebApi.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound, "No hotel service with such ID!");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, await _HotelServiceService.GetByIdAsync(id));
+                return Request.CreateResponse(HttpStatusCode.OK, await _hotelServiceService.GetByIdAsync(id));
             }
             catch(Exception ex)
             {
@@ -75,6 +74,7 @@ namespace HotelManager.WebApi.Controllers
         }
 
         // POST api/values
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("")]
         public async Task<HttpResponseMessage> CreateServiceAsync([FromBody] HotelService service)
@@ -85,7 +85,7 @@ namespace HotelManager.WebApi.Controllers
             }
             try
             {
-                bool created = await _HotelServiceService.CreateServiceAsync(service);
+                bool created = await _hotelServiceService.CreateServiceAsync(service);
                 if (created) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -96,6 +96,7 @@ namespace HotelManager.WebApi.Controllers
         }
 
         // PUT api/values/5
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:guid}")]
         public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelService updatedService)
@@ -104,14 +105,14 @@ namespace HotelManager.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<HotelService> serviceInBase = _HotelServiceService.GetByIdAsync(id);
+            Task<HotelService> serviceInBase = _hotelServiceService.GetByIdAsync(id);
             if(serviceInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
             try
             {
-                bool updated = await _HotelServiceService.UpdateServiceAsync(id, new HotelService()
+                bool updated = await _hotelServiceService.UpdateServiceAsync(id, new HotelService()
                 {
                     Name = updatedService.Name,
                     Description = updatedService.Description,
@@ -126,6 +127,7 @@ namespace HotelManager.WebApi.Controllers
         }
 
         // DELETE api/values/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("{id:guid}")]
         public async Task<HttpResponseMessage> DeleteService(Guid id)
@@ -134,7 +136,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<HotelService> service = _HotelServiceService.GetByIdAsync(id);
+            Task<HotelService> service = _hotelServiceService.GetByIdAsync(id);
             if (service == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -142,7 +144,7 @@ namespace HotelManager.WebApi.Controllers
 
             try
             {
-                bool deleted = await _HotelServiceService.DeleteServiceAsync(id);
+                bool deleted = await _hotelServiceService.DeleteServiceAsync(id);
                 if (deleted)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK);

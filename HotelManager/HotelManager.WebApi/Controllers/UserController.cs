@@ -4,36 +4,32 @@ using HotelManager.Model.Common;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 namespace HotelManager.WebApi.Controllers
 {
-    [RoutePrefix("api/Profile")]
-    public class ProfileController : ApiController
+    [RoutePrefix("api/User")]
+    public class UserController : ApiController
     {
-        private readonly IProfileService _profileService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public ProfileController(IProfileService profileService, IMapper mapper) {
-            _profileService = profileService;
+        public UserController(IUserService userService, IMapper mapper) {
+            _userService = userService;
             _mapper = mapper;
-            profileService.CurrentUser = (ClaimsIdentity)User.Identity;
         }
 
         // GET api/Prfile/5
         [Authorize(Roles = "Admin, User")]
         [HttpGet]
         [Route("")]
-        public async Task<HttpResponseMessage> GetProfileByIdAsync()
+        public async Task<HttpResponseMessage> GetUserAsync()
         {
             try
             {
-                IUser profile = await _profileService.GetProfileByIdAsync();
+                IUser profile = await _userService.GetUserAsync();
 
                 if (profile == null)
                 {
@@ -51,7 +47,7 @@ namespace HotelManager.WebApi.Controllers
         // POST api/Profile
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateProfileAsync(ProfileRegistered newProfile)
+        public async Task<HttpResponseMessage> CreateUserAsync(ProfileRegistered newProfile)
         {
             if(newProfile == null)
             {
@@ -60,7 +56,7 @@ namespace HotelManager.WebApi.Controllers
             IUser profile = _mapper.Map<User>(newProfile);
             try
             {
-                bool created = await _profileService.CreateProfileAsync(profile);
+                bool created = await _userService.CreateUserAsync(profile);
                 if (created) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -74,13 +70,13 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin, User")]
         [HttpPut]
         [Route("")]
-        public async Task<HttpResponseMessage> UpdateProfileAsync(ProfileUpdated updatedProfile)
+        public async Task<HttpResponseMessage> UpdateUserAsync(ProfileUpdated updatedProfile)
         {
             if(updatedProfile == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<IUser> profileInBase = _profileService.GetProfileByIdAsync();
+            IUser profileInBase = await _userService.GetUserAsync();
             if(profileInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -88,7 +84,7 @@ namespace HotelManager.WebApi.Controllers
             IUser user = _mapper.Map<User>(updatedProfile);
             try
             {
-                bool updated = await _profileService.UpdateProfileAsync(user);
+                bool updated = await _userService.UpdateUserAsync(user);
                 if (updated) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }

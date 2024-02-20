@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,13 +15,14 @@ namespace HotelManager.WebApi.Controllers
     public class DashBoardRoomController : ApiController
     {
 
-        private readonly IRoomService RoomService;
+        private readonly IRoomService _roomService;
 
         public DashBoardRoomController(IRoomService roomService)
         {
-            RoomService = roomService;
+            _roomService = roomService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateRoomAsync(
             [FromUri] Guid id
@@ -31,7 +33,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 if (id.Equals(Guid.Empty))
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.UpdateRoomAsync(id, roomUpdate));
+                return Request.CreateResponse(HttpStatusCode.OK, await _roomService.UpdateRoomAsync(id, roomUpdate));
 
             }
             catch (Exception ex)
@@ -40,6 +42,8 @@ namespace HotelManager.WebApi.Controllers
             }
 
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllAsync(
             [FromUri] int pageNumber = 1,
@@ -59,7 +63,7 @@ namespace HotelManager.WebApi.Controllers
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery, StartDate = StartDate, EndDate = EndDate, MinBeds = MinBeds, MaxPrice = MaxPrice, MinPrice = MinPrice, RoomTypeId = RoomTypeId };
-                var roomsUpdated = await RoomService.GetUpdatedRoomsAsync(paging, sorting, roomFilter);
+                var roomsUpdated = await _roomService.GetUpdatedRoomsAsync(paging, sorting, roomFilter);
                 if (roomsUpdated.Any())
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, roomsUpdated);
@@ -71,6 +75,8 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [Authorize(Roles = "Admin")]
         public async Task<HttpResponseMessage> GetRoomsUpdateByIdAsync(
             [FromUri] Guid id
             )
@@ -81,7 +87,7 @@ namespace HotelManager.WebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
 
 
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.GetRoomUpdateByIdAsync(id));
+                return Request.CreateResponse(HttpStatusCode.OK, await _roomService.GetRoomUpdateByIdAsync(id));
             }
 
             catch (Exception ex)
