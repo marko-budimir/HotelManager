@@ -9,10 +9,10 @@ namespace HotelManager.WebApi.Authorization
 {
     public class AuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
-        private readonly IProfileService _profileService;
+        private readonly IUserService _profileService;
         public AuthorizationServerProvider()
         {
-            _profileService = new ProfileService(new UserRepository(), new RoleTypeRepository());
+            _profileService = new UserService(new UserRepository(), new RoleTypeRepository());
         }
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {

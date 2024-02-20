@@ -256,7 +256,7 @@
     <Compile Include="Authorization\AuthorizationServerProvider.cs" />
     <Compile Include="AutoMapper\UserMapperPofile.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\HotelServiceController.cs" />
     <Compile Include="Controllers\RoomTypeController.cs" />

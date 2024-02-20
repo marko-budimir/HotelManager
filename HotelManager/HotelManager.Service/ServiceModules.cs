@@ -8,7 +8,7 @@ namespace HotelManager.Service
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ProfileService>().As<IProfileService>();
+            builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<RoomService>().As<IRoomService>();
             builder.RegisterType<HotelServiceService>().As<IHotelServiceService>();
             builder.RegisterType<RoomTypeService>().As<IRoomTypeService>();

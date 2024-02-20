@@ -2,32 +2,29 @@
 using HotelManager.Service.Common;
 using Microsoft.AspNet.Identity;
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 
 namespace HotelManager.Service
 {
-    public class ProfileService : IProfileService
+    public class UserService : IUserService
     {
-        private readonly IUserRepository _profileRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IRoleTypeRepository _roleTypeRepository;
-        public ClaimsIdentity CurrentUser { get; set; }
         
 
-        public ProfileService(IUserRepository profileRepository, IRoleTypeRepository roleTypeRepository)
+        public UserService(IUserRepository userRepository, IRoleTypeRepository roleTypeRepository)
         {
-            _profileRepository = profileRepository;
+            _userRepository = userRepository;
             _roleTypeRepository = roleTypeRepository;
         }
 
-        public async Task<Model.Common.IUser> GetProfileAsync()
+        public async Task<Model.Common.IUser> GetUserAsync()
         {
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return await _profileRepository.GetByIdAsync(userId);
+                return await _userRepository.GetByIdAsync(userId);
             }
             catch (Exception ex)
             {
@@ -35,7 +32,7 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<bool> CreateProfileAsync(Model.Common.IUser profile)
+        public async Task<bool> CreateUserAsync(Model.Common.IUser profile)
         {
             var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             profile.CreatedBy = id;
@@ -44,7 +41,7 @@ namespace HotelManager.Service
             profile.IsActive = true;
             try
             {
-                return await _profileRepository.CreateAsync(profile);
+                return await _userRepository.CreateAsync(profile);
             }
             catch(Exception ex)
             {
@@ -52,24 +49,24 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<bool> UpdateProfileAsync (Model.Common.IUser profile)
+        public async Task<bool> UpdateUserAsync (Model.Common.IUser profile)
         {
             var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return await _profileRepository.UpdateAsync(id, profile);
+                return await _userRepository.UpdateAsync(id, profile);
             }catch(Exception ex)
             {
                 throw ex;
             }
         }
 
-        public async Task<bool> DeleteProfileAsync()
+        public async Task<bool> DeleteUserAsync()
         {
             var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             try
             {
-                return await _profileRepository.DeleteAsync(id);
+                return await _userRepository.DeleteAsync(id);
             }
             catch(Exception ex)
             {
@@ -81,7 +78,7 @@ namespace HotelManager.Service
         {
             try
             {
-                return await _profileRepository.ValidateUserAsync(email, password);
+                return await _userRepository.ValidateUserAsync(email, password);
             }
             catch(Exception ex)
             {
@@ -105,7 +102,7 @@ namespace HotelManager.Service
         {
             try
             {
-                var user = await _profileRepository.GetByIdAsync(id);
+                var user = await _userRepository.GetByIdAsync(id);
                 return user.Email;
             }
             catch (Exception ex)
