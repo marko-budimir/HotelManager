@@ -14,15 +14,12 @@ namespace HotelManager.Repository
 {
     public class RoomTypeRepository : IRoomTypeRepository
     {
-        private const string CONNECTION_STRING = "Host=localhost:5432;" +
-         "Username=postgres;" +
-         "Password=2001;" +
-         "Database=postgres";
+        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
         public async Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
         {
             var roomTypes = new List<RoomType>();
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -80,7 +77,7 @@ namespace HotelManager.Repository
         {
             var roomType = new RoomType();
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -117,7 +114,7 @@ namespace HotelManager.Repository
             Guid userId = new Guid("73dd2485-b158-420a-86ca-599c3abba0aa");
             Guid creationId = Guid.NewGuid();
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -160,7 +157,7 @@ namespace HotelManager.Repository
                 return null;
 
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 var queryBuilder = new StringBuilder();

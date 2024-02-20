@@ -13,12 +13,12 @@ namespace HotelManager.Repository
 {
     public class ServiceInvoiceRepository : IServiceInvoiceRepository
     {
-        private const string connectionString = "Server = 127.0.0.1;Port=5432;Database=postgres;User Id = postgres;Password=2001;";
+        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
 
         public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging)
         {
             List<IServiceInvoice> invoiceService = new List<IServiceInvoice>();
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
@@ -68,7 +68,7 @@ namespace HotelManager.Repository
             {
                 return "Invoice object is null";
             }
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             int numberOfAffectedRows;
 
             using (connection)
@@ -99,7 +99,7 @@ namespace HotelManager.Repository
 
         public async Task<int> UpdateAsync(Guid id)
         {
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
@@ -151,7 +151,7 @@ namespace HotelManager.Repository
 
         private async Task<int> GetItemCountAsync()
         {
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();

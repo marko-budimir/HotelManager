@@ -14,10 +14,10 @@ namespace HotelManager.Repository
 {
     public class ProfileRepository : IProfileRepository
     {
-        private string _ConnectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
+        private string _connectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
         public async Task<IUser> GetProfileByIdAsync(Guid id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser profile = null;
                 string commandText = "SELECT * FROM \"User\" WHERE \"Id\" = @Id";
@@ -61,7 +61,7 @@ namespace HotelManager.Repository
         public async Task<bool> CreateProfileAsync(IUser newProfile)
         {
             int rowChanged;
-            NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 string insertQuery = "INSERT INTO \"User\" (\"Id\", \"FirstName\", \"LastName\", \"Email\", \"Password\", \"Phone\", \"RoleId\", \"CreatedBy\", \"UpdatedBy\", \"IsActive\") " +
@@ -110,7 +110,7 @@ namespace HotelManager.Repository
                 throw new Exception("No user with such ID in the database!");
             }
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
@@ -147,7 +147,7 @@ namespace HotelManager.Repository
 
         public async Task<bool> DeleteProfileAsync(Guid id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 string deleteQuery = "DELETE FROM \"User\" WHERE \"Id\" = @Id";
                 NpgsqlCommand deleteCommand = new NpgsqlCommand(deleteQuery, connection);
@@ -170,7 +170,7 @@ namespace HotelManager.Repository
 
         public async Task<IUser> ValidateUserAsync(string email, string password)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser profile = null;
                 string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\"  FROM \"User\" WHERE \"Email\" = @Email AND \"Password\" = @Password";

@@ -13,10 +13,7 @@ namespace HotelManager.Repository
     public class RoomRepository : IRoomRepository
     {
 
-        private const string CONNECTION_STRING = "Host=localhost:5432;" +
-         "Username=postgres;" +
-         "Password=2001;" +
-         "Database=postgres";
+        private const string _connectionString = "Server = 127.0.0.1;Port=5432;Database=HotelManager;User Id = postgres;Password=postgres;";
 
         public async Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
         {
@@ -24,7 +21,7 @@ namespace HotelManager.Repository
 
             if (roomFilter != null)
             {
-                using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
 
@@ -118,7 +115,7 @@ namespace HotelManager.Repository
         {
             Room room = null;
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -166,7 +163,7 @@ namespace HotelManager.Repository
                 return null;
 
 
-            using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 var queryBuilder = new StringBuilder();
@@ -252,7 +249,7 @@ namespace HotelManager.Repository
 
             if (roomsFilter != null)
             {
-                using (var connection = new NpgsqlConnection(CONNECTION_STRING))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
 
