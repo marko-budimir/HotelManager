@@ -13,7 +13,7 @@ namespace HotelManager.Repository
 {
     public class ProfileRepository : IProfileRepository
     {
-        private string _ConnectionString = "host=localhost ;port=5432 ;Database=HotelManager ;User ID=postgres ;Password=postgres";
+        private string _ConnectionString = "host=localhost ;port=5432 ;Database=postgres ;User ID=postgres ;Password=2001";
         public async Task<IProfile> GetProfileById(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))

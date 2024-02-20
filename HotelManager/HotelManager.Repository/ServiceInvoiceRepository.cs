@@ -43,7 +43,7 @@ namespace HotelManager.Repository
                             CreatedBy = (Guid)reader["CreatedBy"],
                             UpdatedBy = (Guid)reader["UpdatedBy"],
                             DateCreated = (DateTime)reader["DateCreated"],
-                            DateUpdated = (DateTime)reader["DatedUpdated"],
+                            DateUpdated = (DateTime)reader["DateUpdated"],
                             IsActive = (bool)reader["IsActive"]
                         });
                     }
@@ -73,7 +73,7 @@ namespace HotelManager.Repository
 
             using (connection)
             {
-                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DatedUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, true)";
+                string insert = $"INSERT INTO \"InvoiceService\" (\"Id\",\"NumberOfService\",\"InvoiceId\",\"ServiceId\",\"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\") VALUES (@id,@numOfService,@invoiceId,@serviceId, @createdBy, @updatedBy, @dateCreated, @dateUpdated, true)";
                 NpgsqlCommand command = new NpgsqlCommand(insert, connection);
                 connection.Open();
                 command.Parameters.AddWithValue("id", newServiceInvoice.Id);
