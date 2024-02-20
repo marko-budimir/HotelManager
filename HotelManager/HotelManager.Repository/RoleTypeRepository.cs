@@ -8,7 +8,7 @@ namespace HotelManager.Repository
 {
     public class RoleTypeRepository : IRoleTypeRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
         public async Task<string> GetByIdAsync(Guid id)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);

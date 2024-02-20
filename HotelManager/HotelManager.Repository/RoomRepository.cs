@@ -14,7 +14,7 @@ namespace HotelManager.Repository
     public class RoomRepository : IRoomRepository
     {
 
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
         public async Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
         {

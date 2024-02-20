@@ -15,7 +15,7 @@ namespace HotelManager.Repository
 {
     public class ProfileRepository : IProfileRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
         public async Task<IUser> GetProfileByIdAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))

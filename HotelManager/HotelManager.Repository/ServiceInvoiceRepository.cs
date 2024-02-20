@@ -14,7 +14,7 @@ namespace HotelManager.Repository
 {
     public class ServiceInvoiceRepository : IServiceInvoiceRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
         public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging)
         {

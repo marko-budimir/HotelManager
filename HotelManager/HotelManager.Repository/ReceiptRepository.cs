@@ -15,7 +15,7 @@ namespace HotelManager.Repository
 {
     public class ReceiptRepository : IReceiptRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["HotelManager"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
         public async Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging)
         {
             List<IReceipt> receipts = new List<IReceipt>();
