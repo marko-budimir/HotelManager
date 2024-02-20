@@ -13,6 +13,7 @@ namespace HotelManager.Service
             builder.RegisterType<HotelServiceService>().As<IHotelServiceService>();
             builder.RegisterType<RoomTypeService>().As<IRoomTypeService>();
             builder.RegisterType<ReceiptService>().As<IReceiptService>();
+            builder.RegisterType<ReviewService>().As<IReviewService>();
         }
     }
 }
