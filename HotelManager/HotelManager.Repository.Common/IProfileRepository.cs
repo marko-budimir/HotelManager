@@ -9,9 +9,10 @@ namespace HotelManager.Repository.Common
 {
     public interface IProfileRepository
     {
-        Task<IProfile> GetProfileById(Guid Id);
-        Task<bool> CreateProfile(IProfile Profile);
-        Task<bool> UpdateProfile(Guid Id, IProfile Profile);
-        Task<bool> DeleteProfile(Guid Id);
+        Task<IUser> GetProfileByIdAsync(Guid Id);
+        Task<bool> CreateProfileAsync(IUser Profile);
+        Task<bool> UpdateProfileAsync(Guid Id, IUser Profile);
+        Task<bool> DeleteProfileAsync(Guid Id);
+        Task<IUser> ValidateUserAsync(string username, string password);
     }
 }

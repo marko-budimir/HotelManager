@@ -5,7 +5,9 @@ using Npgsql;
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,12 +15,12 @@ namespace HotelManager.Repository
 {
     public class ProfileRepository : IProfileRepository
     {
-        private string _ConnectionString = "host=localhost ;port=5432 ;Database=postgres ;User ID=postgres ;Password=2001";
-        public async Task<IProfile> GetProfileById(Guid id)
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+        public async Task<IUser> GetProfileByIdAsync(Guid id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                IProfile profile = null;
+                IUser profile = null;
                 string commandText = "SELECT * FROM \"User\" WHERE \"Id\" = @Id";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
@@ -31,7 +33,7 @@ namespace HotelManager.Repository
                         {
                             if(await reader.ReadAsync())
                             {
-                                profile = new Profile()
+                                profile = new User()
                                 {
                                     Id = (Guid)reader["Id"],
                                     FirstName = (String)reader["FirstName"],
@@ -57,10 +59,10 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> CreateProfile(IProfile newProfile)
+        public async Task<bool> CreateProfileAsync(IUser newProfile)
         {
             int rowChanged;
-            NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 string insertQuery = "INSERT INTO \"User\" (\"Id\", \"FirstName\", \"LastName\", \"Email\", \"Password\", \"Phone\", \"RoleId\", \"CreatedBy\", \"UpdatedBy\", \"IsActive\") " +
@@ -71,7 +73,7 @@ namespace HotelManager.Repository
                 insertCommand.Parameters.Add("@Id", NpgsqlDbType.Uuid).Value = newProfile.Id;
                 insertCommand.Parameters.Add("@FirstName", NpgsqlDbType.Char).Value = newProfile.FirstName;
                 insertCommand.Parameters.Add("@LastName", NpgsqlDbType.Char).Value = newProfile.LastName;
-                insertCommand.Parameters.Add("@Email", NpgsqlDbType.Text).Value = newProfile    .Email;
+                insertCommand.Parameters.Add("@Email", NpgsqlDbType.Text).Value = newProfile.Email;
                 insertCommand.Parameters.Add("@Password", NpgsqlDbType.Text).Value = newProfile.Password;
                 insertCommand.Parameters.Add("@CreatedBy", NpgsqlDbType.Uuid).Value = newProfile.CreatedBy;
                 insertCommand.Parameters.Add("@UpdatedBy", NpgsqlDbType.Uuid).Value = newProfile.UpdatedBy;
@@ -99,17 +101,17 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> UpdateProfile(Guid id, IProfile updatedProfile)
+        public async Task<bool> UpdateProfileAsync(Guid id, IUser updatedProfile)
         {
             int rowsChanged;
 
-            Task<IProfile> profile = GetProfileById(id);
+            IUser profile = await GetProfileByIdAsync(id);
             if (profile == null)
             {
                 throw new Exception("No user with such ID in the database!");
             }
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
@@ -144,9 +146,9 @@ namespace HotelManager.Repository
             return rowsChanged != 0;
         }
 
-        public async Task<bool> DeleteProfile(Guid id)
+        public async Task<bool> DeleteProfileAsync(Guid id)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 string deleteQuery = "DELETE FROM \"User\" WHERE \"Id\" = @Id";
                 NpgsqlCommand deleteCommand = new NpgsqlCommand(deleteQuery, connection);
@@ -167,7 +169,43 @@ namespace HotelManager.Repository
             }
         }
 
-        private void AddProfileParameters(NpgsqlCommand command, Guid id, IProfile updatedProfile)
+        public async Task<IUser> ValidateUserAsync(string email, string password)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                IUser profile = null;
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\"  FROM \"User\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+                using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
+                {
+                    npgsqlCommand.Parameters.AddWithValue("@Email", email);
+                    npgsqlCommand.Parameters.AddWithValue("@Password", password);
+                    try
+                    {
+                        await connection.OpenAsync();
+                        using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
+                        {
+                            if (reader.Read())
+                            {
+                                profile = new User()
+                                {
+                                    Id = (Guid)reader["Id"],
+                                    Email = (String)reader["Email"],
+                                    Password = (String)reader["Password"],
+                                    RoleId = (Guid)reader["RoleId"],
+                                };
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+                return profile;
+            }
+        }
+
+        private void AddProfileParameters(NpgsqlCommand command, Guid id, IUser updatedProfile)
         {
             command.Parameters.AddWithValue("@Id", id);
             if (!string.IsNullOrEmpty(updatedProfile.FirstName))

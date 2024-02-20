@@ -1,13 +1,15 @@
-﻿using HotelManager.Model;
+﻿using AutoMapper;
+using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace HotelManager.WebApi.Controllers
@@ -15,25 +17,30 @@ namespace HotelManager.WebApi.Controllers
     [RoutePrefix("api/Profile")]
     public class ProfileController : ApiController
     {
-        private readonly IProfileService profileService;
-        public ProfileController(IProfileService profileService) {
-            this.profileService = profileService;
+        private readonly IProfileService _profileService;
+        private readonly IMapper _mapper;
+        public ProfileController(IProfileService profileService, IMapper mapper) {
+            _profileService = profileService;
+            _mapper = mapper;
+            profileService.CurrentUser = (ClaimsIdentity)User.Identity;
         }
 
-        // GET api/values/5
+        // GET api/Prfile/5
+        [Authorize(Roles = "Admin, User")]
         [HttpGet]
-        [Route("{id:guid}")]
-        public async Task<HttpResponseMessage> GetProfileByIdAsync(Guid id)
+        [Route("")]
+        public async Task<HttpResponseMessage> GetProfileByIdAsync()
         {
             try
             {
-                IProfile profile = await profileService.GetProfileById(id);
+                IUser profile = await _profileService.GetProfileByIdAsync();
 
                 if (profile == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, new ProfileView(profile));
+                var profileView = _mapper.Map<ProfileView>(profile);
+                return Request.CreateResponse(HttpStatusCode.OK, profileView);
             }
             catch(Exception ex)
             {
@@ -41,18 +48,19 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
-        // POST api/values
+        // POST api/Profile
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateProfileAsync([FromBody] Profile profile)
+        public async Task<HttpResponseMessage> CreateProfileAsync(ProfileRegistered newProfile)
         {
-            if(profile == null)
+            if(newProfile == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
+            IUser profile = _mapper.Map<User>(newProfile);
             try
             {
-                bool created = await profileService.CreateProfile(profile);
+                bool created = await _profileService.CreateProfileAsync(profile);
                 if (created) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -62,29 +70,25 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
-        // PUT api/values/5
+        // PUT api/Profile/5
+        [Authorize(Roles = "Admin, User")]
         [HttpPut]
-        [Route("{id:guid}")]
-        public async Task<HttpResponseMessage> UpdateProfileAsync(Guid id, [FromBody] Profile updatedProfile)
+        [Route("")]
+        public async Task<HttpResponseMessage> UpdateProfileAsync(ProfileUpdated updatedProfile)
         {
             if(updatedProfile == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<IProfile> profileInBase = profileService.GetProfileById(id);
+            Task<IUser> profileInBase = _profileService.GetProfileByIdAsync();
             if(profileInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
+            IUser user = _mapper.Map<User>(updatedProfile);
             try
             {
-                bool updated = await profileService.UpdateProfile(id, new Profile()
-                {
-                    FirstName = updatedProfile.FirstName,
-                    LastName = updatedProfile.LastName,
-                    Email = updatedProfile.Email,
-                    Phone = updatedProfile.Phone
-                });
+                bool updated = await _profileService.UpdateProfileAsync(user);
                 if (updated) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -94,7 +98,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
-        //// DELETE api/values/5
+        //// DELETE api/Profile/5
         //public Task<HttpResponseMessage> DeleteProfileAsync(int id)
         //{
         //}

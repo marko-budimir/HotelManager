@@ -5,6 +5,7 @@ using HotelManager.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,12 +15,11 @@ namespace HotelManager.Repository
 {
     public class ReceiptRepository : IReceiptRepository
     {
-        private const string connectionString = "Server = 127.0.0.1;Port=5432;Database=postgres;User Id = postgres;Password=2001;";
-
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
         public async Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging)
         {
             List<IReceipt> receipts = new List<IReceipt>();
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
@@ -65,7 +65,7 @@ namespace HotelManager.Repository
         public async Task<IReceipt> GetByIdAsync(Guid id)
         {
             IReceipt receipt = null;
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             string commandText = $"SELECT * FROM \"Invoice\" WHERE \"Id\" = @id AND \"Invoice\".\"IsActive\"=true ";
             using (connection)
             {
@@ -185,7 +185,7 @@ namespace HotelManager.Repository
 
         private async Task<int> GetItemCountAsync(ReceiptFilter filter)
         {
-            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();

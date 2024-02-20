@@ -1,34 +1,33 @@
-﻿using HotelManager.Model.Common;
-using HotelManager.Repository;
+﻿using HotelManager.Model;
+using HotelManager.Model.Common;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HotelManager.Service
 {
     public class ProfileService : IProfileService
     {
-        private readonly IProfileRepository profileRepository;
+        private readonly IProfileRepository _profileRepository;
+        private readonly IRoleTypeRepository _roleTypeRepository;
+        public ClaimsIdentity CurrentUser { get; set; }
+        
 
-        public ProfileService(IProfileRepository profileRepository)
+        public ProfileService(IProfileRepository profileRepository, IRoleTypeRepository roleTypeRepository)
         {
-            this.profileRepository = profileRepository;
+            _profileRepository = profileRepository;
+            _roleTypeRepository = roleTypeRepository;
         }
 
-        public ProfileService()
+        public Task<IUser> GetProfileByIdAsync()
         {
-            profileRepository = new ProfileRepository(); 
-        }
-
-        public Task<IProfile> GetProfileById(Guid id)
-        {
+            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             try
             {
-                return profileRepository.GetProfileById(id);
+                return _profileRepository.GetProfileByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -36,11 +35,16 @@ namespace HotelManager.Service
             }
         }
 
-        public Task<bool> CreateProfile(IProfile profile)
+        public Task<bool> CreateProfileAsync(IUser profile)
         {
+            Guid id = Guid.NewGuid();
+            profile.CreatedBy = id;
+            profile.UpdatedBy = id;
+            profile.Id = id;
+            profile.IsActive = true;
             try
             {
-                return profileRepository.CreateProfile(profile);
+                return _profileRepository.CreateProfileAsync(profile);
             }
             catch(Exception ex)
             {
@@ -48,22 +52,48 @@ namespace HotelManager.Service
             }
         }
 
-        public Task<bool> UpdateProfile (Guid id, IProfile profile)
+        public Task<bool> UpdateProfileAsync (IUser profile)
         {
+            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             try
             {
-                return profileRepository.UpdateProfile(id, profile);
+                return _profileRepository.UpdateProfileAsync(id, profile);
             }catch(Exception ex)
             {
                 throw ex;
             }
         }
 
-        public Task<bool> DeleteProfile(Guid id)
+        public Task<bool> DeleteProfileAsync()
+        {
+            var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            try
+            {
+                return _profileRepository.DeleteProfileAsync(id);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IUser> ValidateUserAsync(string email, string password)
         {
             try
             {
-                return profileRepository.DeleteProfile(id);
+                return await _profileRepository.ValidateUserAsync(email, password);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> GetRoleTypeByRoleIdAsync(Guid id)
+        {
+            try
+            {
+                return await _roleTypeRepository.GetByIdAsync(id);
             }
             catch(Exception ex)
             {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelManager.Model
 {
-    public class Profile : IProfile
+    public class User : IUser
     {
         public Guid Id {  get; set; }
         public string FirstName { get; set; }

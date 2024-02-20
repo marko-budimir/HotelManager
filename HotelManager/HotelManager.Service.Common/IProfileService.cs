@@ -1,17 +1,19 @@
 ﻿using HotelManager.Model.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HotelManager.Service.Common
 {
     public interface IProfileService
     {
-        Task<IProfile> GetProfileById(Guid id);
-        Task<bool> CreateProfile(IProfile profile);
-        Task<bool> UpdateProfile(Guid Id, IProfile profile);
-        Task<bool> DeleteProfile(Guid Id);
+        ClaimsIdentity CurrentUser { get; set; }
+
+        Task<IUser> GetProfileByIdAsync();
+        Task<bool> CreateProfileAsync(IUser profile);
+        Task<bool> UpdateProfileAsync(IUser profile);
+        Task<bool> DeleteProfileAsync();
+        Task<IUser> ValidateUserAsync(string username, string password);
+        Task<string> GetRoleTypeByRoleIdAsync(Guid id);
     }
 }
