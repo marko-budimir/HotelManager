@@ -15,8 +15,8 @@ namespace HotelManager.Repository
 
         private const string CONNECTION_STRING = "Host=localhost:5432;" +
          "Username=postgres;" +
-         "Password=postgres;" +
-         "Database=HotelManager";
+         "Password=2001;" +
+         "Database=postgres";
 
         public async Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
         {
