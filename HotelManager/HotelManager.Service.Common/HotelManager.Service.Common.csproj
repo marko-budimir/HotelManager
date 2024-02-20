@@ -45,6 +45,7 @@
     <Compile Include="IHotelServiceService.cs" />
     <Compile Include="IReviewService.cs" />
     <Compile Include="IUserService.cs" />
+    <Compile Include="IReservationService.cs" />
     <Compile Include="IRoomService.cs" />
     <Compile Include="IRoomTypeService.cs" />
     <Compile Include="IReceiptService.cs" />

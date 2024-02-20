@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Routing;
 
 namespace HotelManager.WebApi.Controllers
 {
@@ -67,9 +68,9 @@ namespace HotelManager.WebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<HttpResponseMessage> CreateInvoiceAsync([FromBody]ServiceInvoice invoiceCreate)
+        public async Task<HttpResponseMessage> CreateInvoiceServiceAsync([FromBody]ServiceInvoice invoiceCreate)
         {
-            IServiceInvoice invoice = new ServiceInvoice
+            IServiceInvoice invoiceAdd = new ServiceInvoice
             {
                 Id = Guid.NewGuid(),
                 NumberOfService = invoiceCreate.NumberOfService,
@@ -82,7 +83,7 @@ namespace HotelManager.WebApi.Controllers
                 IsActive = invoiceCreate.IsActive
             };
 
-            string result = await _receiptService.CreateInvoiceAsync(invoice);
+            string result = await _receiptService.CreateInvoiceServiceAsync(invoiceAdd);
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
     }
