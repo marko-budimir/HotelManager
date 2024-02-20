@@ -14,6 +14,7 @@ namespace HotelManager.Service
             builder.RegisterType<RoomTypeService>().As<IRoomTypeService>();
             builder.RegisterType<ReceiptService>().As<IReceiptService>();
             builder.RegisterType<ReviewService>().As<IReviewService>();
+            builder.RegisterType<DiscountService>().As<IDiscountService>();
         }
     }
 }

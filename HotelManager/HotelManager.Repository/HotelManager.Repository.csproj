@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscountRepository.cs" />
     <Compile Include="HotelServiceRepository.cs" />
     <Compile Include="ProfileRepository.cs" />
     <Compile Include="ReviewRepository.cs" />

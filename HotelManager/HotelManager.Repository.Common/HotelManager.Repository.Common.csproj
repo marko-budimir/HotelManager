@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDiscountRepository.cs" />
     <Compile Include="IHotelServiceRepository.cs" />
     <Compile Include="IReviewRepository.cs" />
     <Compile Include="IProfileRepository.cs" />

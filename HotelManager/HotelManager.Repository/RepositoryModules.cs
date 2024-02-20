@@ -17,6 +17,7 @@ namespace HotelManager.Repository
             builder.RegisterType<ServiceInvoiceRepository>().As<IServiceInvoiceRepository>();     
             builder.RegisterType<RoleTypeRepository>().As<IRoleTypeRepository>();
             builder.RegisterType<ReviewRepository>().As<IReviewRepository>();
+            builder.RegisterType<DiscountRepository>().As<IDiscountRepository>();
         }
     }
 }

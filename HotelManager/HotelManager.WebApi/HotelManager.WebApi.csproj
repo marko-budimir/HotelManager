@@ -254,6 +254,7 @@
     <Compile Include="Controllers\DashboardReceiptController.cs" />
     <Compile Include="Authorization\AuthorizationServerProvider.cs" />
     <Compile Include="AutoMapper\UserMapperPofile.cs" />
+    <Compile Include="Controllers\DiscountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
@@ -265,6 +266,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DiscountView.cs" />
     <Compile Include="Models\ProfileRegistered.cs" />
     <Compile Include="Models\ProfileUpdated.cs" />
     <Compile Include="Models\ProfileView.cs" />
