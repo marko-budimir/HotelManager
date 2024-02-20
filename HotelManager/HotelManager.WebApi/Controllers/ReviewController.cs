@@ -27,6 +27,7 @@ namespace HotelManager.WebApi.Controllers
 
         // GET api/values
         [HttpGet]
+        [Authorize(Roles = "Admin, User")]
         [Route("{roomId:guid}")]
         public async Task<HttpResponseMessage> GetReviewsForRoomAsync(Guid roomId, [FromUri] int pageNumber = 1, [FromUri] int pageSize = 3, [FromUri] string sortBy = "", [FromUri] string isAsc = "ASC")
         {
@@ -54,6 +55,7 @@ namespace HotelManager.WebApi.Controllers
 
         // POST api/values
         [HttpPost]
+        [Authorize(Roles = "User")]
         [Route("{roomId:guid}")]
         public async Task<HttpResponseMessage> CreateReviewForRoomAsync(Guid roomId, [FromBody] Review review)
         {
