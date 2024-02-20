@@ -52,7 +52,7 @@ namespace HotelManager.Service
             }
         }
 
-        public Task<bool> UpdateProfileAsync ( IUser profile)
+        public Task<bool> UpdateProfileAsync (IUser profile)
         {
             var id = Guid.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             try
