@@ -17,12 +17,12 @@ namespace HotelManager.WebApi.Controllers
     {
 
         private readonly IReceiptService _receiptService;
-        private readonly IUserService _profileService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         public DashboardReceiptController(IReceiptService receiptService, IUserService profileService, IMapper mapper)
         {
             _receiptService = receiptService;
-            _profileService = profileService;
+            _userService = profileService;
             _mapper = mapper;
         }
 
@@ -68,7 +68,7 @@ namespace HotelManager.WebApi.Controllers
             foreach (var receipt in receipts)
             {
                 var receiptView = _mapper.Map<ReceiptView>(receipt);
-                receiptView.UserEmail = await _profileService.GetUserEmailByIdAsync(receipt.CreatedBy);
+                receiptView.UserEmail = await _userService.GetUserEmailByIdAsync(receipt.CreatedBy);
                 receiptViews.Add(receiptView);
             }
 

@@ -76,7 +76,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            Task<IUser> profileInBase = _userService.GetUserAsync();
+            IUser profileInBase = await _userService.GetUserAsync();
             if(profileInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
