@@ -91,7 +91,11 @@ namespace HotelManager.Repository
                                 CreatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                 UpdatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
+<<<<<<< HEAD
                                 DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
+=======
+                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DatedUpdated")),
+>>>>>>> e924900e1e9434113a7c7352fd728dd087ad141f
                                 IsActive = (bool)reader["IsActive"],
                                 InvoiceNumber = (string)reader["InvoiceNumber"]
                             };
@@ -151,7 +155,11 @@ namespace HotelManager.Repository
             }
             if (filter.dateUpdated != null)
             {
+<<<<<<< HEAD
                 commandText.Append(" AND \"Invoice\".\"DateUpdated\"=@endDate");
+=======
+                commandText.Append(" AND \"Invoice\".\"DatedUpdated\"=@endDate");
+>>>>>>> e924900e1e9434113a7c7352fd728dd087ad141f
                 command.Parameters.AddWithValue("endDate", filter.dateUpdated);
             }
 
