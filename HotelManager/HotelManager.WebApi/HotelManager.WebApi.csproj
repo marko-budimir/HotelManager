@@ -279,6 +279,7 @@
     <Compile Include="Models\ProfileUpdated.cs" />
     <Compile Include="Models\ProfileView.cs" />
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Compile Include="Models\ReceiptView.cs" />
 <<<<<<< HEAD
     <Compile Include="Models\ReviewView.cs" />
@@ -288,6 +289,9 @@
     <Compile Include="Models\ReservationView.cs" />
 >>>>>>> 8036aa7 (Added post request for invoice)
 >>>>>>> 10f8aac (﻿Added post request for invoice)
+=======
+    <Compile Include="Models\ReservationView.cs" />
+>>>>>>> 8036aa7 (Added post request for invoice)
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
