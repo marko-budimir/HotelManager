@@ -288,7 +288,7 @@ namespace HotelManager.Repository
         {
             StringBuilder commandText = new StringBuilder();
             commandText.Append("SELECT * FROM \"Discount\" WHERE \"Discount\".\"IsActive\"=true");
-            if (filter.StartingValue > 0 && filter.EndValue < 100)
+            if (filter.StartingValue > 0 || filter.EndValue < 100)
             {
                 commandText.Append(" AND \"Discount\".\"Percent\" BETWEEN @startValue AND @endValue");
                 command.Parameters.AddWithValue("startValue", filter.StartingValue);
