@@ -125,28 +125,37 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelService updatedService)
+        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelServiceUpdate model)
         {
-            if(updatedService == null)
+            if(model == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
-            }
-            Task<HotelService> serviceInBase = _hotelServiceService.GetByIdAsync(id);
-            if(serviceInBase == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
             }
             try
             {
-                bool updated = await _hotelServiceService.UpdateServiceAsync(id, new HotelService()
+                // Check if the service with the given id exists
+                var serviceInBase = await _hotelServiceService.GetByIdAsync(id);
+                if (serviceInBase == null)
                 {
-                    Name = updatedService.Name,
-                    Description = updatedService.Description,
-                    Price = updatedService.Price
-                });
-                if (updated) return Request.CreateResponse(HttpStatusCode.OK);
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-            }catch(Exception ex)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Service not found");
+                }
+
+                // Map the update model to the domain model
+                var serviceToUpdate = _mapper.Map<HotelService>(model);
+
+                // Update the service in the service layer
+                bool updated = await _hotelServiceService.UpdateServiceAsync(id, serviceToUpdate);
+
+                if (updated)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Failed to update service");
+                }
+            }
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,ex);
             }

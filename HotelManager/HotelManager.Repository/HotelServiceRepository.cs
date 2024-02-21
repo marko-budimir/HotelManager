@@ -27,7 +27,7 @@ namespace HotelManager.Repository
 
                 var query = new StringBuilder("SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE 1=1");
 
-                // Filter conditions
+                // Filter
                 if (hotelServiceFilter != null)
                 {
                     if (!string.IsNullOrWhiteSpace(hotelServiceFilter.SearchQuery))
@@ -53,7 +53,6 @@ namespace HotelManager.Repository
                 }
                 else
                 {
-                    // Default sorting if none is provided
                     query.Append(" ORDER BY \"DateCreated\" DESC");
                 }
 
@@ -62,7 +61,6 @@ namespace HotelManager.Repository
 
                 using (var command = new NpgsqlCommand(query.ToString(), connection))
                 {
-                    // Adding parameters for filters
                     if (hotelServiceFilter != null)
                     {
                         command.Parameters.AddWithValue("@SearchQuery", $"%{hotelServiceFilter.SearchQuery}%");
@@ -70,7 +68,6 @@ namespace HotelManager.Repository
                         command.Parameters.AddWithValue("@MaxPrice", hotelServiceFilter.MaxPrice ?? (object)DBNull.Value);
                     }
 
-                    // Parameters for pagination
                     int offset = (paging.PageNum - 1) * paging.PageSize;
                     command.Parameters.AddWithValue("@Offset", offset);
                     command.Parameters.AddWithValue("@PageSize", paging.PageSize);
@@ -151,10 +148,8 @@ namespace HotelManager.Repository
 
                 NpgsqlCommand insertCommand = new NpgsqlCommand(insertQuery, connection);
 
-                // Dodjeljivanje novog Guida Id-u
                 newService.Id = Guid.NewGuid();
 
-                // Dodavanje parametara
                 insertCommand.Parameters.AddWithValue("@Id", newService.Id);
                 insertCommand.Parameters.AddWithValue("@Name", newService.Name);
                 insertCommand.Parameters.AddWithValue("@Description", newService.Description);
@@ -226,7 +221,6 @@ namespace HotelManager.Repository
                 {
                     NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, connection);
 
-                    // Dodavanje parametara
                     updateCommand.Parameters.AddWithValue("@Id", id);
                     updateCommand.Parameters.AddWithValue("@Name", service.Name ?? (object)DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@Description", service.Description ?? (object)DBNull.Value);

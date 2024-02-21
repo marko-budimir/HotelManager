@@ -270,6 +270,7 @@
     </Compile>
     <Compile Include="Models\DiscountView.cs" />
     <Compile Include="Models\HotelServiceCreate.cs" />
+    <Compile Include="Models\HotelServiceUpdate.cs" />
     <Compile Include="Models\HotelServiceView.cs" />
     <Compile Include="Models\ProfileRegistered.cs" />
     <Compile Include="Models\ProfileUpdated.cs" />

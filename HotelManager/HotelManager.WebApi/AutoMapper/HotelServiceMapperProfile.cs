@@ -14,6 +14,7 @@ namespace HotelManager.WebApi.AutoMapper
         {
             CreateMap<HotelService, HotelServiceView>();
             CreateMap<HotelServiceCreate, HotelService>();
+            CreateMap<HotelServiceUpdate, HotelService>();
         }
     }
 }
