@@ -2,6 +2,7 @@
 using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,13 @@ namespace HotelManager.WebApi.Controllers
             {
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 var reviews = await _reviewService.GetAllAsync(roomId, paging);
+
                 if (reviews.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, reviews);
+                    var reviewViews = reviews.Select(review => _mapper.Map<ReviewView>(review)).ToList();
+                    return Request.CreateResponse(HttpStatusCode.OK, reviewViews);
                 }
+
                 return Request.CreateResponse(HttpStatusCode.NotFound, "No reviews for the specified room!");
             }
             catch (Exception ex)
