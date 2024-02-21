@@ -4,6 +4,7 @@ using HotelManager.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -15,60 +16,41 @@ namespace HotelManager.Repository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter)
+        public async Task<PagedList<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter)
         {
             var services = new List<HotelService>();
+            var count = 0;
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                var query = new StringBuilder("SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE 1=1");
 
-                // Filter
-                if (hotelServiceFilter != null)
+                using (var command = new NpgsqlCommand())
                 {
-                    if (!string.IsNullOrWhiteSpace(hotelServiceFilter.SearchQuery))
-                    {
-                        query.Append(" AND (\"Name\" ILIKE @SearchQuery OR \"Description\" ILIKE @SearchQuery)");
-                    }
-
-                    if (hotelServiceFilter.MinPrice.HasValue)
-                    {
-                        query.Append(" AND \"Price\" >= @MinPrice");
-                    }
-
-                    if (hotelServiceFilter.MaxPrice.HasValue)
-                    {
-                        query.Append(" AND \"Price\" <= @MaxPrice");
-                    }
-                }
-
-                // Sorting
-                if (!string.IsNullOrWhiteSpace(sorting.SortBy))
-                {
-                    query.Append($" ORDER BY \"{sorting.SortBy}\" {(sorting.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC")}");
-                }
-                else
-                {
-                    query.Append(" ORDER BY \"DateCreated\" DESC");
-                }
-
-                // Pagination
-                query.Append(" OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
-
-                using (var command = new NpgsqlCommand(query.ToString(), connection))
-                {
+                    command.CommandText = "SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE 1=1";
+                    command.Connection = connection;
                     if (hotelServiceFilter != null)
                     {
-                        command.Parameters.AddWithValue("@SearchQuery", $"%{hotelServiceFilter.SearchQuery}%");
-                        command.Parameters.AddWithValue("@MinPrice", hotelServiceFilter.MinPrice ?? (object)DBNull.Value);
-                        command.Parameters.AddWithValue("@MaxPrice", hotelServiceFilter.MaxPrice ?? (object)DBNull.Value);
+                        ApplyFilter(command, hotelServiceFilter);
                     }
 
-                    int offset = (paging.PageNum - 1) * paging.PageSize;
-                    command.Parameters.AddWithValue("@Offset", offset);
-                    command.Parameters.AddWithValue("@PageSize", paging.PageSize);
+                    count = await GetItemCountAsync(hotelServiceFilter);
+
+                    var query = new StringBuilder(command.CommandText);
+
+                    // Sorting
+                    if (!string.IsNullOrWhiteSpace(sorting.SortBy))
+                    {
+                        query.Append($" ORDER BY \"{sorting.SortBy}\" {(sorting.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC")}");
+                    }
+                    else
+                    {
+                        query.Append(" ORDER BY \"DateCreated\" DESC");
+                    }
+                    command.CommandText = query.ToString();
+
+                    ApplyPaging(command, paging, count);
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
@@ -92,8 +74,8 @@ namespace HotelManager.Repository
                     }
                 }
             }
-
-            return services;
+           
+            return new PagedList<HotelService>(services,paging.PageNum,paging.PageSize,count);
         }
 
         public async Task<HotelService> GetByIdAsync(Guid id)
@@ -273,6 +255,76 @@ namespace HotelManager.Repository
                 connection.Close();
             }
         }
+
+        public async Task<int> GetItemCountAsync(HotelServiceFilter hotelServiceFilter)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Discount\"";
+                ApplyFilter(command, hotelServiceFilter);
+                command.Connection = connection;
+                try
+                {
+                    await connection.OpenAsync();
+                    NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+                    await reader.ReadAsync();
+                    return reader.GetInt32(0);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+        private void ApplyFilter(NpgsqlCommand command, HotelServiceFilter hotelServiceFilter)
+        {
+            StringBuilder commandText = new StringBuilder(command.CommandText);
+
+            if (hotelServiceFilter != null)
+            {
+                if (!string.IsNullOrWhiteSpace(hotelServiceFilter.SearchQuery))
+                {
+                    commandText.Append(" AND (\"Name\" ILIKE @SearchQuery OR \"Description\" ILIKE @SearchQuery)");
+                    command.Parameters.AddWithValue("@SearchQuery", $"%{hotelServiceFilter.SearchQuery}%");
+                }
+
+                if (hotelServiceFilter.MinPrice.HasValue)
+                {
+                    commandText.Append(" AND \"Price\" >= @MinPrice::money");
+                    command.Parameters.AddWithValue("@MinPrice", hotelServiceFilter.MinPrice);
+                }
+
+                if (hotelServiceFilter.MaxPrice.HasValue)
+                {
+                    commandText.Append(" AND \"Price\" <= @MaxPrice::money");
+                    command.Parameters.AddWithValue("@MaxPrice", hotelServiceFilter.MaxPrice);
+                }
+            }
+
+            command.CommandText = commandText.ToString();
+        }
+        private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
+        {
+            StringBuilder commandText = new StringBuilder(command.CommandText);
+            int currentItem = (paging.PageNum - 1) * paging.PageSize;
+            if (currentItem >= 0 && currentItem < itemCount)
+            {
+                commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);
+                command.CommandText = commandText.ToString();
+            }
+            else
+            {
+                commandText.Append(" LIMIT 10");
+                command.CommandText = commandText.ToString();
+            }
+        }
+
 
     }
 }
