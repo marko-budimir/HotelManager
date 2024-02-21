@@ -1,6 +1,8 @@
-﻿using HotelManager.Common;
+﻿using AutoMapper;
+using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,13 @@ namespace HotelManager.WebApi.Controllers
 {
     public class RoomController : ApiController
     {
-        private readonly IRoomService RoomService;
+        private readonly IRoomService _roomService;
+        private readonly IMapper _mapper;
 
-        public RoomController(IRoomService roomService)
+        public RoomController(IRoomService roomService, IMapper mapper)
         {
-            RoomService = roomService;
+            _roomService = roomService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -38,10 +42,11 @@ namespace HotelManager.WebApi.Controllers
                 Paging paging = new Paging() { PageNum=pageNumber,PageSize=pageSize};
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery,StartDate=StartDate,EndDate=EndDate,MinBeds=MinBeds,MaxPrice=MaxPrice,MinPrice=MinPrice,RoomTypeId=RoomTypeId };
-                var rooms = await RoomService.GetAllAsync(paging, sorting,roomFilter);
+                var rooms = await _roomService.GetAllAsync(paging, sorting,roomFilter);
                 if(rooms.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, rooms);
+                    var roomViews = rooms.Select(room => _mapper.Map<RoomView>(room)).ToList();
+                    return Request.CreateResponse(HttpStatusCode.OK, roomViews);
                 }
                 return  Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!");
             }
@@ -57,8 +62,20 @@ namespace HotelManager.WebApi.Controllers
             )
         {
             try
-            { 
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomService.GetByIdAsync(id));
+            {
+                var room = await _roomService.GetByIdAsync(id);
+
+                if (room != null)
+                {
+
+
+                    var roomView = _mapper.Map<RoomView>(room);
+                    return Request.CreateResponse(HttpStatusCode.OK, roomView);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room not found.");
+                }
             }
 
             catch(Exception ex)
@@ -66,8 +83,5 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-      
-
-
     }
 }

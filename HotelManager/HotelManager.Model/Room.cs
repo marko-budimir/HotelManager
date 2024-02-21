@@ -15,6 +15,7 @@ namespace HotelManager.Model
         public bool? IsAvailable { get; set; }
         public string ImageUrl { get; set; }
         public Guid TypeId { get; set; }
+        public string TypeName { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid UpdatedBy { get; set; }
         public DateTime DateCreated { get; set; }

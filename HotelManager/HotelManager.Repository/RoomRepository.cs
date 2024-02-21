@@ -20,97 +20,97 @@ namespace HotelManager.Repository
         {
             var rooms = new List<Room>();
 
-            if (roomFilter != null)
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(_connectionString))
+                await connection.OpenAsync();
+
+                var queryBuilder = new StringBuilder();
+                queryBuilder.AppendLine("SELECT r.*, rt.\"Name\" AS TypeName, res.\"CheckInDate\", res.\"CheckInDate\"");
+                queryBuilder.AppendLine(" FROM \"Room\" r");
+                queryBuilder.AppendLine(" JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\"");
+                queryBuilder.AppendLine(" LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\"");
+                queryBuilder.AppendLine(" WHERE 1=1");
+                queryBuilder.AppendLine(" AND r.\"IsActive\" = true");
+
+                using (var cmd = new NpgsqlCommand())
                 {
-                    await connection.OpenAsync();
-
-                    var queryBuilder = new StringBuilder();
-                    queryBuilder.AppendLine("SELECT r.*, rt.\"Name\", res.\"CheckInDate\", res.\"CheckInDate\"");
-                    queryBuilder.AppendLine(" FROM \"Room\" r");
-                    queryBuilder.AppendLine(" JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\"");
-                    queryBuilder.AppendLine(" LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\"");
-                    queryBuilder.AppendLine(" WHERE 1=1");
-                    queryBuilder.AppendLine(" AND r.\"IsActive\" = true");
-
-                    using (var cmd = new NpgsqlCommand())
+                    if (roomFilter != null)
                     {
                         if (roomFilter.StartDate != null && roomFilter.EndDate != null)
                         {
                             cmd.Parameters.AddWithValue("@StartDate", roomFilter.StartDate);
                             cmd.Parameters.AddWithValue("@EndDate", roomFilter.EndDate);
-                            queryBuilder.Append(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
+                            queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
                         }
 
                         if (roomFilter.MinPrice != null && roomFilter.MaxPrice != null)
                         {
                             cmd.Parameters.AddWithValue("@MinPrice", roomFilter.MinPrice);
                             cmd.Parameters.AddWithValue("@MaxPrice", roomFilter.MaxPrice);
-                            queryBuilder.Append(" AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+                            queryBuilder.AppendLine(" AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money");
                         }
 
                         if (roomFilter.MinBeds > 0)
                         {
                             cmd.Parameters.AddWithValue("@MinBeds", roomFilter.MinBeds);
-                            queryBuilder.Append(" AND r.\"BedCount\" >= @MinBeds");
+                            queryBuilder.AppendLine(" AND r.\"BedCount\" >= @MinBeds");
                         }
 
                         if (roomFilter.RoomTypeId != null)
                         {
                             cmd.Parameters.AddWithValue("@RoomTypeId", roomFilter.RoomTypeId);
-                            queryBuilder.Append(" AND r.\"TypeId\" = @RoomTypeId");
+                            queryBuilder.AppendLine(" AND r.\"TypeId\" = @RoomTypeId");
                         }
-                        if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
-                        {
-                            queryBuilder.Append(" ORDER BY ");
-                            queryBuilder.Append(sorting.SortBy);
+                    }
 
-                            if (!string.IsNullOrEmpty(sorting.SortOrder))
+                    if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
+                    {
+                        queryBuilder.Append(" ORDER BY ");
+                        queryBuilder.Append(sorting.SortBy);
+
+                        if (!string.IsNullOrEmpty(sorting.SortOrder))
+                        {
+                            queryBuilder.Append(" ");
+                            queryBuilder.Append(sorting.SortOrder);
+                        }
+                    }
+
+                    if (paging != null)
+                    {
+                        cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
+                        cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                        queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
+                    }
+
+                    cmd.Connection = connection;
+                    cmd.CommandText = queryBuilder.ToString();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            rooms.Add(new Room
                             {
-                                queryBuilder.Append(" ");
-                                queryBuilder.Append(sorting.SortOrder);
-                            }
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Number = reader.GetInt32(reader.GetOrdinal("Number")),
+                                BedCount = reader.GetInt32(reader.GetOrdinal("BedCount")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                                TypeId = reader.GetGuid(reader.GetOrdinal("TypeId")),
+                                TypeName = reader.GetString(reader.GetOrdinal("TypeName")),
+                                CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
+                                UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
+                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
+                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
+                            });
                         }
-
-
-                        if (paging != null)
-                        {
-                            cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
-                            queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
-                        }
-
-
-                        cmd.Connection = connection;
-                        cmd.CommandText = queryBuilder.ToString();
-                        using (var reader = await cmd.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                rooms.Add(new Room
-                                {
-                                    Id = (Guid)reader["Id"],
-                                    Number = (int)reader["Number"],
-                                    BedCount = (int)reader["BedCount"],
-                                    Price = (decimal)reader["Price"],
-                                    ImageUrl = (string)reader["ImageUrl"],
-                                    TypeId = (Guid)reader["TypeId"],
-                                    CreatedBy = (Guid)reader["CreatedBy"],
-                                    UpdatedBy = (Guid)reader["UpdatedBy"],
-                                    DateCreated = (DateTime)reader["DateCreated"],
-                                    DateUpdated = (DateTime)reader["DateUpdated"],
-                                    IsActive = (bool)reader["IsActive"]
-
-                                });
-                            }
-                        }
-                        return rooms;
                     }
                 }
             }
+
             return rooms;
         }
+
 
         public async Task<Room> GetByIdAsync(Guid id)
         {
@@ -120,7 +120,12 @@ namespace HotelManager.Repository
             {
                 await connection.OpenAsync();
 
-                var query = "SELECT * FROM \"Room\" WHERE \"Id\" = @Id";
+                var query = "SELECT r.*, rt.\"Name\" AS TypeName " +
+            "FROM \"Room\" r " +
+            "JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\" " +
+            "WHERE r.\"Id\" = @Id";
+
+
 
                 using (var cmd = new NpgsqlCommand(query, connection))
                 {
@@ -139,11 +144,7 @@ namespace HotelManager.Repository
                                 IsAvailable = reader.GetBoolean(reader.GetOrdinal("IsAvailable")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 TypeId = reader.GetGuid(reader.GetOrdinal("TypeId")),
-                                CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
-                                UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
-                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
-                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
+                                TypeName = reader.GetString(reader.GetOrdinal("TypeName"))
                             };
                         }
                     }
@@ -152,6 +153,7 @@ namespace HotelManager.Repository
 
             return room;
         }
+
 
         //Need to update parametar UpdatedBy
         public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate, Guid userId)
