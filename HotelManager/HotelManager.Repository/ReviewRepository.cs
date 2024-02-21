@@ -51,7 +51,7 @@ namespace HotelManager.Repository
                                 RoomId = Guid.Parse(reader["RoomId"].ToString()),
                                 CreatedBy = Guid.Parse(reader["CreatedBy"].ToString()),
                                 UpdatedBy = Guid.Parse(reader["UpdatedBy"].ToString()),
-                                DateCreated = (DateTime)reader["DateCreated"],
+                                DateCreated = ((DateTime)reader["DateCreated"]).Date,
                                 DateUpdated = (DateTime)reader["DateUpdated"],
                                 IsActive = (bool)reader["IsActive"]
                             };
