@@ -1,5 +1,6 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace HotelManager.Service.Common
         Task<int> DeleteAsync(Guid id);
         Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
         Task<string>CreateInvoiceAsync(IServiceInvoice invoice);
+        Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id);
     }
 }

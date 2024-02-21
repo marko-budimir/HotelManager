@@ -2,6 +2,7 @@
 using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Repository.Common;
+using HotelManager.WebApi.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -122,6 +123,48 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
+        }
+
+        public async Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id)
+        {
+            ServiceHistoryView serviceHistory = null;
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            string commandText = $"SELECT \"Service\".\"Name\", \"InvoiceService\".\"NumberOfService\", \"Invoice\".\"DateCreated\" FROM \"InvoiceService\" " +
+                $"LEFT JOIN \"Service\" ON \"InvoiceService\".\"ServiceId\" = \"Service\".\"Id\" LEFT JOIN \"Invoice\" ON \"InvoiceService\".\"InvoiceId\" = \"Invoice\".\"Id\" " +
+                $" WHERE \"InvoiceId\" = @invoiceId AND \"InvoiceService\".\"IsActive\" = true";
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = commandText;
+                command.Connection = connection;
+                command.Parameters.AddWithValue("invoiceId", id);
+                try
+                {
+                    await connection.OpenAsync();
+                    NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        if (serviceHistory == null)
+                        {
+                            serviceHistory = new ServiceHistoryView()
+                            {
+                                Name = (string)reader["Name"],
+                                Quantity = (int)reader["NumberOfService"],
+                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated"))
+                            };
+                        }
+                    }
+                }
+                catch (NpgsqlException e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+            return serviceHistory;
         }
         
 

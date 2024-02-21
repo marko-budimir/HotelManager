@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Review.cs" />
     <Compile Include="Discount.cs" />
+    <Compile Include="ServiceHistoryView.cs" />
     <Compile Include="ServiceInvoice.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,6 +2,7 @@
 using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,20 @@ namespace HotelManager.WebApi.Controllers
         public ServiceInvoiceController(IReceiptService receiptService)
         {
             _receiptService = receiptService;
+        }
+
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetServiceInvoiceByInvoiceIdAsync (Guid id)
+        {
+            try
+            {
+                ServiceHistoryView historyView = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id);
+                return Request.CreateResponse(HttpStatusCode.OK, historyView);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
+            }
         }
 
         [HttpGet]

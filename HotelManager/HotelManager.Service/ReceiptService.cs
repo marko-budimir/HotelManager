@@ -3,6 +3,7 @@ using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,6 +39,18 @@ namespace HotelManager.Service
             try
             {
                 return await _receiptRepository.GetByIdAsync(id);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id)
+        {
+            try
+            {
+                return await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(id);
             }
             catch (Exception e)
             {
