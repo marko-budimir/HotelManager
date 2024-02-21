@@ -1,6 +1,9 @@
-﻿using HotelManager.Common;
+﻿using AutoMapper;
+using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Linq;
 using System.Net;
@@ -14,10 +17,12 @@ namespace HotelManager.WebApi.Controllers
     public class HotelServiceController : ApiController
     {
         private readonly IHotelServiceService _hotelServiceService;
+        private readonly IMapper _mapper;
 
-        public HotelServiceController(IHotelServiceService hotelServiceService)
+        public HotelServiceController(IHotelServiceService hotelServiceService, IMapper mapper)
         {
             _hotelServiceService = hotelServiceService;
+            _mapper = mapper;
         }
 
         // GET api/values
@@ -37,16 +42,19 @@ namespace HotelManager.WebApi.Controllers
             try
             {
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
-                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
+                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc.ToUpper() };
                 HotelServiceFilter hotelServiceFilter = new HotelServiceFilter() { SearchQuery = searchQuery, MinPrice = minPrice, MaxPrice = maxPrice };
+
                 var services = await _hotelServiceService.GetAllAsync(paging, sorting, hotelServiceFilter);
                 if (services.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, services);
+                    var serviceViews = services.Select(s => _mapper.Map<HotelServiceView>(s)).ToList();
+
+                    return Request.CreateResponse(HttpStatusCode.OK, serviceViews);
                 }
-                return Request.CreateResponse(HttpStatusCode.NotFound, "No services!");
+                return Request.CreateResponse(HttpStatusCode.NotFound, "No services found.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
             }
@@ -61,11 +69,20 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                if(id.Equals(Guid.Empty))
+                if (id.Equals(Guid.Empty))
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "No hotel service with such ID!");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Invalid ID provided.");
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, await _hotelServiceService.GetByIdAsync(id));
+
+                var service = await _hotelServiceService.GetByIdAsync(id);
+                if (service == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "No hotel service with such ID found.");
+                }
+
+                var serviceView = _mapper.Map<HotelServiceView>(service);
+
+                return Request.CreateResponse(HttpStatusCode.OK, serviceView);
             }
             catch(Exception ex)
             {
@@ -77,17 +94,26 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateServiceAsync([FromBody] HotelService service)
+        public async Task<HttpResponseMessage> CreateServiceAsync([FromBody] HotelServiceCreate model)
         {
-            if(service == null)
+            if (model == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid data");
             }
+
             try
             {
+                var service = _mapper.Map<HotelService>(model);
+
                 bool created = await _hotelServiceService.CreateServiceAsync(service);
-                if (created) return Request.CreateResponse(HttpStatusCode.OK);
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
+                if (created)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Created);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Could not create the service");
+                }
             }
             catch (Exception ex)
             {
@@ -99,28 +125,37 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelService updatedService)
+        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelServiceUpdate model)
         {
-            if(updatedService == null)
+            if(model == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
-            }
-            Task<HotelService> serviceInBase = _hotelServiceService.GetByIdAsync(id);
-            if(serviceInBase == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
             }
             try
             {
-                bool updated = await _hotelServiceService.UpdateServiceAsync(id, new HotelService()
+                // Check if the service with the given id exists
+                var serviceInBase = await _hotelServiceService.GetByIdAsync(id);
+                if (serviceInBase == null)
                 {
-                    Name = updatedService.Name,
-                    Description = updatedService.Description,
-                    Price = updatedService.Price
-                });
-                if (updated) return Request.CreateResponse(HttpStatusCode.OK);
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-            }catch(Exception ex)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Service not found");
+                }
+
+                // Map the update model to the domain model
+                var serviceToUpdate = _mapper.Map<HotelService>(model);
+
+                // Update the service in the service layer
+                bool updated = await _hotelServiceService.UpdateServiceAsync(id, serviceToUpdate);
+
+                if (updated)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Failed to update service");
+                }
+            }
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError,ex);
             }

@@ -250,6 +250,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="AutoMapper\HotelServiceMapperProfile.cs" />
     <Compile Include="AutoMapper\ReceiptMapperProfile.cs" />
     <Compile Include="Controllers\DashBoardRoomController.cs" />
     <Compile Include="Controllers\DashboardReceiptController.cs" />
@@ -268,6 +269,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DiscountView.cs" />
+    <Compile Include="Models\HotelServiceCreate.cs" />
+    <Compile Include="Models\HotelServiceUpdate.cs" />
+    <Compile Include="Models\HotelServiceView.cs" />
     <Compile Include="Models\ProfileRegistered.cs" />
     <Compile Include="Models\ProfileUpdated.cs" />
     <Compile Include="Models\ProfileView.cs" />
