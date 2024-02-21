@@ -63,6 +63,7 @@ namespace HotelManager.Repository
             int rowChanged;
             byte[] salt = GenerateSalt();
             string hashedPassword = HashPassword(newProfile.Password, salt);
+            
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
@@ -148,6 +149,34 @@ namespace HotelManager.Repository
             return rowsChanged != 0;
         }
 
+
+
+        public async Task<bool> UpdatePasswordAsync(Guid id, string passwordNew, string passwordOld)
+        {
+            int rowsChanged;
+            byte[] salt = GenerateSalt();
+            string hashedPassword = HashPassword(passwordNew, salt);
+            Task<IUser> currUser = ValidateUserByPasswordAsync(id, passwordOld);
+            IUser profile = await GetByIdAsync(id) ?? throw new Exception("No user with such ID in the database!");
+            
+            if(passwordOld != hashedPassword) { 
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                StringBuilder commandText= new StringBuilder();
+                commandText.Append($"UPDATE \"User\" SET \"Password\" = @password, \"Salt\"=@salt WHERE \"Id\"=@id");
+                string updateCommand = commandText.ToString();
+                NpgsqlCommand command = new NpgsqlCommand(updateCommand, connection);
+                command.Parameters.AddWithValue("password", hashedPassword);
+                command.Parameters.AddWithValue("salt", Convert.ToBase64String(salt));
+                command.Parameters.AddWithValue("id", id);
+                rowsChanged = await command.ExecuteNonQueryAsync();
+            }
+            return rowsChanged != 0;
+            }
+            return false;
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
@@ -171,6 +200,50 @@ namespace HotelManager.Repository
             }
         }
 
+
+        public async Task<IUser> ValidateUserByPasswordAsync(Guid id, string password)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                IUser user = null;
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\"  FROM \"User\".\"Id\" = @id";
+                using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
+                {
+                    npgsqlCommand.Parameters.AddWithValue("id", id);
+                    try
+                    {
+                        await connection.OpenAsync();
+                        using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
+                        {
+                            if (reader.Read())
+                            {//
+                                user = new User()
+                                {
+                                    Id = (Guid)reader["Id"],
+                                    RoleId = (Guid)reader["RoleId"],
+                                };
+                                string storedPassword = (String)reader["Password"];
+                                byte[] salt = Convert.FromBase64String((String)reader["Salt"]);
+
+                                string hashedPassword = HashPassword(password, salt);
+
+                                if (hashedPassword != storedPassword)
+                                {
+                                    user = null;
+                                }
+                                //
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+                return user;
+            }
+        }
+
         public async Task<IUser> ValidateUserAsync(string email, string password)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
@@ -186,7 +259,7 @@ namespace HotelManager.Repository
                         using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
                         {
                             if (reader.Read())
-                            {
+                            {//
                                 user = new User()
                                 {
                                     Id = (Guid)reader["Id"],
@@ -201,6 +274,7 @@ namespace HotelManager.Repository
                                 {
                                     user = null;
                                 }
+                                //
                             }
                         }
                     }

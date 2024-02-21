@@ -11,5 +11,6 @@ namespace HotelManager.Repository.Common
         Task<bool> UpdateAsync(Guid Id, IUser Profile);
         Task<bool> DeleteAsync(Guid Id);
         Task<IUser> ValidateUserAsync(string username, string password);
+        Task<bool> UpdatePasswordAsync(Guid id, string passwordNew, string passwordOld);
     }
 }

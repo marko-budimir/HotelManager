@@ -66,18 +66,19 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
-        // PUT api/Profile/5
+        /*
+        //PUT api/Profile/5
         [Authorize(Roles = "Admin, User")]
         [HttpPut]
         [Route("")]
         public async Task<HttpResponseMessage> UpdateUserAsync(ProfileUpdated updatedProfile)
         {
-            if(updatedProfile == null)
+            if (updatedProfile == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
             IUser profileInBase = await _userService.GetUserAsync();
-            if(profileInBase == null)
+            if (profileInBase == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
@@ -88,15 +89,45 @@ namespace HotelManager.WebApi.Controllers
                 if (updated) return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+            }
+        }
+        */
+        [Authorize(Roles = "User,Admin")]
+        [HttpPut]
+        [Route("")]
+        public async Task<HttpResponseMessage> UpdatePasswordAsync([FromBody] PasswordUpdateModel passwordUpdateModel)
+        {
+            if (passwordUpdateModel == null || string.IsNullOrEmpty(passwordUpdateModel.PasswordNew))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
+            IUser profileInBase = await _userService.GetUserAsync();
+            if (profileInBase == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            try
+            {
+                bool updated = await _userService.UpdatePasswordAsync(passwordUpdateModel.PasswordNew, passwordUpdateModel.PasswordOld);
+                if (updated) return Request.CreateResponse(HttpStatusCode.OK, "Password updated");
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
 
-        //// DELETE api/Profile/5
-        //public Task<HttpResponseMessage> DeleteProfileAsync(int id)
-        //{
-        //}
+        public class PasswordUpdateModel
+        {
+            public string PasswordOld { get; set; }
+            public string PasswordNew { get; set; }
+        }
+
     }
 }
