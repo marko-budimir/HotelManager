@@ -254,6 +254,7 @@
     <Compile Include="AutoMapper\ReceiptMapperProfile.cs" />
     <Compile Include="AutoMapper\ReviewMapperProfile.cs" />
     <Compile Include="AutoMapper\RoomMapperProfile.cs" />
+    <Compile Include="AutoMapper\ReservationMapperProfile.cs" />
     <Compile Include="Controllers\DashBoardRoomController.cs" />
     <Compile Include="Controllers\DashboardReceiptController.cs" />
     <Compile Include="Authorization\AuthorizationServerProvider.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="Controllers\DiscountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\ReservationController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\HotelServiceController.cs" />
     <Compile Include="Controllers\RoomTypeController.cs" />
@@ -279,6 +281,7 @@
     <Compile Include="Models\ReceiptView.cs" />
     <Compile Include="Models\ReviewView.cs" />
     <Compile Include="Models\RoomView.cs" />
+    <Compile Include="Models\ReservationView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -75,13 +75,36 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<string> CreateInvoiceAsync(IServiceInvoice serviceInvoice)
+        public async Task<string> CreateInvoiceServiceAsync(IServiceInvoice serviceInvoice)
         {
             try
             {
-                return await _invoiceServiceRepository.CreateInvoiceAsync(serviceInvoice);
+                return await _invoiceServiceRepository.CreateInvoiceServiceAsync(serviceInvoice);
             }
             catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<Invoice> CreateInvoiceAsync(Invoice invoice)
+        {
+            try { 
+                return await    _receiptRepository.CreateInvoiceAsync(invoice);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<Invoice> PutTotalPriceAsync(Guid invoiceId,InvoiceUpdate invoiceUpdate)
+        {
+            try
+            {
+                return await _receiptRepository.PutTotalPriceAsync(invoiceId,invoiceUpdate);
+            }
+            catch (Exception e)
             {
                 throw e;
             }

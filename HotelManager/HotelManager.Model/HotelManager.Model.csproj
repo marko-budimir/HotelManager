@@ -42,9 +42,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscountView.cs" />
+    <Compile Include="InvoiceUpdate.cs" />
+    <Compile Include="ReservationCreate.cs" />
     <Compile Include="Review.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ServiceHistoryView.cs" />
+    <Compile Include="Invoice.cs" />
+    <Compile Include="Reservation.cs" />
+    <Compile Include="ReservationFilter.cs" />
+    <Compile Include="ReservationUpdate.cs" />
+    <Compile Include="ReservationWithUserEmail.cs" />
     <Compile Include="ServiceInvoice.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
