@@ -263,10 +263,14 @@ namespace HotelManager.Repository
             {
                 NpgsqlCommand command = new NpgsqlCommand();
 <<<<<<< HEAD
+<<<<<<< HEAD
                 command.CommandText = "SELECT COUNT(\"Id\") FROM \"Service\"";
 =======
                 command.CommandText = "SELECT COUNT(\"Id\") FROM \"Discount\"";
 >>>>>>> 0ef429c (PagedList start)
+=======
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Discount\"";
+>>>>>>> 20e4b0d (PagedList start)
                 ApplyFilter(command, hotelServiceFilter);
                 command.Connection = connection;
                 try
