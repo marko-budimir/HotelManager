@@ -84,5 +84,17 @@ namespace HotelManager.Service
                 throw e;
             }
         }
+
+        public async Task<Invoice> PutTotalPriceAsync(Guid invoiceId,InvoiceUpdate invoiceUpdate)
+        {
+            try
+            {
+                return await _receiptRepository.PutTotalPriceAsync(invoiceId,invoiceUpdate);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }

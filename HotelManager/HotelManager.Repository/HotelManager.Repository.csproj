@@ -98,7 +98,6 @@
     <Compile Include="HotelServiceRepository.cs" />
     <Compile Include="ReviewRepository.cs" />
     <Compile Include="UserRepository.cs" />
-    <Compile Include="ProfileRepository.cs" />
     <Compile Include="ReservationRepository.cs" />
     <Compile Include="ServiceInvoiceRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

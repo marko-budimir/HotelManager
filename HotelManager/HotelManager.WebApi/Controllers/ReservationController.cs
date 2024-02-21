@@ -18,13 +18,11 @@ namespace HotelManager.WebApi.Controllers
     public class ReservationController : ApiController
     {
         private readonly IReservationService _reservationService;
-        private readonly IReceiptService _receiptService;
 
 
         private readonly IMapper _mapper;
-        public ReservationController(IReceiptService receiptService, IReservationService reservationService, IMapper mapper)
+        public ReservationController(IReservationService reservationService, IMapper mapper)
         {
-            _receiptService = receiptService;
             _reservationService = reservationService;
             _mapper = mapper;
         }
@@ -72,27 +70,63 @@ namespace HotelManager.WebApi.Controllers
             }
         }
         [Authorize(Roles = "User")]
-        public async Task<HttpResponseMessage> PostAsync(Reservation reservation)
+        public async Task<HttpResponseMessage> PostAsync(ReservationCreate reservation)
         {
-            return Request.CreateResponse(HttpStatusCode.NotImplemented);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<HttpResponseMessage> UpdateAsync(Guid id, ReservationUpdate reservationUpdate)
-        {
-            return Request.CreateResponse(HttpStatusCode.NotImplemented);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<HttpResponseMessage> DeleteAsync(Guid id)
-        {
-            return Request.CreateResponse(HttpStatusCode.NotImplemented);
+            try
+            {
+                Reservation reservationInvoiceCreated = await _reservationService.PostAsync(reservation);
+                if(reservationInvoiceCreated != null)
+                    return Request.CreateResponse(HttpStatusCode.OK,reservationInvoiceCreated);
+
+                return Request.CreateResponse(HttpStatusCode.BadRequest,);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
-        [HttpPost]
-        [Route("api/Invoice/")]
-        public async Task<HttpResponseMessage> CreateInvoiceAsync([FromBody] Invoice invoice)
-        {
 
-            return Request.CreateResponse(HttpStatusCode.OK, await _receiptService.CreateInvoiceAsync(invoice));
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<HttpResponseMessage> UpdateAsync(
+            Guid id,
+            Guid invoiceId, 
+            ReservationUpdate reservationUpdate)
+        {
+            try
+            {
+                if (reservationUpdate.IsActive == null)
+                    reservationUpdate.IsActive = true;
+                ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
+                Reservation reservation = await _reservationService.GetByIdAsync(id);
+                return Request.CreateResponse(HttpStatusCode.OK, reservation);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public async Task<HttpResponseMessage> DeleteAsync(Guid id,Guid invoiceId)
+        {
+            var reservationUpdate = new ReservationUpdate(){
+                IsActive=false
+            };
+
+            try
+            {
+                ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
+                Reservation reservation = await _reservationService.GetByIdAsync(id);
+                return Request.CreateResponse(HttpStatusCode.OK, reservation);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }        
         }
     }
 }

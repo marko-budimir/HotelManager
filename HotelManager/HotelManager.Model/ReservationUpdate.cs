@@ -11,10 +11,11 @@ namespace HotelManager.Model
         public ReservationUpdate() {
             DateUpdated = DateTime.Now;
         }
-        public DateTime? CheckInDate { get; set; }
-        public DateTime? CheckOutDate { get; set; }
+        public Guid RoomId { get; set; }
+        public DateTime CheckInDate { get; set; }
+        public DateTime CheckOutDate { get; set; }
         public string RoomNumber { get; set; }
-        public decimal? PricePerNight { get; set; }
+        public decimal PricePerNight { get; set; }
         public Guid UpdatedBy { get; set; }
         public DateTime DateUpdated { get; set; }
         public bool? IsActive { get; set; }
