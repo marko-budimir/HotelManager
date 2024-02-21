@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscountView.cs" />
     <Compile Include="Review.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ServiceHistoryView.cs" />

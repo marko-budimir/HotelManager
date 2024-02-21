@@ -270,7 +270,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DiscountView.cs" />
     <Compile Include="Models\HotelServiceCreate.cs" />
     <Compile Include="Models\HotelServiceUpdate.cs" />
     <Compile Include="Models\HotelServiceView.cs" />

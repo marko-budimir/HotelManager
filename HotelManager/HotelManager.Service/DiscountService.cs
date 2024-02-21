@@ -1,4 +1,5 @@
 ﻿using HotelManager.Common;
+using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Repository;
 using HotelManager.Repository.Common;
