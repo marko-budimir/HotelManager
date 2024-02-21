@@ -1,7 +1,10 @@
-﻿using HotelManager.Common;
+﻿using AutoMapper;
+using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,16 +16,18 @@ namespace HotelManager.WebApi.Controllers
     public class RoomTypeController : ApiController
     {
 
-        private readonly IRoomTypeService RoomTypeService;
-
-        public RoomTypeController(IRoomTypeService roomTypeService)
+        private readonly IRoomTypeService _roomTypeService;
+        private readonly IMapper _mapper;
+ 
+        public RoomTypeController(IRoomTypeService roomTypeService, IMapper mapper)
         {
-            RoomTypeService = roomTypeService;
+            _roomTypeService = roomTypeService;
+            _mapper = mapper;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllAsync(
+        public async Task<HttpResponseMessage> GetAllRoomTypesAsync(
             int pageNumber = 1,
             int pageSize = 10,
             string sortBy = "",
@@ -33,13 +38,15 @@ namespace HotelManager.WebApi.Controllers
             {
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
-                var roomTypes = await RoomTypeService.GetAllAsync(paging, sorting);
+                var roomTypes = await _roomTypeService.GetAllAsync(paging, sorting);
+
                 if (roomTypes.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, roomTypes);
+                    var roomTypeViews = _mapper.Map<IEnumerable<RoomTypeView>>(roomTypes);
+                    return Request.CreateResponse(HttpStatusCode.OK, roomTypeViews);
                 }
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Room type was not found!");
 
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Room type was not found!");
             }
             catch (Exception ex)
             {
@@ -49,61 +56,55 @@ namespace HotelManager.WebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetById(
+        public async Task<HttpResponseMessage> GetRoomTypeById(
                 [FromUri] Guid id)
         {
             try
             {
+                var roomType = await _roomTypeService.GetByIdAsync(id);
 
-                var roomTypes = await RoomTypeService.GetByIdAsync(id);
-                if (roomTypes != null)
+                if (roomType != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, roomTypes);
+                    var roomTypeView = _mapper.Map<RoomTypeView>(roomType);
+                    return Request.CreateResponse(HttpStatusCode.OK, roomTypeView);
                 }
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Room type was not found!");
 
+                return Request.CreateResponse(HttpStatusCode.NotFound, "Room type was not found!");
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> CreateRoomTypeAsync([FromBody] RoomTypePost roomTypePost)
+        {
+            try
+            {
+                var createdRoomType = await _roomTypeService.PostAsync(roomTypePost);
+                return Request.CreateResponse(HttpStatusCode.OK, createdRoomType);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<HttpResponseMessage> UpdateAsync(
-            [FromUri] Guid id
-           , [FromBody] RoomTypeUpdate roomTypeUpdate
-           )
+        public async Task<HttpResponseMessage> UpdateRoomTypeAsync([FromUri] Guid id, [FromBody] RoomTypeUpdate roomTypeUpdate)
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomTypeService.UpdateAsync(id, roomTypeUpdate));
-
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
-
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> PostAsync(
-            [FromBody] RoomTypePost roomTypePost
-            )
-        {
-            try
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, await RoomTypeService.PostAsync(roomTypePost));
-
+                var updatedRoomType = await _roomTypeService.UpdateAsync(id, roomTypeUpdate);
+                return Request.CreateResponse(HttpStatusCode.OK, updatedRoomType);
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
     }
 }
