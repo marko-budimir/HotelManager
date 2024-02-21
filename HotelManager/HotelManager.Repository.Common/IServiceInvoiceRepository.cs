@@ -1,4 +1,4 @@
-﻿using HotelManager.Common;
+using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.WebApi.Models;

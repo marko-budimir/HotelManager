@@ -281,9 +281,6 @@
     <Compile Include="Models\ReceiptView.cs" />
     <Compile Include="Models\ReviewView.cs" />
     <Compile Include="Models\RoomView.cs" />
-    <Compile Include="Models\ReservationView.cs" /
-    <Compile Include="Models\ReservationView.cs" />
-    <Compile Include="Models\ReservationView.cs" />
     <Compile Include="Models\ReservationView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
