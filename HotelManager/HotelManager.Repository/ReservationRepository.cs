@@ -29,6 +29,7 @@ namespace HotelManager.Repository
                 queryBuilder.AppendLine("WHERE \"RoomId\" = @RoomId");
                 queryBuilder.AppendLine("AND \"CheckInDate\" < @CheckOutDate");
                 queryBuilder.AppendLine("AND \"CheckOutDate\" > @CheckInDate");
+                queryBuilder.AppendLine("AND \"IsActive\" = TRUE");
                 using (var cmd = new NpgsqlCommand(queryBuilder.ToString(), connection))
                 {
                     cmd.Parameters.AddWithValue("@RoomId", roomId);
@@ -141,7 +142,7 @@ namespace HotelManager.Repository
             {
                 await connection.OpenAsync();
 
-                var query = "SELECT * FROM \"Reservation\" WHERE \"Id\" = @Id";
+                var query = "SELECT * FROM \"Reservation\" WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 using (var cmd = new NpgsqlCommand(query, connection))
                 {

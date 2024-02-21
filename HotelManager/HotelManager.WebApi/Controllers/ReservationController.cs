@@ -78,7 +78,7 @@ namespace HotelManager.WebApi.Controllers
                 if(reservationInvoiceCreated != null)
                     return Request.CreateResponse(HttpStatusCode.OK,reservationInvoiceCreated);
 
-                return Request.CreateResponse(HttpStatusCode.BadRequest,);
+                return Request.CreateResponse(HttpStatusCode.BadRequest,"Bad request!");
             }
             catch (Exception ex)
             {
@@ -99,8 +99,12 @@ namespace HotelManager.WebApi.Controllers
                 if (reservationUpdate.IsActive == null)
                     reservationUpdate.IsActive = true;
                 ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
-                Reservation reservation = await _reservationService.GetByIdAsync(id);
-                return Request.CreateResponse(HttpStatusCode.OK, reservation);
+                if (reservationUpdated != null)
+                {
+                    Reservation reservation = await _reservationService.GetByIdAsync(id);
+                    return Request.CreateResponse(HttpStatusCode.OK, reservation);
+                }
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request!");
             }
             catch (Exception ex)
             {
