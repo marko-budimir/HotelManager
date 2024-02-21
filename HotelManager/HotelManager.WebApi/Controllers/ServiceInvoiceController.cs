@@ -22,6 +22,7 @@ namespace HotelManager.WebApi.Controllers
             _receiptService = receiptService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetServiceInvoiceByInvoiceIdAsync (Guid id)
         {
@@ -36,6 +37,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllInvoiceServiceAsync(int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "DateCreated", DateTime? dateCreated = null, DateTime? dateUpdated = null)
         {
