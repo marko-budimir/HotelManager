@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +16,32 @@ namespace HotelManager.Repository
     public class ReservationRepository : IReservationRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+        public async Task<bool> CheckIfAvailable(Guid roomId, DateTime checkInDate, DateTime checkOutDate)
+        {
+            bool isAvailable = false;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var queryBuilder = new StringBuilder();
+                queryBuilder.AppendLine("SELECT COUNT(*)");
+                queryBuilder.AppendLine("FROM \"Reservation\"");
+                queryBuilder.AppendLine("WHERE \"RoomId\" = @RoomId");
+                queryBuilder.AppendLine("AND \"CheckInDate\" < @CheckOutDate");
+                queryBuilder.AppendLine("AND \"CheckOutDate\" > @CheckInDate");
+                using (var cmd = new NpgsqlCommand(queryBuilder.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@RoomId", roomId);
+                    cmd.Parameters.AddWithValue("@CheckInDate", checkInDate);
+                    cmd.Parameters.AddWithValue("@CheckOutDate", checkOutDate);
+                    int result = (int)await cmd.ExecuteScalarAsync();
+                    isAvailable = result == 0;
+                    
+                }
+                return isAvailable;
+            }
+        }
+
 
         public async Task<IEnumerable<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
         {
@@ -147,14 +174,112 @@ namespace HotelManager.Repository
             return reservation;
         }
 
-        public async Task<Reservation> PostAsync(Reservation reservation)
+        public async Task<Reservation> PostAsync(Reservation reservationCreate)
         {
-            throw new NotImplementedException();
+
+
+            var dateNow = DateTime.UtcNow;
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var queryBuilder = new StringBuilder();
+
+                queryBuilder.AppendLine("INSERT INTO \"Reservation\" (");
+                queryBuilder.AppendLine("    \"Id\", \"UserId\", \"RoomId\", \"ReservationNumber\", ");
+                queryBuilder.AppendLine("    \"PricePerNight\", \"CheckInDate\", \"CheckOutDate\", ");
+                queryBuilder.AppendLine("    \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\"");
+                queryBuilder.AppendLine(")");
+                queryBuilder.AppendLine("VALUES (");
+                queryBuilder.AppendLine("    @Id, @UserId, @RoomId, @ReservationNumber, ");
+                queryBuilder.AppendLine("    @PricePerNight, @CheckInDate, @CheckOutDate, ");
+                queryBuilder.AppendLine("    @CreatedBy, @UpdatedBy, @DateCreated, @DateUpdated, @IsActive");
+                queryBuilder.AppendLine(")");
+
+                using (var cmd = new NpgsqlCommand(queryBuilder.ToString(), connection))
+                {
+                    cmd.Parameters.AddWithValue("@Id", reservationCreate.Id);
+                    cmd.Parameters.AddWithValue("@UserId", reservationCreate.CreatedBy);
+                    cmd.Parameters.AddWithValue("@RoomId", reservationCreate.RoomId);
+                    cmd.Parameters.AddWithValue("@ReservationNumber", reservationCreate.ReservationNumber);
+                    cmd.Parameters.AddWithValue("@PricePerNight", reservationCreate.PricePerNight);
+                    cmd.Parameters.AddWithValue("@CheckInDate", reservationCreate.CheckInDate);
+                    cmd.Parameters.AddWithValue("@CheckOutDate", reservationCreate.CheckOutDate);
+                    cmd.Parameters.AddWithValue("@CreatedBy", reservationCreate.CreatedBy);
+                    cmd.Parameters.AddWithValue("@UpdatedBy", reservationCreate.UpdatedBy);
+                    cmd.Parameters.AddWithValue("@DateCreated", dateNow);
+                    cmd.Parameters.AddWithValue("@DateUpdated", dateNow);
+                    cmd.Parameters.AddWithValue("@IsActive", true);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            reservationCreate.DateCreated = dateNow;
+            reservationCreate.DateUpdated = dateNow;
+            return reservationCreate;
         }
 
-        public async Task<ReservationUpdate> UpdateAsync(Guid id, ReservationUpdate reservationUpdate)
+
+        public async Task<ReservationUpdate> UpdateAsync(Guid id, ReservationUpdate reservationUpdate, Guid userId)
         {
-            throw new NotImplementedException();
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var queryBuilder = new StringBuilder();
+                queryBuilder.AppendLine("UPDATE \"Reservation\"");
+                queryBuilder.AppendLine("SET");
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+
+                    if (reservationUpdate.CheckInDate != null)
+                    {
+                        queryBuilder.AppendLine("    \"CheckInDate\" = @CheckInDate,");
+                        cmd.Parameters.AddWithValue("@CheckInDate", reservationUpdate.CheckInDate);
+                    }
+
+                    if (reservationUpdate.CheckOutDate != null)
+                    {
+                        queryBuilder.AppendLine("    \"CheckOutDate\" = @CheckOutDate,");
+                        cmd.Parameters.AddWithValue("@CheckOutDate", reservationUpdate.CheckOutDate);
+                    }
+
+                    if (!string.IsNullOrEmpty(reservationUpdate.RoomNumber))
+                    {
+                        queryBuilder.AppendLine("    \"RoomNumber\" = @RoomNumber,");
+                        cmd.Parameters.AddWithValue("@RoomNumber", reservationUpdate.RoomNumber);
+                    }
+
+                    if (reservationUpdate.PricePerNight != null)
+                    {
+                        queryBuilder.AppendLine("    \"PricePerNight\" = @PricePerNight,");
+                        cmd.Parameters.AddWithValue("@PricePerNight", reservationUpdate.PricePerNight);
+                    }
+
+                    if (reservationUpdate.IsActive != null)
+                    {
+                        queryBuilder.AppendLine("    \"IsActive\" = @IsActive,");
+                        cmd.Parameters.AddWithValue("@IsActive", reservationUpdate.IsActive);
+                    }
+
+                    queryBuilder.AppendLine("    \"UpdatedBy\" = @UpdatedBy,");
+                    queryBuilder.AppendLine("    \"DateUpdated\" = @DateUpdated");
+                    queryBuilder.AppendLine("WHERE \"Id\" = @Id");
+
+                    cmd.Parameters.AddWithValue("@UpdatedBy", userId);
+                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@Id", id);
+
+                    cmd.CommandText = queryBuilder.ToString();
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+
+            return reservationUpdate;
         }
     }
 }

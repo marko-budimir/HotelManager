@@ -19,6 +19,7 @@ namespace HotelManager.Service.Common
         Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
         Task<string> CreateInvoiceServiceAsync(IServiceInvoice invoice);
         Task<Invoice> CreateInvoiceAsync(Invoice invoice);
+        Task<Invoice> PutTotalPriceAsync(Guid invoiceId,InvoiceUpdate invoiceUpdate);
 
     }
 }

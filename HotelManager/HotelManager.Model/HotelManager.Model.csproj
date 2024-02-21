@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscountView.cs" />
+    <Compile Include="InvoiceUpdate.cs" />
+    <Compile Include="ReservationCreate.cs" />
     <Compile Include="Review.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ServiceHistoryView.cs" />

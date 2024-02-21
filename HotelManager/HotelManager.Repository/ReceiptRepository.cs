@@ -211,20 +211,27 @@ namespace HotelManager.Repository
         }
         public async Task<Invoice> CreateInvoiceAsync(Invoice invoice)
         {
-            var invoiceId = Guid.NewGuid();
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string query = @"
-            INSERT INTO ""Invoice"" (""Id"", ""TotalPrice"", ""IsPaid"", ""ReservationId"", ""DiscountId"", 
-                                     ""CreatedBy"", ""UpdatedBy"", ""DateCreated"", ""DateUpdated"", 
-                                     ""IsActive"", ""InvoiceNumber"")
-            VALUES (@Id, @TotalPrice, @IsPaid, @ReservationId, @DiscountId, 
-                    @CreatedBy, @UpdatedBy, @DateCreated, @DateUpdated, 
-                    @IsActive, @InvoiceNumber)";
+
+                StringBuilder queryBuilder = new StringBuilder();
+
+                queryBuilder.AppendLine("INSERT INTO \"Invoice\" (");
+                queryBuilder.AppendLine("    \"Id\", \"TotalPrice\", \"IsPaid\", \"ReservationId\", \"DiscountId\", ");
+                queryBuilder.AppendLine("    \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", ");
+                queryBuilder.AppendLine("    \"IsActive\", \"InvoiceNumber\"");
+                queryBuilder.AppendLine(") VALUES (");
+                queryBuilder.AppendLine("    @Id, @TotalPrice, @IsPaid, @ReservationId, @DiscountId, ");
+                queryBuilder.AppendLine("    @CreatedBy, @UpdatedBy, @DateCreated, @DateUpdated, ");
+                queryBuilder.AppendLine("    @IsActive, @InvoiceNumber");
+                queryBuilder.AppendLine(")");
+
+                string query = queryBuilder.ToString();
+
 
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("@Id", invoiceId);
+                command.Parameters.AddWithValue("@Id", invoice.Id);
                 command.Parameters.AddWithValue("@TotalPrice", invoice.TotalPrice);
                 command.Parameters.AddWithValue("@IsPaid", invoice.IsPaid);
                 command.Parameters.AddWithValue("@ReservationId", invoice.ReservationId);
@@ -254,6 +261,46 @@ namespace HotelManager.Repository
                     throw new Exception("An error occurred while creating the invoice.", ex);
                 }
 
+            }
+        }
+
+        public async Task<Invoice> PutTotalPriceAsync(Guid invoiceId, InvoiceUpdate invoiceUpdate)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@IsActive", invoiceUpdate.IsActive);
+                command.Parameters.AddWithValue("@TotalPrice", invoiceUpdate.TotalPrice);
+                command.Parameters.AddWithValue("@UpdatedBy", invoiceUpdate.UpdatedBy);
+                command.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@Id", invoiceId);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    if (rowsAffected > 0)
+                    {
+                        return new Invoice
+                        {
+                            Id = invoiceId,
+                            TotalPrice = invoiceUpdate.TotalPrice,
+                            UpdatedBy = invoiceUpdate.UpdatedBy,
+                            DateUpdated = DateTime.UtcNow
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to update the total price of the invoice.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while updating the total price of the invoice.", ex);
+                }
             }
         }
     }

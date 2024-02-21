@@ -14,13 +14,25 @@ using System.Web;
 
 namespace HotelManager.Service
 {
+
     public class ReservationService : IReservationService
+
     {
         private readonly IReservationRepository _reservationRepository;
+        private readonly IReceiptService _receiptService;
 
-        public ReservationService(IReservationRepository reservationRepository)
+
+
+        public ReservationService(IReceiptService receiptService,IReservationRepository reservationRepository)
         {
             _reservationRepository = reservationRepository;
+            _receiptService = receiptService;
+
+        }
+
+        public async Task<bool> CheckIfAvailable(Guid roomId, DateTime checkInDate, DateTime checkOutDate)
+        {
+            return await _reservationRepository.CheckIfAvailable(roomId,checkInDate,checkOutDate);
         }
 
         public async Task<IEnumerable<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
@@ -33,15 +45,112 @@ namespace HotelManager.Service
             return await _reservationRepository.GetByIdAsync(id);
         }
 
-        public Task<Reservation> PostAsync(Reservation reservation)
+        public async Task<Reservation> PostAsync(ReservationCreate reservationCreate)
         {
-            throw new NotImplementedException();
+            if (await _reservationRepository.CheckIfAvailable(reservationCreate.RoomId,reservationCreate.CheckInDate,reservationCreate.CheckOutDate))
+            {
+                Guid userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+                Guid reservationId = Guid.NewGuid();
+                Guid invoiceId = Guid.NewGuid();
+
+
+                string reservationNumber = GenerateReservationNumber();
+                string receiptNumber = GenerateReceiptNumber();
+                var numberOfDaysOfStay = CalculateNumberOfDays(reservationCreate.CheckInDate, reservationCreate.CheckOutDate);
+                var totalPrice = numberOfDaysOfStay * reservationCreate.PricePerNight;
+
+                Reservation reservation = new Reservation()
+                {
+                    UserId = userId,
+                    Id = reservationId,
+                    CreatedBy = userId,
+                    UpdatedBy = userId,
+                    ReservationNumber = reservationNumber,
+                    RoomId = reservationCreate.RoomId,
+                    PricePerNight = reservationCreate.PricePerNight,
+                    CheckInDate = reservationCreate.CheckInDate,
+                    CheckOutDate = reservationCreate.CheckOutDate,
+                    IsActive = true
+                };
+
+                Invoice invoice = new Invoice()
+                {
+                    TotalPrice = totalPrice,
+                    Id = invoiceId,
+                    ReservationId = reservationId,
+                    CreatedBy = userId,
+                    UpdatedBy = userId,
+                    InvoiceNumber = receiptNumber,
+                    DiscountId = reservationCreate.DiscountId,
+                    IsActive = true
+                };
+                Reservation reservationCreated = await _reservationRepository.PostAsync(reservation);
+                Invoice invoiceCreated = await _receiptService.CreateInvoiceAsync(invoice);
+                return reservationCreated;
+            }
+            return null;
         }
 
-        public Task<ReservationUpdate> UpdateAsync(Guid id, ReservationUpdate reservationUpdate)
+        public async Task<ReservationUpdate> UpdateAsync(Guid id, Guid invoiceId, ReservationUpdate reservationUpdate)
         {
-            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-            throw new NotImplementedException();
+            if (await _reservationRepository.CheckIfAvailable(reservationUpdate.RoomId, reservationUpdate.CheckInDate, reservationUpdate.CheckOutDate))
+            {
+                var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+                if (reservationUpdate.IsActive == true)
+                {
+                    var numberOfDaysOfStay = CalculateNumberOfDays(reservationUpdate.CheckInDate, reservationUpdate.CheckOutDate);
+                    var totalPrice = numberOfDaysOfStay * reservationUpdate.PricePerNight;
+                    InvoiceUpdate invoiceUpdate = new InvoiceUpdate()
+                    {
+                        UpdatedBy = userId,
+                        TotalPrice = totalPrice
+                    };
+
+                    Invoice invoice = await _receiptService.PutTotalPriceAsync(invoiceId, invoiceUpdate);
+                    return await _reservationRepository.UpdateAsync(id, reservationUpdate, userId);
+                }
+                else
+                {
+                    InvoiceUpdate invoiceUpdate = new InvoiceUpdate()
+                    {
+                        UpdatedBy = userId,
+                        IsActive = false
+                    };
+                    Invoice invoice = await _receiptService.PutTotalPriceAsync(invoiceId, invoiceUpdate);
+                    return await _reservationRepository.UpdateAsync(id, reservationUpdate, userId);
+
+                }
+            }
+            return null;
         }
+    
+
+        static string GenerateReservationNumber()
+        {
+            string reservationPrefix = "RES";
+            string currentDateStr = DateTime.Now.ToString("yyyyMMdd");
+            string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+
+            return $"{reservationPrefix}{currentDateStr}-{uniqueIdentifier}";
+        }
+        static string GenerateReceiptNumber()
+        {
+            string receiptPrefix = "REC";
+            string currentDateStr = DateTime.Now.ToString("yyyyMMdd");
+            string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+
+            return $"{receiptPrefix}{currentDateStr}-{uniqueIdentifier}";
+        }
+
+        static int CalculateNumberOfDays(DateTime startDate, DateTime endDate)
+        {
+            startDate = startDate.Date;
+            endDate = endDate.Date;
+            TimeSpan timeSpan = endDate - startDate;
+            return Math.Abs(timeSpan.Days);
+        }
+
+        
     }
+
 }
