@@ -10,7 +10,7 @@ namespace HotelManager.Repository.Common
 {
     public interface IHotelServiceRepository
     {
-        Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter);
+        Task<PagedList<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter);
         Task<HotelService> GetByIdAsync(Guid id);
 
         Task<bool> CreateServiceAsync(HotelService hotelService, Guid userId);
