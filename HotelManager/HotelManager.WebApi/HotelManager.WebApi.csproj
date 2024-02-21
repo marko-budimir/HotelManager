@@ -255,7 +255,7 @@
     <Compile Include="Controllers\DashBoardRoomController.cs" />
     <Compile Include="Controllers\DashboardReceiptController.cs" />
     <Compile Include="Authorization\AuthorizationServerProvider.cs" />
-    <Compile Include="AutoMapper\UserMapperPofile.cs" />
+    <Compile Include="AutoMapper\UserMapperProfile.cs" />
     <Compile Include="Controllers\DiscountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />

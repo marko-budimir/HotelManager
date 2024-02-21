@@ -8,9 +8,9 @@ using System.Web;
 
 namespace HotelManager.WebApi.AutoMapper
 {
-    public class UserMapperPofile : Profile
+    public class UserMapperProfile : Profile
     {
-        public UserMapperPofile()
+        public UserMapperProfile()
         {
             CreateMap<User, ProfileView>();
             CreateMap<ProfileView, User>();
