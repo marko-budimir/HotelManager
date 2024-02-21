@@ -13,6 +13,7 @@ namespace HotelManager.Model.Common
         string LastName { get; set; }
         string Email { get; set; }
         string Password { get; set; }
+        string Salt { get; set; }
         string Phone { get; set; }
         Guid RoleId { get; set; }
         Guid CreatedBy { get; set; }

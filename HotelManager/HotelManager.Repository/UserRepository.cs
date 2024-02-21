@@ -6,6 +6,8 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace HotelManager.Repository
@@ -59,11 +61,13 @@ namespace HotelManager.Repository
         public async Task<bool> CreateAsync(IUser newProfile)
         {
             int rowChanged;
+            byte[] salt = GenerateSalt();
+            string hashedPassword = HashPassword(newProfile.Password, salt);
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
-                string insertQuery = "INSERT INTO \"User\" (\"Id\", \"FirstName\", \"LastName\", \"Email\", \"Password\", \"Phone\", \"RoleId\", \"CreatedBy\", \"UpdatedBy\", \"IsActive\") " +
-                    "VALUES (@Id, @FirstName, @LastName, @Email, @Password, @Phone, (SELECT \"Id\" FROM \"Role\" WHERE \"Name\" = 'User'), @CreatedBy, @UpdatedBy, @IsActive)";
+                string insertQuery = "INSERT INTO \"User\" (\"Id\", \"FirstName\", \"LastName\", \"Email\", \"Password\", \"Salt\", \"Phone\", \"RoleId\", \"CreatedBy\", \"UpdatedBy\", \"IsActive\") " +
+                    "VALUES (@Id, @FirstName, @LastName, @Email, @Password, @Salt, @Phone, (SELECT \"Id\" FROM \"Role\" WHERE \"Name\" = 'User'), @CreatedBy, @UpdatedBy, @IsActive)";
 
                 NpgsqlCommand insertCommand = new NpgsqlCommand(insertQuery, connection);
                 //required parameters
@@ -71,7 +75,8 @@ namespace HotelManager.Repository
                 insertCommand.Parameters.Add("@FirstName", NpgsqlDbType.Char).Value = newProfile.FirstName;
                 insertCommand.Parameters.Add("@LastName", NpgsqlDbType.Char).Value = newProfile.LastName;
                 insertCommand.Parameters.Add("@Email", NpgsqlDbType.Text).Value = newProfile.Email;
-                insertCommand.Parameters.Add("@Password", NpgsqlDbType.Text).Value = newProfile.Password;
+                insertCommand.Parameters.Add("@Password", NpgsqlDbType.Text).Value = hashedPassword;
+                insertCommand.Parameters.Add("@Salt", NpgsqlDbType.Text).Value = Convert.ToBase64String(salt);
                 insertCommand.Parameters.Add("@CreatedBy", NpgsqlDbType.Uuid).Value = newProfile.CreatedBy;
                 insertCommand.Parameters.Add("@UpdatedBy", NpgsqlDbType.Uuid).Value = newProfile.UpdatedBy;
                 insertCommand.Parameters.Add("@IsActive", NpgsqlDbType.Boolean).Value = newProfile.IsActive;
@@ -170,12 +175,11 @@ namespace HotelManager.Repository
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                IUser profile = null;
-                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\"  FROM \"User\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+                IUser user = null;
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\"  FROM \"User\" WHERE \"Email\" = @Email";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
                     npgsqlCommand.Parameters.AddWithValue("@Email", email);
-                    npgsqlCommand.Parameters.AddWithValue("@Password", password);
                     try
                     {
                         await connection.OpenAsync();
@@ -183,13 +187,20 @@ namespace HotelManager.Repository
                         {
                             if (reader.Read())
                             {
-                                profile = new User()
+                                user = new User()
                                 {
                                     Id = (Guid)reader["Id"],
-                                    Email = (String)reader["Email"],
-                                    Password = (String)reader["Password"],
                                     RoleId = (Guid)reader["RoleId"],
                                 };
+                                string storedPassword = (String)reader["Password"];
+                                byte[] salt = Convert.FromBase64String((String)reader["Salt"]);
+
+                                string hashedPassword = HashPassword(password, salt);
+
+                                if (hashedPassword != storedPassword)
+                                {
+                                    user = null;
+                                }
                             }
                         }
                     }
@@ -198,7 +209,7 @@ namespace HotelManager.Repository
                         throw ex;
                     }
                 }
-                return profile;
+                return user;
             }
         }
 
@@ -248,6 +259,32 @@ namespace HotelManager.Repository
             if (updatedProfile.IsActive != null)
             {
                 command.Parameters.AddWithValue("@IsActive", updatedProfile.IsActive);
+            }
+        }
+
+        public static byte[] GenerateSalt()
+        {
+            byte[] salt = new byte[32]; 
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+            return salt;
+        }
+
+        public static string HashPassword(string password, byte[] salt)
+        {
+            using (var sha256 = new SHA256Managed())
+            {
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+                byte[] saltedPassword = new byte[passwordBytes.Length + salt.Length];
+
+                Buffer.BlockCopy(passwordBytes, 0, saltedPassword, 0, passwordBytes.Length);
+                Buffer.BlockCopy(salt, 0, saltedPassword, passwordBytes.Length, salt.Length);
+
+                byte[] hashedBytes = sha256.ComputeHash(saltedPassword);
+
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
     }
