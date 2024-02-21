@@ -14,7 +14,6 @@ namespace HotelManager.Repository.Common
     {
         Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
         Task<int> UpdateAsync(Guid id);
-        Task<string> CreateInvoiceAsync(IServiceInvoice serviceInvoice);
         Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id);
         Task<string> CreateInvoiceServiceAsync(IServiceInvoice serviceInvoice);
     }

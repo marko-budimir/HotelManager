@@ -218,7 +218,5 @@ namespace HotelManager.Repository
                 }
             }
         }
-
-       
     }
 }
