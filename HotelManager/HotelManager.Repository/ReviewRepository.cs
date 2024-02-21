@@ -24,10 +24,11 @@ namespace HotelManager.Repository
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT \"Id\", \"Rating\", \"Comment\", \"UserId\", \"RoomId\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" " +
-                               "FROM \"Review\" " +
-                               "WHERE \"RoomId\" = @RoomId " +
-                               "ORDER BY \"DateCreated\" DESC " +
+                string query = "SELECT r.\"Id\", r.\"Rating\", r.\"Comment\", r.\"UserId\", r.\"RoomId\", r.\"CreatedBy\", r.\"UpdatedBy\", r.\"DateCreated\", r.\"DateUpdated\", r.\"IsActive\", u.\"FirstName\", u.\"LastName\" " +
+                               "FROM \"Review\" r " +
+                               "JOIN \"User\" u ON r.\"UserId\" = u.\"Id\" " +
+                               "WHERE r.\"RoomId\" = @RoomId " +
+                               "ORDER BY r.\"DateCreated\" DESC " +
                                "LIMIT @Limit OFFSET @Offset";
 
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
@@ -46,6 +47,7 @@ namespace HotelManager.Repository
                                 Rating = Convert.ToInt32(reader["Rating"]),
                                 Comment = reader["Comment"].ToString(),
                                 UserId = Guid.Parse(reader["UserId"].ToString()),
+                                UserFullName = reader["FirstName"].ToString() + " " + reader["LastName"].ToString(),
                                 RoomId = Guid.Parse(reader["RoomId"].ToString()),
                                 CreatedBy = Guid.Parse(reader["CreatedBy"].ToString()),
                                 UpdatedBy = Guid.Parse(reader["UpdatedBy"].ToString()),
@@ -60,6 +62,7 @@ namespace HotelManager.Repository
             }
             return reviews;
         }
+
 
         public async Task<bool> CreateAsync(Guid roomId, Review review, Guid userId)
         {
