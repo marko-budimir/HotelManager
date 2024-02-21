@@ -46,11 +46,11 @@ namespace HotelManager.WebApi.Controllers
                 HotelServiceFilter hotelServiceFilter = new HotelServiceFilter() { SearchQuery = searchQuery, MinPrice = minPrice, MaxPrice = maxPrice };
 
                 var services = await _hotelServiceService.GetAllAsync(paging, sorting, hotelServiceFilter);
-                if (services.Any())
+                if (services.Items.Any())
                 {
-                    var serviceViews = services.Select(s => _mapper.Map<HotelServiceView>(s)).ToList();
+                    var serviceViews = services.Items.Select(s => _mapper.Map<HotelServiceView>(s)).ToList();
 
-                    return Request.CreateResponse(HttpStatusCode.OK, serviceViews);
+                    return Request.CreateResponse(HttpStatusCode.OK, services);
                 }
                 return Request.CreateResponse(HttpStatusCode.NotFound, "No services found.");
             }
