@@ -141,7 +141,7 @@ namespace HotelManager.Service
             PdfPage page = pdfDocument.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id,null,null);
+            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id,null,new Paging { PageNumber = 0, PageSize = 0});
             AddReceiptContent(gfx, receipt, services.Items);
 
             return pdfDocument;
