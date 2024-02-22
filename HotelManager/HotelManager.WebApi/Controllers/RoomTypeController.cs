@@ -83,8 +83,10 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                var createdRoomType = await _roomTypeService.PostAsync(roomTypePost);
-                return Request.CreateResponse(HttpStatusCode.OK, createdRoomType);
+                var roomType = _mapper.Map<RoomType>(roomTypePost);
+                var createdRoomType = await _roomTypeService.PostAsync(roomType);
+                var roomTypeView = _mapper.Map<RoomTypeView>(createdRoomType);
+                return Request.CreateResponse(HttpStatusCode.OK, roomTypeView);
             }
             catch (Exception ex)
             {

@@ -29,15 +29,21 @@ namespace HotelManager.Service
             return await RoomTypeRepository.GetByIdAsync(id);
         }
 
-        public async Task<RoomType> PostAsync(RoomTypePost roomTypePost)
+        public async Task<RoomType> PostAsync(RoomType roomType)
         {
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-            return await RoomTypeRepository.PostAsync(roomTypePost, userId);
+            roomType.CreatedBy = userId;
+            roomType.UpdatedBy = userId;
+            roomType.DateCreated = DateTime.UtcNow;
+            roomType.DateUpdated = DateTime.UtcNow;
+            return await RoomTypeRepository.PostAsync(roomType, userId);
         }
 
         public  async Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate)
         {
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            roomTypeUpdate.DateUpdated = DateTime.UtcNow;
+            roomTypeUpdate.UpdatedBy = userId;
             return await RoomTypeRepository.UpdateAsync(id, roomTypeUpdate, userId);    
         }
        

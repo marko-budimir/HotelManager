@@ -116,7 +116,7 @@ namespace HotelManager.Repository
             return service;
         }
 
-        public async Task<bool> CreateServiceAsync(HotelService newService, Guid userId)
+        public async Task<bool> CreateServiceAsync(HotelService newService)
         {
             int rowsChanged;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -134,10 +134,10 @@ namespace HotelManager.Repository
                 insertCommand.Parameters.AddWithValue("@Name", newService.Name);
                 insertCommand.Parameters.AddWithValue("@Description", newService.Description);
                 insertCommand.Parameters.AddWithValue("@Price", newService.Price);
-                insertCommand.Parameters.AddWithValue("@CreatedBy", userId);
-                insertCommand.Parameters.AddWithValue("@UpdatedBy", userId);
-                insertCommand.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);
-                insertCommand.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                insertCommand.Parameters.AddWithValue("@CreatedBy", newService.CreatedBy);
+                insertCommand.Parameters.AddWithValue("@UpdatedBy", newService.UpdatedBy);
+                insertCommand.Parameters.AddWithValue("@DateCreated", newService.DateCreated);
+                insertCommand.Parameters.AddWithValue("@DateUpdated", newService.DateUpdated);
                 insertCommand.Parameters.AddWithValue("@IsActive", newService.IsActive);
 
                 try
@@ -157,7 +157,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<bool> UpdateServiceAsync(Guid id, HotelService service, Guid userId)
+        public async Task<bool> UpdateServiceAsync(Guid id, HotelService service)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
 
@@ -205,8 +205,8 @@ namespace HotelManager.Repository
                     updateCommand.Parameters.AddWithValue("@Name", service.Name ?? (object)DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@Description", service.Description ?? (object)DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@Price", service.Price != default(decimal) ? service.Price : (object)DBNull.Value);
-                    updateCommand.Parameters.AddWithValue("@UpdatedBy", userId);
-                    updateCommand.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                    updateCommand.Parameters.AddWithValue("@UpdatedBy", service.UpdatedBy);
+                    updateCommand.Parameters.AddWithValue("@DateUpdated", service.DateCreated);
 
                     await connection.OpenAsync();
                     int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
