@@ -25,11 +25,18 @@ namespace HotelManager.WebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetServiceInvoiceByInvoiceIdAsync (Guid id)
+        public async Task<HttpResponseMessage> GetServiceInvoiceByInvoiceIdAsync (
+            Guid id,
+            int pageNumber = 1,
+            int pageSize = 10,
+            string sortBy = "",
+            string isAsc = "ASC")
         {
+            Paging paging = new Paging() { PageNumber = pageNumber,PageSize = pageSize};
+            Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
             try
             {
-                var serviceInvoiceHistories = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id);
+                PagedList<IServiceInvoiceHistory> serviceInvoiceHistories = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id,sorting,paging);
                 return Request.CreateResponse(HttpStatusCode.OK, serviceInvoiceHistories);
             }
             catch (Exception e)
@@ -54,7 +61,7 @@ namespace HotelManager.WebApi.Controllers
                 PageSize = pageSize
             };
 
-            List<IServiceInvoice> invoices;
+            PagedList<IServiceInvoice> invoices;
 
             try
             {

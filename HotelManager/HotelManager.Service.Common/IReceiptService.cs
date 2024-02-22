@@ -16,9 +16,9 @@ namespace HotelManager.Service.Common
         Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging);
         Task<InvoiceReceipt> GetByIdAsync(Guid id);
         Task<int> DeleteAsync(Guid id);
-        Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
+        Task<PagedList<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
         Task<string> CreateInvoiceServiceAsync(IServiceInvoice invoice);
-        Task<IEnumerable<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id);
+        Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id, Sorting sorting, Paging paging);
         Task<Invoice> CreateInvoiceAsync(Invoice invoice);
         Task<Invoice> PutTotalPriceAsync(Guid invoiceId, InvoiceUpdate invoiceUpdate);
         Task<bool> SendReceiptAsync(Guid id);

@@ -17,8 +17,9 @@ namespace HotelManager.Repository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging)
+        public async Task<PagedList<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging)
         {
+            var itemCount = 0;
             List<IServiceInvoice> invoiceService = new List<IServiceInvoice>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
@@ -26,9 +27,11 @@ namespace HotelManager.Repository
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
                 command.CommandText = $"SELECT * FROM \"InvoiceService\" WHERE \"InvoiceService\".\"IsActive\"=true";
-                ApplySorting(command, sorting);
-                int itemCount = await GetItemCountAsync();
-                ApplyPaging(command, paging, itemCount);
+                if(paging != null)
+                    ApplySorting(command, sorting);
+                itemCount = await GetItemCountAsync();
+                if(sorting != null)
+                    ApplyPaging(command, paging, itemCount);
 
                 try
                 {
@@ -59,7 +62,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return invoiceService;
+            return new PagedList<IServiceInvoice> (invoiceService,paging.PageNumber,paging.PageSize,itemCount);
         }
 
         
@@ -125,7 +128,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<List<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id)
+        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id,Sorting sorting, Paging paging)
         {
             List<IServiceInvoiceHistory> serviceInvoiceHistories = new List<IServiceInvoiceHistory>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -139,6 +142,7 @@ namespace HotelManager.Repository
                 command.CommandText = commandText;
                 command.Connection = connection;
                 command.Parameters.AddWithValue("invoiceId", id);
+
                 try
                 {
                     await connection.OpenAsync();
@@ -164,7 +168,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return serviceInvoiceHistories;
+            return new PagedList<IServiceInvoiceHistory>(serviceInvoiceHistories, paging.PageNumber, paging.PageSize,serviceInvoiceHistories.Count);
         }
         
 
@@ -199,7 +203,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"InvoiceService\" AND \"IsActive\" = TRUE";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"InvoiceService\" WHERE \"IsActive\" = TRUE";
                 command.Connection = connection;
                 try
                 {

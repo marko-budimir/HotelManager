@@ -58,11 +58,11 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<IEnumerable<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id)
+        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id, Sorting sorting, Paging paging)
         {
             try
             {
-                return await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(id);
+                return await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(id,sorting,paging);
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace HotelManager.Service
             return await _invoiceServiceRepository.DeleteAsync(id);
         }
 
-        public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync([FromUri]Sorting sorting, Paging paging)
+        public async Task<PagedList<IServiceInvoice>> GetAllInvoiceServiceAsync([FromUri]Sorting sorting, Paging paging)
         {
             try
             {
@@ -146,8 +146,8 @@ namespace HotelManager.Service
             PdfPage page = pdfDocument.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id);
-            AddReceiptContent(gfx, receipt, services);
+            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id,null,null);
+            AddReceiptContent(gfx, receipt, services.Items);
 
             return pdfDocument;
         }
