@@ -27,7 +27,7 @@ namespace HotelManager.Repository
                 string query = "SELECT r.\"Id\", r.\"Rating\", r.\"Comment\", r.\"UserId\", r.\"RoomId\", r.\"CreatedBy\", r.\"UpdatedBy\", r.\"DateCreated\", r.\"DateUpdated\", r.\"IsActive\", u.\"FirstName\", u.\"LastName\" " +
                                "FROM \"Review\" r " +
                                "JOIN \"User\" u ON r.\"UserId\" = u.\"Id\" " +
-                               "WHERE r.\"RoomId\" = @RoomId " +
+                               "WHERE r.\"RoomId\" = @RoomId AND r.\"IsActive\" = TRUE" +
                                "ORDER BY r.\"DateCreated\" DESC " +
                                "LIMIT @Limit OFFSET @Offset";
 
@@ -35,7 +35,7 @@ namespace HotelManager.Repository
                 {
                     command.Parameters.AddWithValue("@RoomId", roomId);
                     command.Parameters.AddWithValue("@Limit", paging.PageSize);
-                    command.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                    command.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
 
                     using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
                     {

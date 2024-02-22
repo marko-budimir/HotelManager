@@ -5,7 +5,7 @@ using System.Web;
 
 namespace HotelManager.WebApi.Models
 {
-    public class ProfileRegistered
+    public class UserUpdated
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

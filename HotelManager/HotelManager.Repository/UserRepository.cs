@@ -20,7 +20,7 @@ namespace HotelManager.Repository
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser profile = null;
-                string commandText = "SELECT * FROM \"User\" WHERE \"Id\" = @Id";
+                string commandText = "SELECT * FROM \"User\" WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
                     npgsqlCommand.Parameters.AddWithValue("@Id", id);
@@ -139,7 +139,7 @@ namespace HotelManager.Repository
                 }
 
                 updateQuery += " " + string.Join(", ", updateFields);
-                updateQuery += " WHERE \"Id\" = @Id";
+                updateQuery += " WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, connection);
                 AddProfileParameters(updateCommand, id, updatedProfile);
@@ -168,7 +168,7 @@ namespace HotelManager.Repository
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                string updateCommand = $"UPDATE \"User\" SET \"Password\" = @password, \"Salt\"=@salt WHERE \"Id\"=@id";
+                string updateCommand = $"UPDATE \"User\" SET \"Password\" = @password, \"Salt\"=@salt WHERE \"Id\"=@id AND \"IsActive\" = TRUE";
                 NpgsqlCommand command = new NpgsqlCommand(updateCommand, connection);
                 command.Parameters.AddWithValue("password", hashedPassword);
                 command.Parameters.AddWithValue("salt", Convert.ToBase64String(salt));
@@ -209,7 +209,7 @@ namespace HotelManager.Repository
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser user = null;
-                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\" FROM \"User\" WHERE \"User\".\"Id\" = @id";
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\" FROM \"User\" WHERE \"User\".\"Id\" = @id AND \"IsActive\" = TRUE";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
                     npgsqlCommand.Parameters.AddWithValue("id", id);
@@ -252,7 +252,7 @@ namespace HotelManager.Repository
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser user = null;
-                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\"  FROM \"User\" WHERE \"Email\" = @Email";
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\"  FROM \"User\" WHERE \"Email\" = @Email AND \"IsActive\" = TRUE";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
                     npgsqlCommand.Parameters.AddWithValue("@Email", email);

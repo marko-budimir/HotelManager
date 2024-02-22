@@ -25,7 +25,7 @@ namespace HotelManager.Repository
                 await connection.OpenAsync();
 
                 var queryBuilder = new StringBuilder();
-                queryBuilder.AppendLine("SELECT * FROM \"RoomType\"");
+                queryBuilder.AppendLine("SELECT * FROM \"RoomType\" WHERE \"IsActive\" = TRUE");
 
                 using (var cmd = new NpgsqlCommand())
                 {
@@ -45,7 +45,7 @@ namespace HotelManager.Repository
                     if (paging != null)
                     {
                         cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                        cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                        cmd.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
                         queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
                     }
                     cmd.Connection = connection;
@@ -82,7 +82,7 @@ namespace HotelManager.Repository
             {
                 await connection.OpenAsync();
 
-                var query = "SELECT * FROM \"RoomType\" WHERE \"Id\" = @Id";
+                var query = "SELECT * FROM \"RoomType\" WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 using (var cmd = new NpgsqlCommand(query, connection))
                 {
@@ -187,7 +187,7 @@ namespace HotelManager.Repository
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);
-                    queryBuilder.AppendLine(" WHERE \"Id\" = @id");
+                    queryBuilder.AppendLine(" WHERE \"Id\" = @id AND \"IsActive\" = TRUE");
 
 
                     cmd.Connection = connection;

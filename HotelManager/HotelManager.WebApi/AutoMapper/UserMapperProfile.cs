@@ -12,10 +12,10 @@ namespace HotelManager.WebApi.AutoMapper
     {
         public UserMapperProfile()
         {
-            CreateMap<User, ProfileView>();
-            CreateMap<ProfileView, User>();
-            CreateMap<ProfileRegistered, User>();
-            CreateMap<ProfileUpdated, User>();
+            CreateMap<User, UserView>();
+            CreateMap<UserView, User>();
+            CreateMap<UserRegistered, User>();
+            CreateMap<UserUpdated, User>();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
+                Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc.ToUpper() };
                 HotelServiceFilter hotelServiceFilter = new HotelServiceFilter() { SearchQuery = searchQuery, MinPrice = minPrice, MaxPrice = maxPrice };
 
@@ -71,7 +71,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 if (id.Equals(Guid.Empty))
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Invalid ID provided.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid ID provided.");
                 }
 
                 var service = await _hotelServiceService.GetByIdAsync(id);

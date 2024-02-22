@@ -15,7 +15,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT * FROM \"Role\" WHERE \"Id\" = @Id";
+                command.CommandText = "SELECT * FROM \"Role\" WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@Id", id);
                 await connection.OpenAsync();

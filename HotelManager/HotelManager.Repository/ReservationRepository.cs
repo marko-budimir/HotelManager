@@ -100,7 +100,7 @@ namespace HotelManager.Repository
                         {
                             queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
                             cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
                         }
                         cmd.Connection = connection;
                         cmd.CommandText = queryBuilder.ToString();
@@ -268,7 +268,7 @@ namespace HotelManager.Repository
 
                     queryBuilder.AppendLine("    \"UpdatedBy\" = @UpdatedBy,");
                     queryBuilder.AppendLine("    \"DateUpdated\" = @DateUpdated");
-                    queryBuilder.AppendLine("WHERE \"Id\" = @Id");
+                    queryBuilder.AppendLine("WHERE \"Id\" = @Id AND \"IsActive\" = TRUE");
 
                     cmd.Parameters.AddWithValue("@UpdatedBy", userId);
                     cmd.Parameters.AddWithValue("@DateUpdated", DateTime.Now);

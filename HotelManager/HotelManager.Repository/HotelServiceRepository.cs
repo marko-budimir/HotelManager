@@ -28,7 +28,7 @@ namespace HotelManager.Repository
 
                 using (var command = new NpgsqlCommand())
                 {
-                    command.CommandText = "SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE 1=1";
+                    command.CommandText = "SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE \"IsActive\" = TRUE";
                     command.Connection = connection;
                     if (hotelServiceFilter != null)
                     {
@@ -75,7 +75,7 @@ namespace HotelManager.Repository
                 }
             }
            
-            return new PagedList<HotelService>(services,paging.PageNum,paging.PageSize, count);
+            return new PagedList<HotelService>(services,paging.PageNumber,paging.PageSize, count);
         }
 
         public async Task<HotelService> GetByIdAsync(Guid id)
@@ -86,7 +86,7 @@ namespace HotelManager.Repository
             {
                 await connection.OpenAsync();
 
-                var query = "SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE \"Id\" = @Id";
+                var query = "SELECT \"Id\", \"Name\", \"Description\", \"Price\", \"CreatedBy\", \"UpdatedBy\", \"DateCreated\", \"DateUpdated\", \"IsActive\" FROM \"Service\" WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 using (var command = new NpgsqlCommand(query, connection))
                 {
@@ -195,7 +195,7 @@ namespace HotelManager.Repository
                     return false;
                 }
                 updateQuery += ", \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated";
-                updateQuery += " WHERE \"Id\" = @Id";
+                updateQuery += " WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 using (connection)
                 {
@@ -313,7 +313,7 @@ namespace HotelManager.Repository
         private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            int currentItem = (paging.PageNum - 1) * paging.PageSize;
+            int currentItem = (paging.PageNumber - 1) * paging.PageSize;
             if (currentItem >= 0 && currentItem < itemCount)
             {
                 commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);

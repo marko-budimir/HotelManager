@@ -13,7 +13,7 @@ namespace HotelManager.Repository.Common
     {
         Task<PagedList<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging);
         Task<IDiscount> GetDiscountByIdAsync(Guid id);
-        Task<int> UpdateDiscountActiveAsync(Guid id);
+        Task<int> DeleteDiscountActiveAsync(Guid id);
         Task<string> CreateDiscountAsync(IDiscount newDiscount, Guid userId);
         Task<string> UpdateDiscountAsync(Guid id ,IDiscount discountUpdated, Guid userId);
         Task<IDiscount> GetDiscountByCodeAsync(string code);

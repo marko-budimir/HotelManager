@@ -7,6 +7,7 @@ namespace HotelManager.WebApi.Models
 {
     public class DiscountView
     {
+        public Guid Id { get; set; }
         public string Code { get; set; }
         public int Percent { get; set; }
         public DateTime ValidFrom { get; set; }

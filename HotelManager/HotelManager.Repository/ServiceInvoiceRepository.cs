@@ -99,7 +99,7 @@ namespace HotelManager.Repository
 
         }
 
-        public async Task<int> UpdateAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
@@ -180,7 +180,7 @@ namespace HotelManager.Repository
         private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            int currentItem = (paging.PageNum - 1) * paging.PageSize;
+            int currentItem = (paging.PageNumber - 1) * paging.PageSize;
             if (currentItem >= 0 && currentItem < itemCount)
             {
                 commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);
@@ -199,7 +199,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"InvoiceService\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"InvoiceService\" AND \"IsActive\" = TRUE";
                 command.Connection = connection;
                 try
                 {

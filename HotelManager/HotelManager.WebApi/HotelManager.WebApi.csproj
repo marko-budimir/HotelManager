@@ -277,9 +277,9 @@
     <Compile Include="Models\HotelServiceCreate.cs" />
     <Compile Include="Models\HotelServiceUpdate.cs" />
     <Compile Include="Models\HotelServiceView.cs" />
-    <Compile Include="Models\ProfileRegistered.cs" />
-    <Compile Include="Models\ProfileUpdated.cs" />
-    <Compile Include="Models\ProfileView.cs" />
+    <Compile Include="Models\UserRegistered.cs" />
+    <Compile Include="Models\UserUpdated.cs" />
+    <Compile Include="Models\UserView.cs" />
     <Compile Include="Models\ReceiptView.cs" />
     <Compile Include="Models\ReviewView.cs" />
     <Compile Include="Models\RoomTypeView.cs" />

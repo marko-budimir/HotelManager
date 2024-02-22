@@ -13,7 +13,7 @@ namespace HotelManager.Repository.Common
     public interface IServiceInvoiceRepository
     {
         Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync(Sorting sorting, Paging paging);
-        Task<int> UpdateAsync(Guid id);
+        Task<int> DeleteAsync(Guid id);
         Task<List<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id);
         Task<string> CreateInvoiceServiceAsync(IServiceInvoice serviceInvoice);
     }

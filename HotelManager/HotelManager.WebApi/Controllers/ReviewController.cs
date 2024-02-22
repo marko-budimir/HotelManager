@@ -34,7 +34,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
+                Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 var reviews = await _reviewService.GetAllAsync(roomId, paging);
 
                 if (reviews.Any())

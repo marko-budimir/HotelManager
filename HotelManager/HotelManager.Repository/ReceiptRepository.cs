@@ -187,7 +187,7 @@ namespace HotelManager.Repository
         private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            int currentItem = (paging.PageNum - 1) * paging.PageSize;
+            int currentItem = (paging.PageNumber - 1) * paging.PageSize;
             if (currentItem >= 0 && currentItem < itemCount)
             {
                 commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);
@@ -285,7 +285,7 @@ namespace HotelManager.Repository
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
+                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 

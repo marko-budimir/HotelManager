@@ -27,15 +27,11 @@ namespace HotelManager.Service
     {
         private readonly IReceiptRepository _receiptRepository;
         private readonly IServiceInvoiceRepository _invoiceServiceRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IReservationRepository _reservationRepository;
 
-        public ReceiptService(IReceiptRepository receiptRepository, IServiceInvoiceRepository invoiceServiceRepository, IUserRepository userRepository, IReservationRepository reservationRepository)
+        public ReceiptService(IReceiptRepository receiptRepository, IServiceInvoiceRepository invoiceServiceRepository)
         {
             _receiptRepository = receiptRepository;
             _invoiceServiceRepository = invoiceServiceRepository;
-            _userRepository = userRepository;
-            _reservationRepository = reservationRepository;
         }
 
         public async Task<List<IReceipt>> GetAllAsync([FromUri]ReceiptFilter filter, Sorting sorting, Paging paging)
@@ -76,7 +72,7 @@ namespace HotelManager.Service
 
         public async Task<int> DeleteAsync(Guid id)
         {
-            return await _invoiceServiceRepository.UpdateAsync(id);
+            return await _invoiceServiceRepository.DeleteAsync(id);
         }
 
         public async Task<List<IServiceInvoice>> GetAllInvoiceServiceAsync([FromUri]Sorting sorting, Paging paging)

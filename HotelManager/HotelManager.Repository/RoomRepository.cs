@@ -78,7 +78,7 @@ namespace HotelManager.Repository
                     if (paging != null)
                     {
                         cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                        cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                        cmd.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
                         queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
                     }
 
@@ -123,7 +123,7 @@ namespace HotelManager.Repository
                 var query = "SELECT r.*, rt.\"Name\" AS TypeName " +
             "FROM \"Room\" r " +
             "JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\" " +
-            "WHERE r.\"Id\" = @Id";
+            "WHERE r.\"Id\" = @Id AND r.\"IsActive\" = TRUE";
 
 
 
@@ -155,7 +155,6 @@ namespace HotelManager.Repository
         }
 
 
-        //Need to update parametar UpdatedBy
         public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate, Guid userId)
         { 
             Room room = await GetByIdAsync(id);
@@ -218,7 +217,7 @@ namespace HotelManager.Repository
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);
-                    queryBuilder.AppendLine(" WHERE \"Id\" = @id");
+                    queryBuilder.AppendLine(" WHERE \"Id\" = @id AND \"IsActive\" = TRUE");
 
 
                     cmd.Connection = connection;
@@ -306,7 +305,7 @@ namespace HotelManager.Repository
                         if (paging != null)
                         {
                             cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNum - 1) * paging.PageSize);
+                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
                             queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
                         }
 

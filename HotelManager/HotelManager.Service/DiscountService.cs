@@ -41,7 +41,7 @@ namespace HotelManager.Service
         {
             try
             {
-                return await _discountRepository.UpdateDiscountActiveAsync(id);
+                return await _discountRepository.DeleteDiscountActiveAsync(id);
             }
             catch (Exception ex)
             {

@@ -32,7 +32,7 @@ namespace HotelManager.WebApi.Controllers
             try
             {
                 if (id.Equals(Guid.Empty))
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK, await _roomService.UpdateRoomAsync(id, roomUpdate));
 
             }
@@ -60,7 +60,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
+                Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery, StartDate = StartDate, EndDate = EndDate, MinBeds = MinBeds, MaxPrice = MaxPrice, MinPrice = MinPrice, RoomTypeId = RoomTypeId };
                 var roomsUpdated = await _roomService.GetUpdatedRoomsAsync(paging, sorting, roomFilter);
@@ -84,7 +84,7 @@ namespace HotelManager.WebApi.Controllers
             try
             {
                 if (id.Equals(Guid.Empty))
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!!!");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
 
 
                 return Request.CreateResponse(HttpStatusCode.OK, await _roomService.GetRoomUpdateByIdAsync(id));

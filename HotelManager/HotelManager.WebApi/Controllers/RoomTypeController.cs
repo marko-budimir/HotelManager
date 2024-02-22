@@ -36,7 +36,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
+                Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 var roomTypes = await _roomTypeService.GetAllAsync(paging, sorting);
 

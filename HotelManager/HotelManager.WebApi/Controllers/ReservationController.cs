@@ -45,7 +45,7 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
+                Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 ReservationFilter reservationFilter = new ReservationFilter() { SearchQuery = searchQuery,CheckInDate = checkInDate,CheckOutDate = checkOutDate, MaxPricePerNight=maxPrice, MinPricePerNight=minPrice};
                 var reservations = await _reservationService.GetAllAsync(paging, sorting, reservationFilter);

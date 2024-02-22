@@ -61,7 +61,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return new PagedList<IDiscount>(discounts,paging.PageNum,paging.PageSize,itemCount);
+            return new PagedList<IDiscount>(discounts,paging.PageNumber,paging.PageSize,itemCount);
         }
         public async Task<IDiscount> GetDiscountByIdAsync(Guid id)
         {
@@ -116,42 +116,41 @@ namespace HotelManager.Repository
             {
                 return ("No new parameters given");
             }
-            else if (await GetDiscountByIdAsync(id) == null)
+            IDiscount discountToUpdate = await GetDiscountByIdAsync(id);
+            if (discountToUpdate == null)
             {
                 return ("Discount not found");
             }
             else
             {
-
-                IDiscount discountToUpdate = await GetDiscountByIdAsync(id);
                 NpgsqlCommand command = new NpgsqlCommand();
                 StringBuilder commandText = new StringBuilder();
                 commandText.Append($"UPDATE \"Discount\" SET ");
                 if (updatedDiscount.Code != discountToUpdate.Code)
                 {
-                    commandText.Append($"\"Code\"=@code");
+                    commandText.Append($"\"Code\"=@code, ");
                     command.Parameters.AddWithValue("code", updatedDiscount.Code);
                 }
                 if (updatedDiscount.Percent != discountToUpdate.Percent)
                 {
-                    commandText.Append($"\"Percent\"=@percent");
+                    commandText.Append($"\"Percent\"=@percent, ");
                     command.Parameters.AddWithValue("percent", updatedDiscount.Percent);
                 }
                 if (updatedDiscount.ValidFrom != discountToUpdate.ValidFrom)
                 {
-                    commandText.Append($"\"ValidFrom\"=@validFrom");
+                    commandText.Append($"\"ValidFrom\"=@validFrom, ");
                     command.Parameters.AddWithValue("validFrom", updatedDiscount.ValidFrom);
                 }
                 if (updatedDiscount.ValidTo != discountToUpdate.ValidTo)
                 {
-                    commandText.Append($"\"ValidTo\"=@validTo");
+                    commandText.Append($"\"ValidTo\"=@validTo, ");
                     command.Parameters.AddWithValue("validTo", updatedDiscount.ValidTo);
                 }
-                commandText.Append($"\"DateUpdated=@dateUpdated");
+                commandText.Append($"\"DateUpdated\"=@dateUpdated, ");
                 command.Parameters.AddWithValue("dateUpdated", DateTime.UtcNow);
-                commandText.Append("\"UpdatedBy\"=@userId");
+                commandText.Append("\"UpdatedBy\"=@userId ");
                 command.Parameters.AddWithValue("userId", userId);
-                commandText.Append(" WHERE \"Id\"=@id");
+                commandText.Append(" WHERE \"Id\"=@id AND \"IsActive\" = TRUE");
                 command.Parameters.AddWithValue("id", id);
                 command.CommandText = commandText.ToString();
                 if (commandText.Length == 0)
@@ -208,7 +207,7 @@ namespace HotelManager.Repository
         }
 
 
-        public async Task<int> UpdateDiscountActiveAsync(Guid id)
+        public async Task<int> DeleteDiscountActiveAsync(Guid id)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
@@ -310,7 +309,7 @@ namespace HotelManager.Repository
         private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            int currentItem = (paging.PageNum - 1) * paging.PageSize;
+            int currentItem = (paging.PageNumber - 1) * paging.PageSize;
             if (currentItem >= 0 && currentItem < itemCount)
             {
                 commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);

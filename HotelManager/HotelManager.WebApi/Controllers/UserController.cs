@@ -35,7 +35,7 @@ namespace HotelManager.WebApi.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
-                var profileView = _mapper.Map<ProfileView>(profile);
+                var profileView = _mapper.Map<UserView>(profile);
                 return Request.CreateResponse(HttpStatusCode.OK, profileView);
             }
             catch(Exception ex)
@@ -47,7 +47,7 @@ namespace HotelManager.WebApi.Controllers
         // POST api/Profile
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateUserAsync(ProfileRegistered newProfile)
+        public async Task<HttpResponseMessage> CreateUserAsync(UserRegistered newProfile)
         {
             if(newProfile == null)
             {
@@ -71,7 +71,7 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin, User")]
         [HttpPut]
         [Route("")]
-        public async Task<HttpResponseMessage> UpdateUserAsync(ProfileUpdated updatedProfile)
+        public async Task<HttpResponseMessage> UpdateUserAsync(UserUpdated updatedProfile)
         {
             if (updatedProfile == null)
             {

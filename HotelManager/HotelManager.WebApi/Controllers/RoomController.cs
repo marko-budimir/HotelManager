@@ -39,7 +39,7 @@ namespace HotelManager.WebApi.Controllers
             Guid? RoomTypeId = null)
         {
             try { 
-                Paging paging = new Paging() { PageNum=pageNumber,PageSize=pageSize};
+                Paging paging = new Paging() { PageNumber=pageNumber,PageSize=pageSize};
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery,StartDate=StartDate,EndDate=EndDate,MinBeds=MinBeds,MaxPrice=MaxPrice,MinPrice=MinPrice,RoomTypeId=RoomTypeId };
                 var rooms = await _roomService.GetAllAsync(paging, sorting,roomFilter);

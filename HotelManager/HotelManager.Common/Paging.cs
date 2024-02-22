@@ -8,7 +8,7 @@ namespace HotelManager.Common
 {
     public class Paging
     {
-        public int PageNum { get; set; }
+        public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace HotelManager.WebApi.Controllers
 
             Paging paging = new Paging
             {
-                PageNum = pageNum,
+                PageNumber = pageNum,
                 PageSize = pageSize
             };
 
