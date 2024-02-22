@@ -18,6 +18,8 @@ using System.Net.Mail;
 using System.Net;
 using System.Web.UI;
 using System.Linq;
+using System.Net.Configuration;
+using System.Configuration;
 
 namespace HotelManager.Service
 {
@@ -228,7 +230,7 @@ namespace HotelManager.Service
 
         private async Task SendEmailWithAttachment(InvoiceReceipt receipt, MemoryStream memoryStream)
         {
-            using (MailMessage mailMessage = new MailMessage("hotel@example.com", "recipient.email@example.com"))
+            using (MailMessage mailMessage = new MailMessage("hotel@example.com", receipt.Email))
             {
                 mailMessage.Subject = "Receipt  " + receipt.InvoiceNumber;
                 mailMessage.Body = $"Dear {receipt.FirstName} {receipt.LastName}, \nThank you for choosing our hotel for your recent stay. " +
@@ -237,17 +239,22 @@ namespace HotelManager.Service
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 mailMessage.Attachments.Add(new Attachment(memoryStream, "receipt.pdf", "application/pdf"));
 
-                using (SmtpClient smtpClient = new SmtpClient("sandbox.smtp.mailtrap.io"))
+                using (SmtpClient smtpClient = new SmtpClient())
                 {
-                    smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential()
+                    var smtpSection = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+                    if (smtpSection != null)
                     {
-                        UserName = "a7ffb4c2f03522",
-                        Password = "bc683a0eda87c2"
-                    };
-                    smtpClient.EnableSsl = true;
+                        smtpClient.Host = smtpSection.Network.Host;
+                        smtpClient.Port = smtpSection.Network.Port;
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+                        smtpClient.EnableSsl = smtpSection.Network.EnableSsl;
+                    }
+                    else
+                    {
+                        throw new ConfigurationErrorsException("SMTP settings are missing in the configuration file.");
+                    }
 
-                    // Send email
                     await smtpClient.SendMailAsync(mailMessage);
                 }
             }
