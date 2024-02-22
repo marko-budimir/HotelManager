@@ -11,7 +11,7 @@ namespace HotelManager.Repository.Common
 {
     public interface IDiscountRepository
     {
-        Task<List<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging);
+        Task<PagedList<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging);
         Task<IDiscount> GetDiscountByIdAsync(Guid id);
         Task<int> UpdateDiscountActiveAsync(Guid id);
         Task<string> CreateDiscountAsync(IDiscount newDiscount, Guid userId);

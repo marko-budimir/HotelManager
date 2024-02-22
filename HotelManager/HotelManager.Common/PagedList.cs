@@ -13,6 +13,7 @@ namespace HotelManager.Common
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
+        public PagedList() { }
         public PagedList(List<T> items, int pageNumber, int pageSize, int totalCount)
         {
             Items = items;

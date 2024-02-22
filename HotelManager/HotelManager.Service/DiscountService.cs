@@ -49,7 +49,7 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<List<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging)
+        public async Task<PagedList<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging)
         {
             try
             {
