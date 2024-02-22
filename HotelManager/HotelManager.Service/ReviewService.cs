@@ -18,18 +18,21 @@ namespace HotelManager.Service
         private readonly IReviewRepository _reviewRepository;
         private readonly IRoomRepository _roomRepository;
 
+
         public ReviewService (IReviewRepository reviewRepository, IRoomRepository roomRepository)
         {
             _reviewRepository = reviewRepository;
             _roomRepository = roomRepository;
         }
 
-        public async Task<IEnumerable<Review>> GetAllAsync(Guid roomId, Paging paging)
+        public async Task<PagedList<Review>> GetAllAsync(Paging paging, Sorting sorting, ReviewFilter reviewFilter)
         {
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+
             try
             {
-
-                return await _reviewRepository.GetAllAsync(roomId, paging);
+                reviewFilter.UserId = userId;
+                return await _reviewRepository.GetAllAsync(paging, sorting, reviewFilter);
             }
             catch(Exception ex)
             {
@@ -39,8 +42,15 @@ namespace HotelManager.Service
 
         public async Task<bool> CreateAsync(Guid roomId, Review review)
         {
+            if (review.Rating < 1 || review.Rating > 5)
+            {
+                throw new ArgumentException("Rating must be between 1 and 5.");
+            }
+
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
             var roomExists = await _roomRepository.GetByIdAsync(roomId);
+            Guid reviewId = Guid.NewGuid();
+
             if (roomExists == null)
             {
                 throw new Exception("Room with the specified Id does not exist.");
@@ -48,7 +58,14 @@ namespace HotelManager.Service
 
             try
             {
-                return await _reviewRepository.CreateAsync(roomId, review, userId);
+                review.RoomId = roomId;
+                review.Id = reviewId;
+                review.CreatedBy = userId;
+                review.UpdatedBy = userId;
+                review.DateCreated = DateTime.UtcNow;
+                review.DateUpdated = DateTime.UtcNow;
+                review.IsActive = true;
+                return await _reviewRepository.CreateAsync(review);
             }
             catch (Exception ex)
             {

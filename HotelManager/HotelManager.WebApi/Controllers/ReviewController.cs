@@ -30,16 +30,24 @@ namespace HotelManager.WebApi.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin, User")]
         [Route("{roomId:guid}")]
-        public async Task<HttpResponseMessage> GetReviewsForRoomAsync(Guid roomId, [FromUri] int pageNumber = 1, [FromUri] int pageSize = 3, [FromUri] string sortBy = "", [FromUri] string isAsc = "ASC")
+        public async Task<HttpResponseMessage> GetReviewsForRoomAsync(int pageNumber = 1,
+            int pageSize = 10,
+            string sortBy = "",
+            string isAsc = "ASC",
+            string searchQuery = null,
+            Guid roomId = default
+            )
         {
             try
             {
+                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
-                var reviews = await _reviewService.GetAllAsync(roomId, paging);
+                ReviewFilter reviewFilter = new ReviewFilter() { RoomId = roomId};
+                var reviews = await _reviewService.GetAllAsync(paging, sorting, reviewFilter);
 
-                if (reviews.Any())
+                if (reviews.Items.Any())
                 {
-                    var reviewViews = reviews.Select(review => _mapper.Map<ReviewView>(review)).ToList();
+                    var reviewViews = _mapper.Map<PagedList<ReviewView>>(reviews);
                     return Request.CreateResponse(HttpStatusCode.OK, reviewViews);
                 }
 

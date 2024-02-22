@@ -11,8 +11,8 @@ namespace HotelManager.Repository.Common
 {
     public interface IReviewRepository
     {
-        Task<IEnumerable<Review>> GetAllAsync(Guid roomId, Paging paging);
+        Task<PagedList<Review>> GetAllAsync(Paging paging, Sorting sorting, ReviewFilter reviewFilter);
 
-        Task<bool> CreateAsync(Guid roomId, Review review, Guid userId);
+        Task<bool> CreateAsync(Review review);
     }
 }

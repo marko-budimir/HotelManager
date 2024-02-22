@@ -16,62 +16,110 @@ namespace HotelManager.Repository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<IEnumerable<Review>> GetAllAsync(Guid roomId, Paging paging)
+        
+        public async Task<int> GetItemCountAsync(ReviewFilter filter)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Review\" r WHERE r.\"IsActive\" = TRUE";
+                ApplyFilter(command, filter);
+                command.Connection = connection;
+                try
+                {
+                    await connection.OpenAsync();
+                    object result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+        public async Task<PagedList<Review>> GetAllAsync(Paging paging, Sorting sorting, ReviewFilter reviewFilter)
         {
             List<Review> reviews = new List<Review>();
+            var totalCount = 0;
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT r.\"Id\", r.\"Rating\", r.\"Comment\", r.\"UserId\", r.\"RoomId\", r.\"CreatedBy\", r.\"UpdatedBy\", r.\"DateCreated\", r.\"DateUpdated\", r.\"IsActive\", u.\"FirstName\", u.\"LastName\" " +
-                               "FROM \"Review\" r " +
-                               "JOIN \"User\" u ON r.\"UserId\" = u.\"Id\" " +
-                               "WHERE r.\"RoomId\" = @RoomId AND r.\"IsActive\" = TRUE" +
-                               "ORDER BY r.\"DateCreated\" DESC " +
-                               "LIMIT @Limit OFFSET @Offset";
+                StringBuilder queryBuilder = new StringBuilder();
+                queryBuilder.Append("SELECT r.\"Id\", r.\"Rating\", r.\"Comment\", r.\"UserId\", r.\"RoomId\", ");
+                queryBuilder.Append("r.\"CreatedBy\", r.\"UpdatedBy\", r.\"DateCreated\", r.\"DateUpdated\", ");
+                queryBuilder.Append("r.\"IsActive\", u.\"FirstName\", u.\"LastName\" ");
+                queryBuilder.Append("FROM \"Review\" r ");
+                queryBuilder.Append("JOIN \"User\" u ON r.\"UserId\" = u.\"Id\" ");
+                queryBuilder.Append("WHERE r.\"IsActive\" = TRUE ");
 
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = connection;
+                command.CommandText = queryBuilder.ToString();
+                ApplyFilter(command, reviewFilter);
+                queryBuilder.Clear();
+                totalCount = await GetItemCountAsync(reviewFilter);
+
+                queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
+
+                command.CommandText += queryBuilder.ToString();
+
+                command.Parameters.AddWithValue("@Limit", paging.PageSize);
+                command.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
+
+                using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    command.Parameters.AddWithValue("@RoomId", roomId);
-                    command.Parameters.AddWithValue("@Limit", paging.PageSize);
-                    command.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
-
-                    using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        Review review = new Review
                         {
-                            Review review = new Review
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                Rating = Convert.ToInt32(reader["Rating"]),
-                                Comment = reader["Comment"].ToString(),
-                                UserId = Guid.Parse(reader["UserId"].ToString()),
-                                UserFullName = reader["FirstName"].ToString() + " " + reader["LastName"].ToString(),
-                                RoomId = Guid.Parse(reader["RoomId"].ToString()),
-                                CreatedBy = Guid.Parse(reader["CreatedBy"].ToString()),
-                                UpdatedBy = Guid.Parse(reader["UpdatedBy"].ToString()),
-                                DateCreated = ((DateTime)reader["DateCreated"]).Date,
-                                DateUpdated = (DateTime)reader["DateUpdated"],
-                                IsActive = (bool)reader["IsActive"]
-                            };
-                            reviews.Add(review);
-                        }
+                            Id = Guid.Parse(reader["Id"].ToString()),
+                            Rating = Convert.ToInt32(reader["Rating"]),
+                            Comment = reader["Comment"].ToString(),
+                            UserId = Guid.Parse(reader["UserId"].ToString()),
+                            UserFullName = reader["FirstName"].ToString() + " " + reader["LastName"].ToString(),
+                            RoomId = Guid.Parse(reader["RoomId"].ToString()),
+                            CreatedBy = Guid.Parse(reader["CreatedBy"].ToString()),
+                            UpdatedBy = Guid.Parse(reader["UpdatedBy"].ToString()),
+                            DateCreated = ((DateTime)reader["DateCreated"]).Date,
+                            DateUpdated = (DateTime)reader["DateUpdated"],
+                            IsActive = (bool)reader["IsActive"]
+                        };
+                        reviews.Add(review);
                     }
                 }
             }
-            return reviews;
+            return new PagedList<Review>(reviews, paging.PageNumber, paging.PageSize, totalCount);
         }
 
 
-        public async Task<bool> CreateAsync(Guid roomId, Review review, Guid userId)
+        private void ApplyFilter(NpgsqlCommand command, ReviewFilter reviewFilter)
+        {
+            if (reviewFilter != null)
+            {
+                if (reviewFilter.Rating > 0)
+                {
+                    command.CommandText += " AND r.\"Rating\" >= @MinRating ";
+                    command.Parameters.AddWithValue("@MinRating", reviewFilter.Rating);
+                }
+                if (reviewFilter.UserId != Guid.Empty)
+                {
+                    command.CommandText += " AND r.\"UserId\" = @UserId ";
+                    command.Parameters.AddWithValue("@UserId", reviewFilter.UserId);
+                }
+            }
+        }
+
+        public async Task<bool> CreateAsync(Review review)
         {
             int rowsChanged = 0;
-
-            if (review.Rating < 1 || review.Rating > 5)
-            {
-                throw new ArgumentException("Rating must be between 1 and 5.");
-            }
 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
@@ -82,18 +130,16 @@ namespace HotelManager.Repository
 
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
-                    Guid id = Guid.NewGuid();
-                    DateTime currentTime = DateTime.UtcNow;
 
-                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@Id", review.Id);
                     command.Parameters.AddWithValue("@Rating", review.Rating);
                     command.Parameters.AddWithValue("@Comment", review.Comment);
-                    command.Parameters.AddWithValue("@UserId", userId);
-                    command.Parameters.AddWithValue("@RoomId", roomId);
-                    command.Parameters.AddWithValue("@CreatedBy", userId);
-                    command.Parameters.AddWithValue("@UpdatedBy", userId);
-                    command.Parameters.AddWithValue("@DateCreated", currentTime);
-                    command.Parameters.AddWithValue("@DateUpdated", currentTime);
+                    command.Parameters.AddWithValue("@UserId", review.CreatedBy);
+                    command.Parameters.AddWithValue("@RoomId", review.RoomId);
+                    command.Parameters.AddWithValue("@CreatedBy", review.CreatedBy);
+                    command.Parameters.AddWithValue("@UpdatedBy", review.UpdatedBy);
+                    command.Parameters.AddWithValue("@DateCreated", review.DateCreated);
+                    command.Parameters.AddWithValue("@DateUpdated", review.DateUpdated);
                     command.Parameters.AddWithValue("@IsActive", review.IsActive);
 
                     rowsChanged = await command.ExecuteNonQueryAsync();
@@ -102,7 +148,6 @@ namespace HotelManager.Repository
 
             return rowsChanged > 0;
         }
-
     }
 }
 

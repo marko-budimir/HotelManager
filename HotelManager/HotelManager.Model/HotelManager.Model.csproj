@@ -46,6 +46,7 @@
     <Compile Include="ReservationCreate.cs" />
     <Compile Include="Review.cs" />
     <Compile Include="Discount.cs" />
+    <Compile Include="ReviewFilter.cs" />
     <Compile Include="ServiceInvoiceHistory.cs" />
     <Compile Include="Invoice.cs" />
     <Compile Include="Reservation.cs" />
