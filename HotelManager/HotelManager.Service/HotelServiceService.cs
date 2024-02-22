@@ -44,7 +44,11 @@ namespace HotelManager.Service
             try
             {
                 var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-                return _HotelServiceRepository.CreateServiceAsync(hotelService, userId);
+                hotelService.DateCreated = DateTime.UtcNow;
+                hotelService.DateUpdated = DateTime.UtcNow;
+                hotelService.CreatedBy = userId;
+                hotelService.UpdatedBy = userId;
+                return _HotelServiceRepository.CreateServiceAsync(hotelService);
             }
             catch (Exception ex)
             {
@@ -57,7 +61,9 @@ namespace HotelManager.Service
             try
             {
                 var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-                return _HotelServiceRepository.UpdateServiceAsync(Id, hotelService, userId);
+                hotelService.UpdatedBy = userId;
+                hotelService.DateUpdated = DateTime.UtcNow;
+                return _HotelServiceRepository.UpdateServiceAsync(Id, hotelService);
             }
             catch(Exception ex)
             {

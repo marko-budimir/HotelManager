@@ -210,10 +210,10 @@ namespace HotelManager.Repository
                     }
 
 
-                    cmd.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
+                    cmd.Parameters.AddWithValue("@DateUpdated", roomUpdate.DateUpdated);
                     queryBuilder.AppendLine(" \"DateUpdated\" = @DateUpdated,");
 
-                    cmd.Parameters.AddWithValue("@UpdatedBy", userId) ;
+                    cmd.Parameters.AddWithValue("@UpdatedBy", roomUpdate.UpdatedBy) ;
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);

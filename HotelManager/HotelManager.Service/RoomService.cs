@@ -63,6 +63,8 @@ namespace HotelManager.Service
                 throw new ArgumentException("Room not found");
 
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            roomUpdate.DateUpdated = DateTime.Now;
+            roomUpdate.UpdatedBy = userId;
             return await RoomRepository.UpdateRoomAsync(id,roomUpdate, userId);
         }
     }
