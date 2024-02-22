@@ -16,6 +16,5 @@ namespace HotelManager.Service.Common
         Task<int> DeleteDiscountAsync(Guid id);
         Task<string> CreateDiscountAsync(IDiscount newDiscount);
         Task<string> UpdateDiscountAsync(Guid id, IDiscount discountUpdated);
-        Task<IDiscount> GetDiscountByCodeAsync(string code);
     }
 }

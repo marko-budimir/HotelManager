@@ -10,5 +10,6 @@ namespace HotelManager.Common
     {
         public int StartingValue { get; set; }
         public int EndValue { get; set; }
+        public string Code { get; set; }
     }
 }

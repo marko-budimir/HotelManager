@@ -27,12 +27,13 @@ namespace HotelManager.WebApi.Controllers
 
         // GET: api/Discount
         [Authorize(Roles = "Admin")]
-        public async Task<HttpResponseMessage> GetAsync([FromUri] int startingValue = 0, int endValue = 100, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "Percent", DateTime? dateCreated = null, DateTime? dateUpdated = null)
+        public async Task<HttpResponseMessage> GetAsync([FromUri] int startingValue = 0, int endValue = 100, string code="",int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "Percent", DateTime? dateCreated = null, DateTime? dateUpdated = null)
         {
             DiscountFilter filter = new DiscountFilter
             {
                 StartingValue = startingValue,
-                EndValue = endValue
+                EndValue = endValue,
+                Code = code
             };
 
             Sorting sorting = new Sorting
@@ -60,6 +61,7 @@ namespace HotelManager.WebApi.Controllers
 
                 discountsView.Items = discounts.Items.Select(discount => new DiscountView
                 {
+                    Id = discount.Id,
                     Code = discount.Code,
                     Percent = discount.Percent,
                     ValidFrom = discount.ValidFrom,
@@ -83,40 +85,13 @@ namespace HotelManager.WebApi.Controllers
             {
                 IDiscount discount = await _discountService.GetDiscountByIdAsync(id);
                 DiscountView discountView = new DiscountView() { 
+                    Id = discount.Id,
                     Code = discount.Code,
                     Percent = discount.Percent,
                     ValidFrom = discount.ValidFrom,
                     ValidTo = discount.ValidTo
                 };
                 return Request.CreateResponse(HttpStatusCode.OK, discountView);
-            }
-            catch (Exception e)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
-            }
-        }
-
-        [Authorize(Roles = "User ,Admin")]
-        public async Task<HttpResponseMessage> GetDiscountByCodeAsync([FromUri] string code)
-        {
-            try
-            {
-                IDiscount discount = await _discountService.GetDiscountByCodeAsync(code);
-                if (discount == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
-                }
-                else
-                {
-                    DiscountView discountView = new DiscountView
-                    {
-                        Code = discount.Code,
-                        Percent = discount.Percent,
-                        ValidFrom = discount.ValidFrom,
-                        ValidTo = discount.ValidTo
-                    };
-                    return Request.CreateResponse(HttpStatusCode.OK, discountView);
-                }
             }
             catch (Exception e)
             {

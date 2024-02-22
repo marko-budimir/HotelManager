@@ -147,9 +147,9 @@ namespace HotelManager.Repository
                     command.Parameters.AddWithValue("validTo", updatedDiscount.ValidTo);
                 }
                 commandText.Append($"\"DateUpdated\"=@dateUpdated, ");
-                command.Parameters.AddWithValue("dateUpdated", DateTime.UtcNow);
+                command.Parameters.AddWithValue("dateUpdated", updatedDiscount.DateUpdated);
                 commandText.Append("\"UpdatedBy\"=@userId ");
-                command.Parameters.AddWithValue("userId", userId);
+                command.Parameters.AddWithValue("userId", updatedDiscount.UpdatedBy);
                 commandText.Append(" WHERE \"Id\"=@id AND \"IsActive\" = TRUE");
                 command.Parameters.AddWithValue("id", id);
                 command.CommandText = commandText.ToString();
@@ -191,10 +191,10 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("percent", newDiscount.Percent);
                 command.Parameters.AddWithValue("validFrom", newDiscount.ValidFrom);
                 command.Parameters.AddWithValue("validTo", newDiscount.ValidTo);
-                command.Parameters.AddWithValue("createdBy", userId);
-                command.Parameters.AddWithValue("updatedBy", userId);
-                command.Parameters.AddWithValue("dateCreated", DateTime.UtcNow);
-                command.Parameters.AddWithValue("dateUpdated", DateTime.UtcNow);
+                command.Parameters.AddWithValue("createdBy", newDiscount.CreatedBy);
+                command.Parameters.AddWithValue("updatedBy", newDiscount.UpdatedBy);
+                command.Parameters.AddWithValue("dateCreated", newDiscount.DateCreated);
+                command.Parameters.AddWithValue("dateUpdated", newDiscount.DateUpdated);
                 numberOfAffectedRows = await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
@@ -233,58 +233,6 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<IDiscount> GetDiscountByCodeAsync(string code)
-        {
-
-            IDiscount discount = null;
-            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-            string commandText = $"SELECT * FROM \"Discount\" WHERE \"Discount\".\"Code\" LIKE @code AND \"Discount\".\"IsActive\"=true ";
-            using (connection)
-            {
-                NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = commandText;
-                command.Connection = connection;
-                command.Parameters.AddWithValue("code", $"%{code}%");
-                try
-                {
-                    await connection.OpenAsync();
-                    NpgsqlDataReader reader = await command.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
-                    {
-                        if (discount == null)
-                        {
-                            discount = new Discount()
-                            {
-                                Id = (Guid)reader.GetGuid(reader.GetOrdinal("Id")),
-                                Code = (string)reader["Code"],
-                                Percent = (int)reader["Percent"],
-                                ValidFrom = reader.GetDateTime(reader.GetOrdinal("ValidFrom")),
-                                ValidTo = reader.GetDateTime(reader.GetOrdinal("ValidTo")),
-                                CreatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("CreatedBy")),
-                                UpdatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
-                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
-                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
-                                IsActive = (bool)reader["IsActive"]
-                            };
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }
-                catch (NpgsqlException e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    await connection.CloseAsync();
-                }
-            }
-            return discount;
-        }
-
         private void ApplyFilter(NpgsqlCommand command, DiscountFilter filter)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
@@ -293,6 +241,11 @@ namespace HotelManager.Repository
                 commandText.Append(" AND \"Discount\".\"Percent\" BETWEEN @startValue AND @endValue");
                 command.Parameters.AddWithValue("startValue", filter.StartingValue);
                 command.Parameters.AddWithValue("endValue", filter.EndValue);
+            }
+            if(filter.Code != "")
+            {
+                commandText.Append(" AND \"Discount\".\"Code\" ILIKE @code");
+                command.Parameters.AddWithValue("code", $"%{filter.Code}%");
             }
             command.CommandText = commandText.ToString();
         }

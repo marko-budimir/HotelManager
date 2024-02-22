@@ -28,6 +28,10 @@ namespace HotelManager.Service
         public async Task<string> CreateDiscountAsync(IDiscount newDiscount)
         {
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            newDiscount.CreatedBy = userId;
+            newDiscount.UpdatedBy = userId;
+            newDiscount.DateUpdated = DateTime.UtcNow;
+            newDiscount.DateCreated = DateTime.UtcNow;
             try
             {
                 return await _discountRepository.CreateDiscountAsync(newDiscount, userId);
@@ -61,26 +65,6 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<IDiscount> GetDiscountByCodeAsync(string code)
-        {
-            try
-            {
-                IDiscount discount = await _discountRepository.GetDiscountByCodeAsync(code);
-                if(discount == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return discount;
-                }
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
-        }
-
         public async Task<IDiscount> GetDiscountByIdAsync(Guid id)
         {
             try
@@ -92,10 +76,13 @@ namespace HotelManager.Service
                 throw e;
             }
         }
+        
 
         public async Task<string> UpdateDiscountAsync(Guid id, IDiscount discountUpdated)
         {
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            discountUpdated.UpdatedBy = userId;
+            discountUpdated.DateUpdated = DateTime.UtcNow;
             try
             {
                 return await _discountRepository.UpdateDiscountAsync(id, discountUpdated, userId);
