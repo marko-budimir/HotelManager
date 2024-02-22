@@ -66,7 +66,7 @@ namespace HotelManager.WebApi.Controllers
             }
         }
 
-        /*
+        
         //PUT api/Profile/5
         [Authorize(Roles = "Admin, User")]
         [HttpPut]
@@ -94,10 +94,10 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
-        */
+        
         [Authorize(Roles = "User,Admin")]
         [HttpPut]
-        [Route("")]
+        [Route("updatePassword")]
         public async Task<HttpResponseMessage> UpdatePasswordAsync([FromBody] PasswordUpdateModel passwordUpdateModel)
         {
             if (passwordUpdateModel == null || string.IsNullOrEmpty(passwordUpdateModel.PasswordNew))

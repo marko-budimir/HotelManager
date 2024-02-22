@@ -156,16 +156,19 @@ namespace HotelManager.Repository
             int rowsChanged;
             byte[] salt = GenerateSalt();
             string hashedPassword = HashPassword(passwordNew, salt);
-            Task<IUser> currUser = ValidateUserByPasswordAsync(id, passwordOld);
+            IUser currUser = await ValidateUserByPasswordAsync(id, passwordOld);
+            string oldPassword = currUser.Password;
+            if(hashedPassword == oldPassword)
+            {
+                return false;
+            }
             IUser profile = await GetByIdAsync(id) ?? throw new Exception("No user with such ID in the database!");
             
             if(passwordOld != hashedPassword) { 
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                StringBuilder commandText= new StringBuilder();
-                commandText.Append($"UPDATE \"User\" SET \"Password\" = @password, \"Salt\"=@salt WHERE \"Id\"=@id");
-                string updateCommand = commandText.ToString();
+                string updateCommand = $"UPDATE \"User\" SET \"Password\" = @password, \"Salt\"=@salt WHERE \"Id\"=@id";
                 NpgsqlCommand command = new NpgsqlCommand(updateCommand, connection);
                 command.Parameters.AddWithValue("password", hashedPassword);
                 command.Parameters.AddWithValue("salt", Convert.ToBase64String(salt));
@@ -206,7 +209,7 @@ namespace HotelManager.Repository
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
                 IUser user = null;
-                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\"  FROM \"User\".\"Id\" = @id";
+                string commandText = "SELECT \"User\".\"Id\", \"User\".\"Email\", \"User\".\"Password\", \"User\".\"RoleId\", \"User\".\"Salt\" FROM \"User\" WHERE \"User\".\"Id\" = @id";
                 using (NpgsqlCommand npgsqlCommand = new NpgsqlCommand(commandText, connection))
                 {
                     npgsqlCommand.Parameters.AddWithValue("id", id);
@@ -216,11 +219,11 @@ namespace HotelManager.Repository
                         using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
                         {
                             if (reader.Read())
-                            {//
+                            {
                                 user = new User()
                                 {
                                     Id = (Guid)reader["Id"],
-                                    RoleId = (Guid)reader["RoleId"],
+                                    RoleId = (Guid)reader["RoleId"]
                                 };
                                 string storedPassword = (String)reader["Password"];
                                 byte[] salt = Convert.FromBase64String((String)reader["Salt"]);
@@ -231,7 +234,7 @@ namespace HotelManager.Repository
                                 {
                                     user = null;
                                 }
-                                //
+                                
                             }
                         }
                     }
@@ -259,7 +262,7 @@ namespace HotelManager.Repository
                         using (NpgsqlDataReader reader = await npgsqlCommand.ExecuteReaderAsync())
                         {
                             if (reader.Read())
-                            {//
+                            {
                                 user = new User()
                                 {
                                     Id = (Guid)reader["Id"],
@@ -274,7 +277,7 @@ namespace HotelManager.Repository
                                 {
                                     user = null;
                                 }
-                                //
+                                
                             }
                         }
                     }
