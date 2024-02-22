@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelManager.Model
 {
-    public class InvoiceReceipt
+    public class InvoiceReceipt : IInvoiceReceipt
     {
         public Guid Id { get; set; }
         public decimal TotalPrice { get; set; }
@@ -20,14 +20,9 @@ namespace HotelManager.Model
         public DateTime DateUpdated { get; set; }
         public bool IsActive { get; set; }
         public string InvoiceNumber { get; set; }
-        public DateTime CheckInDate { get; set; }
-        public DateTime CheckOutDate { get; set; }
-        public decimal PricePerNight { get; set; }
+        public IReservation Reservation { get; set; }
         public int RoomNumber { get; set; }
-        public string DiscountCode { get; set; }
-        public int DiscountPercent { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public IDiscount Discount { get; set; }
+        public IUser User { get; set; }
     }
 }

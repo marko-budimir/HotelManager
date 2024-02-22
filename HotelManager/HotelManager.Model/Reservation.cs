@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelManager.Model.Common;
+using System;
 
 namespace HotelManager.Model
 {
-    public class Reservation
+    public class Reservation : IReservation
     {
-        public Reservation() { }
         public Guid Id {get; set;} 
         public Guid UserId { get; set;}
         public Guid RoomId { get; set;}

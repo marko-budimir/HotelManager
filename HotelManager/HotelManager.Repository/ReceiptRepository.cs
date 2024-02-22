@@ -16,17 +16,18 @@ namespace HotelManager.Repository
     public class ReceiptRepository : IReceiptRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-        public async Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging)
+        public async Task<PagedList<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging)
         {
             List<IReceipt> receipts = new List<IReceipt>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            int itemCount = 0;
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
                 ApplyFilter(command, filter);
                 ApplySorting(command, sorting);
-                int itemCount = await GetItemCountAsync(filter);
+                itemCount = await GetItemCountAsync(filter);
                 ApplyPaging(command, paging, itemCount);
 
                 try
@@ -60,13 +61,13 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return receipts;
+            return new PagedList<IReceipt>(receipts, paging.PageNumber, paging.PageSize, itemCount);
         }
-        public async Task<InvoiceReceipt> GetByIdAsync(Guid id)
+        public async Task<IInvoiceReceipt> GetByIdAsync(Guid id)
         {
-            InvoiceReceipt receipt = null;
+            IInvoiceReceipt receipt = null;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-            string commandText = "SELECT i.*, r.\"CheckInDate\", r.\"CheckOutDate\", r.\"PricePerNight\", " +
+            string commandText = "SELECT i.*, r.\"CheckInDate\", r.\"CheckOutDate\", r.\"PricePerNight\", r.\"ReservationNumber\", " +
                         "rm.\"Number\" AS \"RoomNumber\", d.\"Code\" AS \"DiscountCode\", d.\"Percent\" AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
                         "FROM \"Invoice\" i " +
                         "JOIN \"Reservation\" r ON i.\"ReservationId\" = r.\"Id\" " +
@@ -102,15 +103,26 @@ namespace HotelManager.Repository
                                 DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
                                 IsActive = (bool)reader["IsActive"],
                                 InvoiceNumber = (string)reader["InvoiceNumber"],
-                                CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate")),
-                                CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate")),
-                                PricePerNight = (decimal)reader["PricePerNight"],
+                                Reservation = new Reservation()
+                                {
+                                    Id = reader.GetGuid(reader.GetOrdinal("ReservationId")),
+                                    CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate")),
+                                    CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate")),
+                                    PricePerNight = (decimal)reader["PricePerNight"],
+                                    ReservationNumber = (string)reader["ReservationNumber"]
+                                },
                                 RoomNumber = (int)reader["RoomNumber"],
-                                DiscountCode = reader["DiscountCode"] != DBNull.Value ? (string)reader["DiscountCode"] : null,
-                                DiscountPercent = reader["DiscountPercent"] != DBNull.Value ? (int)reader["DiscountPercent"] : 0,
-                                FirstName = (string)reader["FirstName"],
-                                LastName = (string)reader["LastName"],
-                                Email = (string)reader["Email"]
+                                Discount = reader["DiscountId"] != DBNull.Value ? new Discount()
+                                {
+                                    Code = (string)reader["DiscountCode"],
+                                    Percent = (int)reader["DiscountPercent"]
+                                } : null,
+                                User = new User()
+                                {
+                                    FirstName = (string)reader["FirstName"],
+                                    LastName = (string)reader["LastName"],
+                                    Email = (string)reader["Email"]
+                                }
                             };
                         }
                     }

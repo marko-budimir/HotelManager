@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HotelManager.Common;
 using HotelManager.Model;
+using HotelManager.Model.Common;
 using HotelManager.Service;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
@@ -33,7 +34,7 @@ namespace HotelManager.WebApi.Controllers
             (
             int pageNumber = 1,
             int pageSize = 10,
-            string sortBy = "",
+            string sortBy = "ReservationNumber",
             string isAsc = "ASC",
             string searchQuery = null,
             DateTime? checkInDate = null,
@@ -49,7 +50,7 @@ namespace HotelManager.WebApi.Controllers
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 ReservationFilter reservationFilter = new ReservationFilter() { SearchQuery = searchQuery,CheckInDate = checkInDate,CheckOutDate = checkOutDate, MaxPricePerNight=maxPrice, MinPricePerNight=minPrice};
                 var reservations = await _reservationService.GetAllAsync(paging, sorting, reservationFilter);
-                var reservationsView = _mapper.Map<IEnumerable<ReservationView>>(reservations);
+                var reservationsView = _mapper.Map<PagedList<ReservationView>>(reservations);
                 return Request.CreateResponse(HttpStatusCode.OK, reservationsView);
             }
             catch (Exception ex)
@@ -62,7 +63,9 @@ namespace HotelManager.WebApi.Controllers
         {
 
             try {
-                return Request.CreateResponse(HttpStatusCode.OK,await _reservationService.GetByIdAsync(id));
+                var reservation = await _reservationService.GetByIdAsync(id);
+                var reservationView = _mapper.Map<ReservationEditView>(reservation);
+                return Request.CreateResponse(HttpStatusCode.OK,reservationView);
             }
             catch (Exception ex)
             {
@@ -101,7 +104,7 @@ namespace HotelManager.WebApi.Controllers
                 ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
                 if (reservationUpdated != null)
                 {
-                    Reservation reservation = await _reservationService.GetByIdAsync(id);
+                    IReservation reservation = await _reservationService.GetByIdAsync(id);
                     return Request.CreateResponse(HttpStatusCode.OK, reservation);
                 }
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request!");
@@ -124,7 +127,7 @@ namespace HotelManager.WebApi.Controllers
             try
             {
                 ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
-                Reservation reservation = await _reservationService.GetByIdAsync(id);
+                IReservation reservation = await _reservationService.GetByIdAsync(id);
                 return Request.CreateResponse(HttpStatusCode.OK, reservation);
             }
             catch (Exception ex)

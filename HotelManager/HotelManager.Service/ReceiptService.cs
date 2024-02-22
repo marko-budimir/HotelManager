@@ -1,22 +1,17 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Model.Common;
-using HotelManager.Repository;
 using HotelManager.Repository.Common;
 using HotelManager.Service.Common;
-using HotelManager.WebApi.Models;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Xml.Linq;
 using System.IO;
 using System.Net.Mail;
 using System.Net;
-using System.Web.UI;
 using System.Linq;
 using System.Net.Configuration;
 using System.Configuration;
@@ -34,7 +29,7 @@ namespace HotelManager.Service
             _invoiceServiceRepository = invoiceServiceRepository;
         }
 
-        public async Task<List<IReceipt>> GetAllAsync([FromUri]ReceiptFilter filter, Sorting sorting, Paging paging)
+        public async Task<PagedList<IReceipt>> GetAllAsync([FromUri]ReceiptFilter filter, Sorting sorting, Paging paging)
         {
             try
             {
@@ -46,7 +41,7 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<InvoiceReceipt> GetByIdAsync(Guid id)
+        public async Task<IInvoiceReceipt> GetByIdAsync(Guid id)
         {
             try
             {
@@ -126,7 +121,7 @@ namespace HotelManager.Service
 
         public async Task<bool> SendReceiptAsync(Guid id)
         {
-            InvoiceReceipt receipt = await _receiptRepository.GetByIdAsync(id);
+            IInvoiceReceipt receipt = await _receiptRepository.GetByIdAsync(id);
             if (receipt == null)
             {
                 throw new Exception("Receipt not found");
@@ -140,7 +135,7 @@ namespace HotelManager.Service
             return true;
         }
 
-        private async Task<PdfDocument> CreateReceiptPdf(InvoiceReceipt receipt)
+        private async Task<PdfDocument> CreateReceiptPdf(IInvoiceReceipt receipt)
         {
             PdfDocument pdfDocument = new PdfDocument();
             PdfPage page = pdfDocument.AddPage();
@@ -152,7 +147,7 @@ namespace HotelManager.Service
             return pdfDocument;
         }
 
-        private void AddReceiptContent(XGraphics gfx, InvoiceReceipt receipt, List<IServiceInvoiceHistory> services)
+        private void AddReceiptContent(XGraphics gfx, IInvoiceReceipt receipt, List<IServiceInvoiceHistory> services)
         {
             XFont titleFont = new XFont("Arial", 18, XFontStyle.Bold);
             XFont regularFont = new XFont("Arial", 12);
@@ -163,28 +158,31 @@ namespace HotelManager.Service
             gfx.DrawString($"Receipt Number: {receipt.InvoiceNumber}", regularFont, XBrushes.Black, 50, 70);
             gfx.DrawString($"Issue Date: {DateTime.Now:dd.MM.yyyy}", regularFont, XBrushes.Black, 50, 90);
 
-            gfx.DrawString($"Check-In Date: {receipt.CheckInDate:dd.MM.yyyy}", regularFont, XBrushes.Black, 50, 110);
-            gfx.DrawString($"Check-Out Date: {receipt.CheckOutDate:dd.MM.yyyy}", regularFont, XBrushes.Black, 50, 130);
+            gfx.DrawString($"Check-In Date: {receipt.Reservation.CheckInDate:dd.MM.yyyy}", regularFont, XBrushes.Black, 50, 110);
+            gfx.DrawString($"Check-Out Date: {receipt.Reservation.CheckOutDate:dd.MM.yyyy}", regularFont, XBrushes.Black, 50, 130);
             gfx.DrawString($"Room Number: {receipt.RoomNumber}", regularFont, XBrushes.Black, 50, 150);
 
-            gfx.DrawString("\nGuest Information:", regularFont, XBrushes.Black, 50, 180);
-            gfx.DrawString($"Name: {receipt.FirstName} {receipt.LastName}", regularFont, XBrushes.Black, 50, 200);
-            gfx.DrawString($"Email: {receipt.Email}", regularFont, XBrushes.Black, 50, 220);
+            gfx.DrawString("Guest Information:", regularFont, XBrushes.Black, 50, 180);
+            gfx.DrawString($"Name: {receipt.User.FirstName} {receipt.User.LastName}", regularFont, XBrushes.Black, 50, 200);
+            gfx.DrawString($"Email: {receipt.User.Email}", regularFont, XBrushes.Black, 50, 220);
 
             gfx.DrawString("\nReservation Details:", regularFont, XBrushes.Black, 50, 270);
-            gfx.DrawString($"Number of Nights: {receipt.CheckOutDate.Subtract(receipt.CheckInDate).Days}", regularFont, XBrushes.Black, 50, 290);
-            gfx.DrawString($"Price per Night: {receipt.PricePerNight:0.00}€", regularFont, XBrushes.Black, 50, 310);
-            gfx.DrawString($"Subtotal: {receipt.TotalPrice:0.00}€", boldFont, XBrushes.Black, 50, 330);
-            if (receipt.DiscountCode != null)
+            gfx.DrawString("Reservation number: " + receipt.Reservation.ReservationNumber, regularFont, XBrushes.Black, 50, 290);
+            gfx.DrawString($"Number of Nights: {receipt.Reservation.CheckOutDate.Subtract(receipt.Reservation.CheckInDate).Days}", regularFont, XBrushes.Black, 50, 310);
+            gfx.DrawString($"Price per Night: {receipt.Reservation.PricePerNight:0.00}€", regularFont, XBrushes.Black, 50, 330);
+            gfx.DrawString($"Subtotal: {receipt.TotalPrice:0.00}€", boldFont, XBrushes.Black, 50, 350);
+            int yOffset = 370;
+            if (receipt.Discount != null)
             {
-                gfx.DrawString($"Discount: {receipt.DiscountCode} ({receipt.DiscountPercent}%)", regularFont, XBrushes.Black, 50, 350);
-                receipt.TotalPrice -= receipt.TotalPrice * receipt.DiscountPercent / 100;
-                gfx.DrawString($"Subtotal with discount: {receipt.TotalPrice:0.00}€", boldFont, XBrushes.Black, 50, 370);
+                gfx.DrawString($"Discount: {receipt.Discount.Code} ({receipt.Discount.Percent}%)", regularFont, XBrushes.Black, 50, 370);
+                receipt.TotalPrice -= receipt.TotalPrice * receipt.Discount.Percent / 100;
+                gfx.DrawString($"Subtotal with discount: {receipt.TotalPrice:0.00}€", boldFont, XBrushes.Black, 50, 390);
+                yOffset = 410;
 
             }
 
-            gfx.DrawString("\nServices (price):", regularFont, XBrushes.Black, 50, 410);
-            int yOffset = 430;
+            gfx.DrawString("\nServices (price):", regularFont, XBrushes.Black, 50, yOffset);
+            yOffset +=20;
             var servicesMap = new Dictionary<string, int>();
             decimal subTotal = 0;
 
@@ -198,7 +196,6 @@ namespace HotelManager.Service
                 {
                     servicesMap.Add(service.ServiceName, service.Quantity);
                 }
-
                 subTotal += service.Quantity * service.Price;
             }
 
@@ -211,7 +208,7 @@ namespace HotelManager.Service
 
             gfx.DrawString($"Subtotal: {subTotal}€", boldFont, XBrushes.Black, 50, yOffset);
 
-            gfx.DrawString("\nTotal Price:", boldFont, XBrushes.Black, 50, yOffset + 30);
+            gfx.DrawString("Total Price:", boldFont, XBrushes.Black, 50, yOffset + 30);
             gfx.DrawString($"{receipt.TotalPrice + subTotal}€", boldFont, XBrushes.Black, 50, yOffset + 50);
         }
 
@@ -224,15 +221,14 @@ namespace HotelManager.Service
             return memoryStream;
         }
 
-        private async Task SendEmailWithAttachment(InvoiceReceipt receipt, MemoryStream memoryStream)
+        private async Task SendEmailWithAttachment(IInvoiceReceipt receipt, MemoryStream memoryStream)
         {
-            using (MailMessage mailMessage = new MailMessage("hotel@example.com", receipt.Email))
+            using (MailMessage mailMessage = new MailMessage("hotel@example.com", receipt.User.Email))
             {
                 mailMessage.Subject = "Receipt  " + receipt.InvoiceNumber;
-                mailMessage.Body = $"Dear {receipt.FirstName} {receipt.LastName}, \nThank you for choosing our hotel for your recent stay. " +
+                mailMessage.Body = $"Dear {receipt.User.FirstName} {receipt.User.LastName}, \nThank you for choosing our hotel for your recent stay. " +
                     $"It was a pleasure to have you as our guest.\nYou can find a copy of your receipt in attachment.";
 
-                memoryStream.Seek(0, SeekOrigin.Begin);
                 mailMessage.Attachments.Add(new Attachment(memoryStream, "receipt.pdf", "application/pdf"));
 
                 using (SmtpClient smtpClient = new SmtpClient())

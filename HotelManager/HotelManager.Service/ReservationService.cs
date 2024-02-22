@@ -30,24 +30,23 @@ namespace HotelManager.Service
 
         }
 
-        public async Task<bool> CheckIfAvailable(Guid roomId, DateTime checkInDate, DateTime checkOutDate)
-        {
-            return await _reservationRepository.CheckIfAvailable(roomId,checkInDate,checkOutDate);
-        }
-
-        public async Task<IEnumerable<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
+        public async Task<PagedList<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
         {
             return await _reservationRepository.GetAllAsync(paging, sorting, reservationFilter);
         }
 
-        public async Task<Reservation> GetByIdAsync(Guid id)
+        public async Task<IReservation> GetByIdAsync(Guid id)
         {
             return await _reservationRepository.GetByIdAsync(id);
         }
 
         public async Task<Reservation> PostAsync(ReservationCreate reservationCreate)
         {
-            if (await _reservationRepository.CheckIfAvailable(reservationCreate.RoomId,reservationCreate.CheckInDate,reservationCreate.CheckOutDate))
+            if (await _reservationRepository.CheckIfAvailableAsync(new ReservationRoom { 
+                RoomId = reservationCreate.RoomId, 
+                CheckInDate = reservationCreate.CheckInDate, 
+                CheckOutDate = reservationCreate.CheckOutDate 
+            }))
             {
                 Guid userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
                 Guid reservationId = Guid.NewGuid();
@@ -93,7 +92,12 @@ namespace HotelManager.Service
 
         public async Task<ReservationUpdate> UpdateAsync(Guid id, Guid invoiceId, ReservationUpdate reservationUpdate)
         {
-            if (await _reservationRepository.CheckIfAvailable(reservationUpdate.RoomId, reservationUpdate.CheckInDate, reservationUpdate.CheckOutDate))
+            if (await _reservationRepository.CheckIfAvailableAsync(new ReservationRoom 
+            {   
+                RoomId = reservationUpdate.RoomId,
+                CheckInDate = reservationUpdate.CheckInDate, 
+                CheckOutDate = reservationUpdate.CheckOutDate
+            }))
             {
                 var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
                 if (reservationUpdate.IsActive == true)

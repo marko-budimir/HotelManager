@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
+using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.WebApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace HotelManager.WebApi.AutoMapper
 {
@@ -12,6 +9,8 @@ namespace HotelManager.WebApi.AutoMapper
     {
         public ReservationMapperProfile() {
             CreateMap<ReservationWithUserEmail, ReservationView>();
+            CreateMap<PagedList<ReservationWithUserEmail>, PagedList<ReservationView>>();
+            CreateMap<Reservation, ReservationEditView>();
         }
     }
 }

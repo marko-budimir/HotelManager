@@ -1,13 +1,11 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model;
+using HotelManager.Model.Common;
 using HotelManager.Repository.Common;
 using Npgsql;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +15,7 @@ namespace HotelManager.Repository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<bool> CheckIfAvailable(Guid roomId, DateTime checkInDate, DateTime checkOutDate)
+        public async Task<bool> CheckIfAvailableAsync(ReservationRoom reservationRoom)
         {
             bool isAvailable = false;
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -32,9 +30,9 @@ namespace HotelManager.Repository
                 queryBuilder.AppendLine("AND \"IsActive\" = TRUE");
                 using (var cmd = new NpgsqlCommand(queryBuilder.ToString(), connection))
                 {
-                    cmd.Parameters.AddWithValue("@RoomId", roomId);
-                    cmd.Parameters.AddWithValue("@CheckInDate", checkInDate);
-                    cmd.Parameters.AddWithValue("@CheckOutDate", checkOutDate);
+                    cmd.Parameters.AddWithValue("@RoomId", reservationRoom.RoomId);
+                    cmd.Parameters.AddWithValue("@CheckInDate", reservationRoom.CheckInDate);
+                    cmd.Parameters.AddWithValue("@CheckOutDate", reservationRoom.CheckOutDate);
                     int result = (int)await cmd.ExecuteScalarAsync();
                     isAvailable = result == 0;
                     
@@ -44,10 +42,10 @@ namespace HotelManager.Repository
         }
 
 
-        public async Task<IEnumerable<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
+        public async Task<PagedList<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter)
         {
             var reservations = new List<ReservationWithUserEmail>();
-
+            var itemCount = 0;
             if (reservationFilter != null)
             {
                 using (var connection = new NpgsqlConnection(_connectionString))
@@ -58,52 +56,21 @@ namespace HotelManager.Repository
                     queryBuilder.AppendLine("SELECT res.*, u.\"Email\"");
                     queryBuilder.AppendLine(" FROM \"Reservation\" res");
                     queryBuilder.AppendLine(" JOIN \"User\" u ON res.\"UserId\" = u.\"Id\"");
-                    queryBuilder.AppendLine(" WHERE 1=1");
-                    queryBuilder.AppendLine(" AND res.\"IsActive\" = TRUE");
+                    queryBuilder.AppendLine(" WHERE res.\"IsActive\" = TRUE");
 
-
+                    
                     using (var cmd = new NpgsqlCommand())
                     {
 
-                        if (reservationFilter.CheckInDate != default && reservationFilter.CheckOutDate != default)
-                        {
-                            cmd.Parameters.AddWithValue("@StartDate", reservationFilter.CheckInDate);
-                            cmd.Parameters.AddWithValue("@EndDate", reservationFilter.CheckOutDate);
-                            queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
-                        }
-
-                        if (reservationFilter.MinPricePerNight > 0 && reservationFilter.MaxPricePerNight > 0)
-                        {
-                            cmd.Parameters.AddWithValue("@MinPrice", reservationFilter.MinPricePerNight);
-                            cmd.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
-                            queryBuilder.AppendLine(" AND res.\"PricePerNight\" BETWEEN @MinPrice AND @MaxPrice");
-                        }
-
-                        if(!string.IsNullOrEmpty(reservationFilter.SearchQuery))
-{
-                            cmd.Parameters.AddWithValue("@SearchQuery", $"%{reservationFilter.SearchQuery}%");
-                            queryBuilder.AppendLine(" AND u.\"Email\" ILIKE @SearchQuery");
-                        }
-
-                        if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
-                        {
-                            queryBuilder.Append(" ORDER BY ");
-                            queryBuilder.Append(sorting.SortBy);
-
-                            if (!string.IsNullOrEmpty(sorting.SortOrder))
-                            {
-                                queryBuilder.Append(" ");
-                                queryBuilder.Append(sorting.SortOrder);
-                            }
-                        }
-                        if (paging != null)
-                        {
-                            queryBuilder.Append(" LIMIT @Limit OFFSET @Offset");
-                            cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
-                            cmd.Parameters.AddWithValue("@Offset", (paging.PageNumber - 1) * paging.PageSize);
-                        }
+                        
                         cmd.Connection = connection;
                         cmd.CommandText = queryBuilder.ToString();
+
+                        ApplyFilter(cmd, reservationFilter);
+                        ApplySorting(cmd, sorting);
+                        
+                        itemCount = await GetItemCountAsync(reservationFilter);
+                        ApplyPaging(cmd, paging, itemCount);
                         using (var reader = await cmd.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -130,14 +97,14 @@ namespace HotelManager.Repository
                     }
                 }
             }
-            return reservations;
+            return new PagedList<ReservationWithUserEmail>(reservations, paging.PageNumber, paging.PageSize, itemCount);
         }
 
 
-        public async Task<Reservation> GetByIdAsync(Guid id)
+        public async Task<IReservation> GetByIdAsync(Guid id)
         {
 
-            var reservation = new Reservation();
+            IReservation reservation = null;
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
@@ -281,6 +248,85 @@ namespace HotelManager.Repository
             }
 
             return reservationUpdate;
+        }
+        
+        private void ApplyFilter(NpgsqlCommand command, ReservationFilter reservationFilter)
+        {
+            StringBuilder queryBuilder = new StringBuilder(command.CommandText);
+
+            if (reservationFilter.CheckInDate != default && reservationFilter.CheckOutDate != default)
+            {
+                command.Parameters.AddWithValue("@StartDate", reservationFilter.CheckInDate);
+                command.Parameters.AddWithValue("@EndDate", reservationFilter.CheckOutDate);
+                queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
+            }
+
+            if (reservationFilter.MinPricePerNight > 0 && reservationFilter.MaxPricePerNight > 0)
+            {
+                command.Parameters.AddWithValue("@MinPrice", reservationFilter.MinPricePerNight);
+                command.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
+                queryBuilder.AppendLine(" AND res.\"PricePerNight\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+            }
+
+            if (!string.IsNullOrEmpty(reservationFilter.SearchQuery))
+            {
+                command.Parameters.AddWithValue("@SearchQuery", $"%{reservationFilter.SearchQuery}%");
+                queryBuilder.AppendLine(" AND u.\"Email\" ILIKE @SearchQuery");
+            }
+
+            command.CommandText = queryBuilder.ToString();
+        }
+
+        private void ApplySorting(NpgsqlCommand command, Sorting sorting)
+        {
+            StringBuilder commandText = new StringBuilder(command.CommandText);
+            commandText.Append(" ORDER BY \"");
+            commandText.Append(sorting.SortBy).Append("\" ");
+            commandText.Append(sorting.SortOrder == "ASC" ? "ASC" : "DESC");
+            command.CommandText = commandText.ToString();
+        }
+
+        private void ApplyPaging(NpgsqlCommand command, Paging paging, int itemCount)
+        {
+            StringBuilder commandText = new StringBuilder(command.CommandText);
+            int currentItem = (paging.PageNumber - 1) * paging.PageSize;
+            if (currentItem >= 0 && currentItem < itemCount)
+            {
+                commandText.Append(" LIMIT ").Append(paging.PageSize).Append(" OFFSET ").Append(currentItem);
+                command.CommandText = commandText.ToString();
+            }
+            else
+            {
+                commandText.Append(" LIMIT 10");
+                command.CommandText = commandText.ToString();
+            }
+        }
+
+        private async Task<int> GetItemCountAsync(ReservationFilter filter)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Invoice\"";
+                ApplyFilter(command, filter);
+                command.Connection = connection;
+                try
+                {
+                    await connection.OpenAsync();
+                    NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+                    await reader.ReadAsync();
+                    return reader.GetInt32(0);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
         }
     }
 }

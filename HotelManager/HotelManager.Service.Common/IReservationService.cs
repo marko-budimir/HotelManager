@@ -13,11 +13,10 @@ namespace HotelManager.Service.Common
     public interface IReservationService
     {
 
-        Task<Reservation> GetByIdAsync(Guid id);
-        Task<IEnumerable<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter);
+        Task<IReservation> GetByIdAsync(Guid id);
+        Task<PagedList<ReservationWithUserEmail>> GetAllAsync(Paging paging, Sorting sorting, ReservationFilter reservationFilter);
 
         Task<ReservationUpdate> UpdateAsync(Guid id, Guid invoiceId,ReservationUpdate reservationUpdate);
         Task<Reservation> PostAsync(ReservationCreate reservation);
-        Task<bool> CheckIfAvailable(Guid roomId, DateTime checkInDate, DateTime checkOutDate);
     }
 }

@@ -54,7 +54,7 @@ namespace HotelManager.WebApi.Controllers
                 PageSize = pageSize
             };
 
-            List<IReceipt> receipts;
+            PagedList<IReceipt> receipts;
 
             try
             {
@@ -65,13 +65,16 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
             }
  
-            List<ReceiptView> receiptViews = new List<ReceiptView>();
-            foreach (var receipt in receipts)
+            PagedList<ReceiptView> receiptViews = new PagedList<ReceiptView>();
+            foreach (var receipt in receipts.Items)
             {
                 var receiptView = _mapper.Map<ReceiptView>(receipt);
                 receiptView.UserEmail = await _userService.GetUserEmailByIdAsync(receipt.CreatedBy);
-                receiptViews.Add(receiptView);
+                receiptViews.Items.Add(receiptView);
             }
+            receiptViews.TotalCount = receipts.TotalCount;
+            receiptViews.PageSize = receipts.PageSize;
+            receiptViews.PageNumber = receipts.PageNumber;
 
             return Request.CreateResponse(HttpStatusCode.OK, receiptViews);
         }
@@ -83,8 +86,9 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                InvoiceReceipt receipt = await _receiptService.GetByIdAsync(id);
-                return Request.CreateResponse(HttpStatusCode.OK, receipt);
+                IInvoiceReceipt receipt = await _receiptService.GetByIdAsync(id);
+                var receiptView = _mapper.Map<InvoiceReceiptView>(receipt);
+                return Request.CreateResponse(HttpStatusCode.OK, receiptView);
             }
             catch(Exception e)
             {

@@ -14,7 +14,7 @@ namespace HotelManager.Repository.Common
         Task<Invoice> CreateInvoiceAsync(Invoice invoice);
         Task<Invoice> PutTotalPriceAsync(Guid invoiceId,InvoiceUpdate invoiceUpdate);
 
-        Task<List<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging);
-        Task<InvoiceReceipt> GetByIdAsync(Guid id);
+        Task<PagedList<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging);
+        Task<IInvoiceReceipt> GetByIdAsync(Guid id);
     }
 }
