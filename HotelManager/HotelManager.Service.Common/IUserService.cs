@@ -13,5 +13,6 @@ namespace HotelManager.Service.Common
         Task<IUser> ValidateUserAsync(string username, string password);
         Task<string> GetRoleTypeByRoleIdAsync(Guid id);
         Task<string> GetUserEmailByIdAsync(Guid id);
+        Task<bool> UpdatePasswordAsync(string passwordNew, string passwordOld);
     }
 }

@@ -61,6 +61,19 @@ namespace HotelManager.Service
             }
         }
 
+        public async Task<bool> UpdatePasswordAsync(string passwordNew, string passwordOld)
+        {
+            var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            try
+            {
+                return await _userRepository.UpdatePasswordAsync(id,passwordNew,passwordOld);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<bool> DeleteUserAsync()
         {
             var id = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
