@@ -75,7 +75,7 @@ namespace HotelManager.Repository
                 }
             }
            
-            return new PagedList<HotelService>(services,paging.PageNum,paging.PageSize,count);
+            return new PagedList<HotelService>(services,paging.PageNum,paging.PageSize, count);
         }
 
         public async Task<HotelService> GetByIdAsync(Guid id)
@@ -262,7 +262,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Discount\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Service\"";
                 ApplyFilter(command, hotelServiceFilter);
                 command.Connection = connection;
                 try

@@ -11,7 +11,7 @@ namespace HotelManager.Service.Common
 {
     public interface IDiscountService
     {
-        Task<List<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging);
+        Task<PagedList<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging);
         Task<IDiscount> GetDiscountByIdAsync(Guid id);
         Task<int> DeleteDiscountAsync(Guid id);
         Task<string> CreateDiscountAsync(IDiscount newDiscount);
