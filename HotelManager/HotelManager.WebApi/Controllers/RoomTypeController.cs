@@ -3,6 +3,7 @@ using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +41,9 @@ namespace HotelManager.WebApi.Controllers
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 var roomTypes = await _roomTypeService.GetAllAsync(paging, sorting);
 
-                if (roomTypes.Any())
+                if (roomTypes.Items.Any())
                 {
-                    var roomTypeViews = _mapper.Map<IEnumerable<RoomTypeView>>(roomTypes);
+                    var roomTypeViews = _mapper.Map<PagedList<RoomTypeView>>(roomTypes);
                     return Request.CreateResponse(HttpStatusCode.OK, roomTypeViews);
                 }
 

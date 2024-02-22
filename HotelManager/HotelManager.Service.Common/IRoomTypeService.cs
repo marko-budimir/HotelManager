@@ -12,7 +12,7 @@ namespace HotelManager.Service.Common
     public interface IRoomTypeService
     {
         Task<RoomType> GetByIdAsync(Guid id);
-        Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
+        Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
 
         Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate);
         Task<RoomType> PostAsync(RoomType roomType);

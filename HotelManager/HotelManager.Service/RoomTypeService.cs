@@ -19,7 +19,7 @@ namespace HotelManager.Service
             RoomTypeRepository = roomTypeRepository;
         }
 
-        public async Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
+        public async Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
         {
             return await RoomTypeRepository.GetAllAsync(paging,sorting);
         }

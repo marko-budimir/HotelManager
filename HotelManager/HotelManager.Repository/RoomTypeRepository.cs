@@ -16,9 +16,37 @@ namespace HotelManager.Repository
     public class RoomTypeRepository : IRoomTypeRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-        public async Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
+
+
+        public async Task<int> GetItemCountAsync()
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"RoomType\" r WHERE r.\"IsActive\" = TRUE";
+                command.Connection = connection;
+                try
+                {
+                    await connection.OpenAsync();
+                    object result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+        public async Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting)
         {
             var roomTypes = new List<RoomType>();
+            var totalCount = 0;
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -40,7 +68,7 @@ namespace HotelManager.Repository
                             queryBuilder.Append(sorting.SortOrder);
                         }
                     }
-
+                     totalCount = await GetItemCountAsync();
 
                     if (paging != null)
                     {
@@ -71,7 +99,7 @@ namespace HotelManager.Repository
                     }
                 }
             }
-            return roomTypes;
+            return new PagedList<RoomType>(roomTypes, paging.PageNumber, paging.PageSize, totalCount);
         }
 
         public async Task<RoomType> GetByIdAsync(Guid id)
@@ -110,7 +138,7 @@ namespace HotelManager.Repository
             return roomType;
         }
 
-        public async Task<RoomType> PostAsync(RoomType roomType, Guid userId) //je li potrebno imati room type post model za kreiranje , promjeni u roomType 
+        public async Task<RoomType> PostAsync(RoomType roomType, Guid userId)
         {
             Guid creationId = Guid.NewGuid();
 

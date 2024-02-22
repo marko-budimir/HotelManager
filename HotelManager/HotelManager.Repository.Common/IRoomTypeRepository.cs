@@ -11,7 +11,7 @@ namespace HotelManager.Repository.Common
     public interface IRoomTypeRepository
     {
         Task<RoomType> GetByIdAsync(Guid id);
-        Task<IEnumerable<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
+        Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
 
         Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate, Guid roomId);
         Task<RoomType> PostAsync(RoomType roomType, Guid roomId);
