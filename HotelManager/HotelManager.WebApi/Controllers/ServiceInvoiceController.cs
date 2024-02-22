@@ -47,7 +47,7 @@ namespace HotelManager.WebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllInvoiceServiceAsync(int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "DateCreated", DateTime? dateCreated = null, DateTime? dateUpdated = null)
+        public async Task<HttpResponseMessage> GetAllInvoiceServiceAsync(int pageNumber = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "DateCreated", DateTime? dateCreated = null, DateTime? dateUpdated = null)
         {
             Sorting sorting = new Sorting
             {
@@ -57,7 +57,7 @@ namespace HotelManager.WebApi.Controllers
 
             Paging paging = new Paging
             {
-                PageNumber = pageNum,
+                PageNumber = pageNumber,
                 PageSize = pageSize
             };
 
