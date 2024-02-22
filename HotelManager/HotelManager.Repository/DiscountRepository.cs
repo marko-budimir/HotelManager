@@ -16,17 +16,19 @@ namespace HotelManager.Repository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<List<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging)
+        public async Task<PagedList<IDiscount>> GetAllDiscountsAsync(DiscountFilter filter, Sorting sorting, Paging paging)
         {
+            var itemCount = 0;
             List<IDiscount> discounts = new List<IDiscount>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
+                command.CommandText = "SELECT * FROM \"Discount\" WHERE \"Discount\".\"IsActive\"=true";
                 ApplyFilter(command, filter);
                 ApplySorting(command, sorting);
-                int itemCount = await GetItemCountAsync(filter);
+                itemCount = await GetItemCountAsync(filter);
                 ApplyPaging(command, paging, itemCount);
 
                 try
@@ -59,7 +61,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return discounts;
+            return new PagedList<IDiscount>(discounts,paging.PageNum,paging.PageSize,itemCount);
         }
         public async Task<IDiscount> GetDiscountByIdAsync(Guid id)
         {
@@ -286,8 +288,7 @@ namespace HotelManager.Repository
 
         private void ApplyFilter(NpgsqlCommand command, DiscountFilter filter)
         {
-            StringBuilder commandText = new StringBuilder();
-            commandText.Append("SELECT * FROM \"Discount\" WHERE \"Discount\".\"IsActive\"=true");
+            StringBuilder commandText = new StringBuilder(command.CommandText);
             if (filter.StartingValue > 0 || filter.EndValue < 100)
             {
                 commandText.Append(" AND \"Discount\".\"Percent\" BETWEEN @startValue AND @endValue");
@@ -322,7 +323,8 @@ namespace HotelManager.Repository
             }
         }
 
-        private async Task<int> GetItemCountAsync(DiscountFilter filter)
+
+        public async Task<int> GetItemCountAsync(DiscountFilter filter)
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             using (connection)
@@ -348,5 +350,6 @@ namespace HotelManager.Repository
                 }
             }
         }
+
     }
 }

@@ -47,22 +47,25 @@ namespace HotelManager.WebApi.Controllers
                 PageSize = pageSize
             };
 
-            List<IDiscount> discounts;
-            List<DiscountView> discountsView = new List<DiscountView>();
+            PagedList<IDiscount> discounts;
+            PagedList<DiscountView> discountsView = new PagedList<DiscountView>();
 
             try
             {
                 discounts = await _discountService.GetAllDiscountsAsync(filter, sorting, paging);
-                discounts.ForEach(discount =>
+
+                discountsView.PageSize = discounts.PageSize;
+                discountsView.PageNumber= discounts.PageNumber;
+                discountsView.TotalCount = discounts.TotalCount;
+
+                discountsView.Items = discounts.Items.Select(discount => new DiscountView
                 {
-                    discountsView.Add(new DiscountView
-                    {
-                        Code = discount.Code,
-                        Percent = discount.Percent,
-                        ValidFrom = discount.ValidFrom,
-                        ValidTo = discount.ValidTo,
-                    });
-                });
+                    Code = discount.Code,
+                    Percent = discount.Percent,
+                    ValidFrom = discount.ValidFrom,
+                    ValidTo = discount.ValidTo
+                }).ToList();
+
             }
             catch (Exception e)
             {

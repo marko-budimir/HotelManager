@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DiscountView.cs" />
     <Compile Include="InvoiceReceipt.cs" />
     <Compile Include="InvoiceUpdate.cs" />
     <Compile Include="ReservationCreate.cs" />

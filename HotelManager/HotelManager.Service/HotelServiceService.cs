@@ -19,14 +19,14 @@ namespace HotelManager.Service
             _HotelServiceRepository = hotelServiceRepository;
         }
 
-        public async Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter)
+        public async Task<PagedList<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter)
         {
-            var services = await _HotelServiceRepository.GetAllAsync(paging, sorting, hotelServiceFilter);
-            if(services == null)
+            var sericesPagedList = await _HotelServiceRepository.GetAllAsync(paging, sorting, hotelServiceFilter);
+            if(sericesPagedList == null)
             {
                 throw new ArgumentException("No services found!");
             }
-            return services;
+            return sericesPagedList;
         }
 
         public async Task<HotelService> GetByIdAsync(Guid id)
