@@ -12,9 +12,9 @@ namespace HotelManager.Service.Common
     public interface IRoomService
     {
         Task<Room> GetByIdAsync(Guid id);
-        Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter);
+        Task<PagedList<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter);
         Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate);
         Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id);
-        Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter);
+        Task<PagedList<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter);
     }
 }

@@ -64,7 +64,7 @@ namespace HotelManager.WebApi.Controllers
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery, StartDate = StartDate, EndDate = EndDate, MinBeds = MinBeds, MaxPrice = MaxPrice, MinPrice = MinPrice, RoomTypeId = RoomTypeId };
                 var roomsUpdated = await _roomService.GetUpdatedRoomsAsync(paging, sorting, roomFilter);
-                if (roomsUpdated.Any())
+                if (roomsUpdated.Items.Any())
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, roomsUpdated);
                 }

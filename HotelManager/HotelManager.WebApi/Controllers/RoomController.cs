@@ -43,9 +43,10 @@ namespace HotelManager.WebApi.Controllers
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
                 RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery,StartDate=StartDate,EndDate=EndDate,MinBeds=MinBeds,MaxPrice=MaxPrice,MinPrice=MinPrice,RoomTypeId=RoomTypeId };
                 var rooms = await _roomService.GetAllAsync(paging, sorting,roomFilter);
-                if(rooms.Any())
+                
+                if(rooms.Items.Any())
                 {
-                    var roomViews = rooms.Select(room => _mapper.Map<RoomView>(room)).ToList();
+                    var roomViews = _mapper.Map<PagedList<RoomView>>(rooms);
                     return Request.CreateResponse(HttpStatusCode.OK, roomViews);
                 }
                 return  Request.CreateResponse(HttpStatusCode.NotFound, "Room was not found!");

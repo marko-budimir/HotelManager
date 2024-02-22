@@ -21,7 +21,7 @@ namespace HotelManager.Service
         {
             RoomRepository = roomRepository;
         }
-        public async Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
+        public async Task<PagedList<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
   
         {
             var rooms = await RoomRepository.GetAllAsync(paging, sorting, roomFilter);
@@ -47,7 +47,7 @@ namespace HotelManager.Service
 
         }
 
-        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        public async Task<PagedList<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
         {
             var roomsUpdated = await RoomRepository.GetUpdatedRoomsAsync(paging, sorting, roomsFilter);
             if (roomsUpdated == null)

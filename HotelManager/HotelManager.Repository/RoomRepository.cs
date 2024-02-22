@@ -16,9 +16,37 @@ namespace HotelManager.Repository
 
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        public async Task<IEnumerable<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
+        public async Task<int> GetItemCountAsync(RoomFilter filter)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using (connection)
+            {
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Room\" r WHERE r.\"IsActive\" = TRUE";
+                ApplyFilter(command, filter);
+                command.Connection = connection;
+                try
+                {
+                    await connection.OpenAsync();
+                    object result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+                catch (Exception e)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+        public async Task<PagedList<Room>> GetAllAsync(Paging paging, Sorting sorting, RoomFilter roomFilter)
         {
             var rooms = new List<Room>();
+
+            var totalCount = 0;
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -75,6 +103,8 @@ namespace HotelManager.Repository
                         }
                     }
 
+                    totalCount = await GetItemCountAsync(roomFilter);
+
                     if (paging != null)
                     {
                         cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
@@ -107,8 +137,7 @@ namespace HotelManager.Repository
                     }
                 }
             }
-
-            return rooms;
+            return new PagedList<Room>(rooms, paging.PageNumber, paging.PageSize, totalCount);
         }
 
 
@@ -244,9 +273,11 @@ namespace HotelManager.Repository
             return roomUpdate;
         }
 
-        public async Task<IEnumerable<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
+        public async Task<PagedList<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter)
         {
             var updatedRooms = new List<RoomUpdate>();
+
+            var totalCount = 0;
 
             if (roomsFilter != null)
             {
@@ -302,6 +333,8 @@ namespace HotelManager.Repository
                             }
                         }
 
+                        totalCount = await GetItemCountAsync(roomsFilter);
+
                         if (paging != null)
                         {
                             cmd.Parameters.AddWithValue("@Limit", paging.PageSize);
@@ -337,12 +370,41 @@ namespace HotelManager.Repository
                     }
                 }
             }
-
-            return updatedRooms;
+            return new PagedList<RoomUpdate>(updatedRooms, paging.PageNumber, paging.PageSize, totalCount);
         }
 
 
+        private void ApplyFilter(NpgsqlCommand command, RoomFilter roomFilter)
+        {
+            if (roomFilter != null)
+            {
+                if (roomFilter.StartDate != null && roomFilter.EndDate != null)
+                {
+                    command.Parameters.AddWithValue("@StartDate", roomFilter.StartDate);
+                    command.Parameters.AddWithValue("@EndDate", roomFilter.EndDate);
+                    command.CommandText += " AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)";
+                }
 
+                if (roomFilter.MinPrice != null && roomFilter.MaxPrice != null)
+                {
+                    command.Parameters.AddWithValue("@MinPrice", roomFilter.MinPrice);
+                    command.Parameters.AddWithValue("@MaxPrice", roomFilter.MaxPrice);
+                    command.CommandText += " AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money";
+                }
+
+                if (roomFilter.MinBeds > 0)
+                {
+                    command.Parameters.AddWithValue("@MinBeds", roomFilter.MinBeds);
+                    command.CommandText += " AND r.\"BedCount\" >= @MinBeds";
+                }
+
+                if (roomFilter.RoomTypeId != null)
+                {
+                    command.Parameters.AddWithValue("@RoomTypeId", roomFilter.RoomTypeId);
+                    command.CommandText += " AND r.\"TypeId\" = @RoomTypeId";
+                }
+            }
+        }
 
         private static void SetValues(Room room, RoomUpdate roomUpdate)
         {
