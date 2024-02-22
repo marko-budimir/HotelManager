@@ -35,7 +35,7 @@ namespace HotelManager.WebApi.Controllers
             int pageSize = 10,
             string sortBy = "",
             string isAsc = "ASC",
-            string SearchQuery = null,
+            string searchQuery = null,
             DateTime? checkInDate = null,
             DateTime? checkOutDate = null,
             decimal? maxPrice= null,
@@ -47,7 +47,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 Paging paging = new Paging() { PageNum = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
-                ReservationFilter reservationFilter = new ReservationFilter() { SearchQuery = SearchQuery,CheckInDate = checkInDate,CheckOutDate = checkOutDate, MaxPricePerNight=maxPrice, MinPricePerNight=minPrice};
+                ReservationFilter reservationFilter = new ReservationFilter() { SearchQuery = searchQuery,CheckInDate = checkInDate,CheckOutDate = checkOutDate, MaxPricePerNight=maxPrice, MinPricePerNight=minPrice};
                 var reservations = await _reservationService.GetAllAsync(paging, sorting, reservationFilter);
                 var reservationsView = _mapper.Map<IEnumerable<ReservationView>>(reservations);
                 return Request.CreateResponse(HttpStatusCode.OK, reservationsView);

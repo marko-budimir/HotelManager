@@ -94,18 +94,18 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("")]
-        public async Task<HttpResponseMessage> CreateServiceAsync([FromBody] HotelServiceCreate model)
+        public async Task<HttpResponseMessage> CreateServiceAsync([FromBody] HotelServiceCreate hotelServiceCreate)
         {
-            if (model == null)
+            if (hotelServiceCreate == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid data");
             }
 
             try
             {
-                var service = _mapper.Map<HotelService>(model);
+                var hotelService = _mapper.Map<HotelService>(hotelServiceCreate);
 
-                bool created = await _hotelServiceService.CreateServiceAsync(service);
+                bool created = await _hotelServiceService.CreateServiceAsync(hotelService);
                 if (created)
                 {
                     return Request.CreateResponse(HttpStatusCode.Created);
@@ -125,9 +125,9 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelServiceUpdate model)
+        public async Task<HttpResponseMessage> UpdateServiceAsync(Guid id, [FromBody] HotelServiceUpdate hotelServiceUpdated)
         {
-            if(model == null)
+            if(hotelServiceUpdated == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -141,10 +141,10 @@ namespace HotelManager.WebApi.Controllers
                 }
 
                 // Map the update model to the domain model
-                var serviceToUpdate = _mapper.Map<HotelService>(model);
+                var hotelService = _mapper.Map<HotelService>(hotelServiceUpdated);
 
                 // Update the service in the service layer
-                bool updated = await _hotelServiceService.UpdateServiceAsync(id, serviceToUpdate);
+                bool updated = await _hotelServiceService.UpdateServiceAsync(id, hotelService);
 
                 if (updated)
                 {

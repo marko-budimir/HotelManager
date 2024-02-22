@@ -125,12 +125,13 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<ServiceHistoryView> GetServiceInvoiceByInvoiceIdAsync(Guid id)
+        public async Task<List<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id)
         {
-            ServiceHistoryView serviceHistory = null;
+            List<IServiceInvoiceHistory> serviceInvoiceHistories = new List<IServiceInvoiceHistory>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-            string commandText = $"SELECT \"Service\".\"Name\", \"InvoiceService\".\"NumberOfService\", \"Invoice\".\"DateCreated\" FROM \"InvoiceService\" " +
-                $"LEFT JOIN \"Service\" ON \"InvoiceService\".\"ServiceId\" = \"Service\".\"Id\" LEFT JOIN \"Invoice\" ON \"InvoiceService\".\"InvoiceId\" = \"Invoice\".\"Id\" " +
+            string commandText = $"SELECT \"InvoiceService\".\"Id\", \"Service\".\"Name\", \"Service\".\"Price\", \"InvoiceService\".\"NumberOfService\", \"InvoiceService\".\"DateCreated\" " +
+                $"FROM \"InvoiceService\" LEFT JOIN \"Service\" ON \"InvoiceService\".\"ServiceId\" = \"Service\".\"Id\" " +
+                $"LEFT JOIN \"Invoice\" ON \"InvoiceService\".\"InvoiceId\" = \"Invoice\".\"Id\" " +
                 $" WHERE \"InvoiceId\" = @invoiceId AND \"InvoiceService\".\"IsActive\" = true";
             using (connection)
             {
@@ -144,15 +145,14 @@ namespace HotelManager.Repository
                     NpgsqlDataReader reader = await command.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
-                        if (serviceHistory == null)
+                        serviceInvoiceHistories.Add(new ServiceInvoiceHistory()
                         {
-                            serviceHistory = new ServiceHistoryView()
-                            {
-                                Name = (string)reader["Name"],
-                                Quantity = (int)reader["NumberOfService"],
-                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated"))
-                            };
-                        }
+                            Id = (Guid)reader["Id"],
+                            ServiceName = (string)reader["Name"],
+                            Quantity = (int)reader["NumberOfService"],
+                            Price = (decimal)reader["Price"],
+                            DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated"))
+                        });
                     }
                 }
                 catch (NpgsqlException e)
@@ -164,7 +164,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return serviceHistory;
+            return serviceInvoiceHistories;
         }
         
 

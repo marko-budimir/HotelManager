@@ -29,8 +29,8 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                ServiceHistoryView historyView = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id);
-                return Request.CreateResponse(HttpStatusCode.OK, historyView);
+                var serviceInvoiceHistories = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id);
+                return Request.CreateResponse(HttpStatusCode.OK, serviceInvoiceHistories);
             }
             catch (Exception e)
             {

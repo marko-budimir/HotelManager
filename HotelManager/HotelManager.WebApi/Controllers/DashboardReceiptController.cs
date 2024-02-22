@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HotelManager.Common;
+using HotelManager.Model;
 using HotelManager.Model.Common;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
@@ -82,10 +83,33 @@ namespace HotelManager.WebApi.Controllers
         {
             try
             {
-                IReceipt receipt = await _receiptService.GetByIdAsync(id);
+                InvoiceReceipt receipt = await _receiptService.GetByIdAsync(id);
                 return Request.CreateResponse(HttpStatusCode.OK, receipt);
             }
             catch(Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        // POST: api/DashboardReceipt
+        public async Task<HttpResponseMessage> SendReceipt(Guid id)
+        {
+            try
+            {
+                bool isSent = await _receiptService.SendReceiptAsync(id);
+                if (isSent)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Receipt sent successfully");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Receipt could not be sent");
+                }
+            }
+            catch (Exception e)
             {
                 return Request.CreateResponse(HttpStatusCode.BadGateway, e.Message);
             }

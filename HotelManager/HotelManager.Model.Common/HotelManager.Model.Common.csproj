@@ -44,6 +44,7 @@
     <Compile Include="IDiscount.cs" />
     <Compile Include="IServiceInvoice.cs" />
     <Compile Include="IReceipt.cs" />
+    <Compile Include="IServiceInvoiceHistory.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

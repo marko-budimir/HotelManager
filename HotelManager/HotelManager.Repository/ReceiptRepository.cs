@@ -62,17 +62,25 @@ namespace HotelManager.Repository
             }
             return receipts;
         }
-        public async Task<IReceipt> GetByIdAsync(Guid id)
+        public async Task<InvoiceReceipt> GetByIdAsync(Guid id)
         {
-            IReceipt receipt = null;
+            InvoiceReceipt receipt = null;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-            string commandText = $"SELECT * FROM \"Invoice\" WHERE \"Id\" = @id AND \"Invoice\".\"IsActive\"=true ";
+            string commandText = "SELECT i.*, r.\"CheckInDate\", r.\"CheckOutDate\", r.\"PricePerNight\", " +
+                        "rm.\"Number\" AS \"RoomNumber\", d.\"Code\" AS \"DiscountCode\", d.\"Percent\" AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
+                        "FROM \"Invoice\" i " +
+                        "JOIN \"Reservation\" r ON i.\"ReservationId\" = r.\"Id\" " +
+                        "JOIN \"Room\" rm ON r.\"RoomId\" = rm.\"Id\" " +
+                        "LEFT JOIN \"Discount\" d ON i.\"DiscountId\" = d.\"Id\" " +
+                        "JOIN \"User\" u ON r.\"UserId\" = u.\"Id\" " +
+                        "WHERE i.\"Id\" = @Id AND i.\"IsActive\"=true";
+    
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.CommandText = commandText;
                 command.Connection = connection;
-                command.Parameters.AddWithValue("id", id);
+                command.Parameters.AddWithValue("Id", id);
                 try
                 {
                     await connection.OpenAsync();
@@ -81,7 +89,7 @@ namespace HotelManager.Repository
                     {
                         if (receipt == null)
                         {
-                            receipt = new Receipt()
+                            receipt = new InvoiceReceipt()
                             {
                                 Id = (Guid)reader.GetGuid(reader.GetOrdinal("Id")),
                                 TotalPrice = (decimal)reader["TotalPrice"],
@@ -93,7 +101,16 @@ namespace HotelManager.Repository
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
                                 DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated")),
                                 IsActive = (bool)reader["IsActive"],
-                                InvoiceNumber = (string)reader["InvoiceNumber"]
+                                InvoiceNumber = (string)reader["InvoiceNumber"],
+                                CheckInDate = reader.GetDateTime(reader.GetOrdinal("CheckInDate")),
+                                CheckOutDate = reader.GetDateTime(reader.GetOrdinal("CheckOutDate")),
+                                PricePerNight = (decimal)reader["PricePerNight"],
+                                RoomNumber = (int)reader["RoomNumber"],
+                                DiscountCode = reader["DiscountCode"] != DBNull.Value ? (string)reader["DiscountCode"] : null,
+                                DiscountPercent = reader["DiscountPercent"] != DBNull.Value ? (int)reader["DiscountPercent"] : 0,
+                                FirstName = (string)reader["FirstName"],
+                                LastName = (string)reader["LastName"],
+                                Email = (string)reader["Email"]
                             };
                         }
                     }

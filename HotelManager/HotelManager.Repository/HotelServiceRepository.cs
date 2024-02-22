@@ -4,6 +4,7 @@ using HotelManager.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,16 +13,13 @@ namespace HotelManager.Repository
 {
     public class HotelServiceRepository : IHotelServiceRepository
     {
-        private const string _ConnectionString = "Host=localhost:5432;" +
-         "Username=postgres;" +
-         "Password=postgres;" +
-         "Database=HotelManager";
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
         public async Task<IEnumerable<HotelService>> GetAllAsync(Paging paging, Sorting sorting, HotelServiceFilter hotelServiceFilter)
         {
             var services = new List<HotelService>();
 
-            using (var connection = new NpgsqlConnection(_ConnectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -102,7 +100,7 @@ namespace HotelManager.Repository
         {
             HotelService service = null;
 
-            using (var connection = new NpgsqlConnection(_ConnectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
@@ -139,7 +137,7 @@ namespace HotelManager.Repository
         public async Task<bool> CreateServiceAsync(HotelService newService, Guid userId)
         {
             int rowsChanged;
-            NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
 
             using (connection)
             {
@@ -179,7 +177,7 @@ namespace HotelManager.Repository
 
         public async Task<bool> UpdateServiceAsync(Guid id, HotelService service, Guid userId)
         {
-            NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
 
             try
             {
@@ -246,7 +244,7 @@ namespace HotelManager.Repository
 
         public async Task<bool> DeleteServiceAsync(Guid id, Guid userId)
         {
-            NpgsqlConnection connection = new NpgsqlConnection(_ConnectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
 
             try
             {
