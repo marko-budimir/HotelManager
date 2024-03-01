@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { HomePage } from "./pages/HomePage";
 import {
   Route,
   RouterProvider,
@@ -13,7 +13,7 @@ import "./style/style.css";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<App />}></Route>
+      <Route path="/" element={<HomePage />}></Route>
     </>
   )
 );
