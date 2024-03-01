@@ -1,21 +1,23 @@
 import AuthenticationFormRow from "./AuthenticationFormRow";
 
-const AuthenticationForm = ({ formType, formFields, formValues, handleChange, handleSubmit }) => {
+const AuthenticationForm = ({ formType, formLabels, formValues, handleChange, handleSubmit }) => {
+    const formNames = Object.keys(formValues);
     return (
-        <form className="authentication-form" onSubmit={handleSubmit}>
-            <h2>{formType}</h2>
-            {formFields.map((field, index) => {
+        <form className="authentication-form">
+            <h3 className="authentication-form-header">{formType}</h3>
+            {formNames.map((field, index) => {
                 return (
                     <AuthenticationFormRow
                         key={index}
                         inputName={field}
                         inputType={field}
+                        label={formLabels[index]}
                         value={formValues[field]}
                         handleChange={handleChange}
                     />
                 );
             })}
-            <button type="submit" onSubmit={handleSubmit}>{formType}</button>
+            <button className="authentication-form-button" type="button" onClick={handleSubmit}>{formType}</button>
         </form>
     );
 }

@@ -8,13 +8,17 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 import "./style/style.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<HomePage />} errorElement={<Error/>}></Route>
+      <Route path="/" element={<HomePage />} errorElement={<Error />}></Route>
+      <Route path="/login" element={<LoginPage />} errorElement={<Error />}></Route>
+      <Route path="/register" element={<RegisterPage />} errorElement={<Error />}></Route>
     </>
   )
 );
