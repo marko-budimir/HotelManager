@@ -2,10 +2,11 @@ import axios from "axios";
 
 const BASE_URL = "https://localhost:44327";
 
-const getUser = () => { };
+const getUser = async (headers) => {
+  return await axios.get(BASE_URL, { headers: headers });
+};
 
 const createUser = async (registerData) => {
-
   try {
     const response = await axios.post(`${BASE_URL}/api/user`, registerData);
     return response.status;
@@ -13,27 +14,34 @@ const createUser = async (registerData) => {
     throw error;
   }
 };
+const updateUser = async (userData, headers) => {
+  return await axios.put(BASE_URL, userData, { headers: headers });
+};
 
-const updateUser = () => { };
-
-const updatePassword = () => { };
+const updatePassword = async (passwordData, headers) => {
+  return await axios.put(
+    `${BASE_URL}/updatePassword`,
+    {
+      passwordOld: passwordData.passwordOld,
+      passwordNew: passwordData.passwordNew,
+    },
+    {
+      headers: headers,
+    }
+  );
+};
 
 export const loginUser = async ({ email, password }) => {
   const loginData = new URLSearchParams();
-  loginData.append('username', email);
-  loginData.append('password', password);
-  loginData.append('grant_type', 'password')
+  loginData.append("username", email);
+  loginData.append("password", password);
+  loginData.append("grant_type", "password");
   try {
     const response = await axios.post(`${BASE_URL}/login`, loginData);
     return response;
   } catch (error) {
     throw error;
   }
-}
-
-export {
-  getUser,
-  createUser,
-  updateUser,
-  updatePassword
 };
+
+export { getUser, createUser, updateUser, updatePassword };

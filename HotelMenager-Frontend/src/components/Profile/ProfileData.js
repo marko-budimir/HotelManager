@@ -1,6 +1,7 @@
 export const ProfileData = ({ user }) => {
+  console.log(Object.entries(user));
   const userArr = Object.entries(user).slice(1);
-
+  console.log(userArr);
   const handleKeyString = (key) => {
     console.log(key);
     key = key.toUpperCase();
