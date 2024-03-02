@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { HomePage } from "./pages/HomePage";
 import Error from "./components/Error";
+import { Profile } from "./components/Profile/Profile";
 import {
   Route,
   RouterProvider,
@@ -17,8 +18,16 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} errorElement={<Error />}></Route>
-      <Route path="/login" element={<LoginPage />} errorElement={<Error />}></Route>
-      <Route path="/register" element={<RegisterPage />} errorElement={<Error />}></Route>
+      <Route
+        path="/login"
+        element={<LoginPage />}
+        errorElement={<Error />}
+      ></Route>
+      <Route
+        path="/register"
+        element={<RegisterPage />}
+        errorElement={<Error />}
+      ></Route>
     </>
   )
 );
