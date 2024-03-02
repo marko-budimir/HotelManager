@@ -28,7 +28,6 @@ namespace HotelManager.WebApi.Controllers
 
         // GET api/values
         [HttpGet]
-        [Authorize(Roles = "Admin, User")]
         [Route("{roomId:guid}")]
         public async Task<HttpResponseMessage> GetReviewsForRoomAsync(int pageNumber = 1,
             int pageSize = 10,

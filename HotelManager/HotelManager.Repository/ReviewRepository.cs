@@ -109,10 +109,10 @@ namespace HotelManager.Repository
                     command.CommandText += " AND r.\"Rating\" >= @MinRating ";
                     command.Parameters.AddWithValue("@MinRating", reviewFilter.Rating);
                 }
-                if (reviewFilter.UserId != Guid.Empty)
+                if (reviewFilter.RoomId != Guid.Empty)
                 {
-                    command.CommandText += " AND r.\"UserId\" = @UserId ";
-                    command.Parameters.AddWithValue("@UserId", reviewFilter.UserId);
+                    command.CommandText += " AND r.\"RoomId\" = @RoomId ";
+                    command.Parameters.AddWithValue("@RoomId", reviewFilter.RoomId);
                 }
             }
         }

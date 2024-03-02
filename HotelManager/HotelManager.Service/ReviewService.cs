@@ -27,11 +27,8 @@ namespace HotelManager.Service
 
         public async Task<PagedList<Review>> GetAllAsync(Paging paging, Sorting sorting, ReviewFilter reviewFilter)
         {
-            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-
             try
             {
-                reviewFilter.UserId = userId;
                 return await _reviewRepository.GetAllAsync(paging, sorting, reviewFilter);
             }
             catch(Exception ex)
