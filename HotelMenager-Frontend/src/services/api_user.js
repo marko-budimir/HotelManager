@@ -1,32 +1,29 @@
-import axios from "axios";
+import { get, post, put } from "./api_base";
 
-const BASE_URL = "https://localhost:44327";
+const URL_PATH = "/api/user";
 
-const getUser = async (headers) => {
-  return await axios.get(`${BASE_URL}/api/user`, { headers: headers });
+const getUser = async () => {
+  return await get("/api/user");
 };
 
 const createUser = async (registerData) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/user`, registerData);
+    const response = await post(`${URL_PATH}`, registerData);
     return response.status;
   } catch (error) {
     throw error;
   }
 };
-const updateUser = async (userData, headers) => {
-  return await axios.put(`${BASE_URL}/api/user`, userData, { headers: headers });
+const updateUser = async (userData) => {
+  return await put(URL_PATH, userData);
 };
 
-const updatePassword = async (passwordData, headers) => {
-  return await axios.put(
-    `${BASE_URL}/api/user/updatePassword`,
+const updatePassword = async (passwordData) => {
+  return await put(
+    `${URL_PATH}/updatePassword`,
     {
       passwordOld: passwordData.passwordOld,
       passwordNew: passwordData.passwordNew,
-    },
-    {
-      headers: headers,
     }
   );
 };
@@ -37,7 +34,7 @@ const loginUser = async ({ email, password }) => {
   loginData.append("password", password);
   loginData.append("grant_type", "password");
   try {
-    const response = await axios.post(`${BASE_URL}/login`, loginData);
+    const response = await post(`/login`, loginData);
     return response;
   } catch (error) {
     throw error;

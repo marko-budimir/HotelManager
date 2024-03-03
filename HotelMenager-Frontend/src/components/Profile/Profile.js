@@ -13,26 +13,13 @@ export const Profile = () => {
     phone: "",
   });
 
-  const headers = {
-    Authorization: "",
-  };
-
   const fetchData = async () => {
-    fetchToken();
     try {
-      const userData = await getUser(headers);
+      const userData = await getUser();
       setUser(userData.data);
     } catch (error) {
       console.error("Error fetching user:", error);
     }
-  };
-
-  const fetchToken = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-    headers.Authorization = `Bearer ${token}`;
   };
 
   useEffect(() => {
@@ -40,10 +27,8 @@ export const Profile = () => {
   }, []);
 
   const handleProfileEdit = async (userData) => {
-    fetchToken();
-    console.log(userData, headers);
     try {
-      await updateUser(userData, headers);
+      await updateUser(userData);
       fetchData();
     } catch (error) {
       console.error(error);
@@ -51,9 +36,8 @@ export const Profile = () => {
   };
 
   const handlePasswordEdit = async (passwordData) => {
-    fetchToken();
     try {
-      await updatePassword(passwordData, headers);
+      await updatePassword(passwordData);
       fetchData();
     } catch (error) {
       console.error(error);
