@@ -3,9 +3,24 @@
 @import "./utils/variables";
 
 //imports from components
-
+@import "./components/authentication/authentificationForm";
+@import "./components/authentication/authentificationFormRow";
+@import "./components/common/error";
+@import "./components/common/header";
+@import "./components/common/navBar";
+@import "./components/profile/editPassword";
+@import "./components/profile/editProfile";
+@import "./components/profile/profile";
+@import "./components/profile/profileData";
+@import "./components/room/roomList";
 //imports from pages
-
+@import "./pages/homePage";
+@import "./pages/loginPage";
+@import "./pages/registerPage";
+@import "./pages/roomDetailsPage";
+@import "./pages/roomsPage";
 //imports from base
 @import "./base/resets";
+@import "./base/base";
 //imports from layout
+@import "./layout/layout";

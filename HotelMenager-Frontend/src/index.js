@@ -13,12 +13,16 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 
 import "./style/style.css";
+import { RoomsPage } from "./pages/RoomsPage";
+import { RoomDetailsPage } from "./pages/RoomDetailsPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} errorElement={<Error />}>
+        <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
+        <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
       </Route>
       <Route
         path="/login"

@@ -1,0 +1,26 @@
+@import "../../utils/mixins";
+@import "../../utils/variables";
+
+.room-list {
+  @include displayFlexColumn();
+  gap: 5vh;
+  .room-link {
+    padding-right: 5vw;
+    width: 70vw;
+    height: 20vh;
+    background-color: $primary;
+    border-radius: 0.8rem;
+    @include displayFlexRow();
+    justify-content: space-between;
+    .room-link-info {
+      @include displayFlexColumn();
+      gap: 10vh;
+      .room-link-number {
+        font-size: 2rem;
+      }
+      .room-link-price {
+        font-size: 1.3rem;
+      }
+    }
+  }
+}

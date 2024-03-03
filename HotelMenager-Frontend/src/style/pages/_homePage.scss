@@ -1,0 +1,13 @@
+@import "../utils/mixins";
+@import "../utils/variables";
+
+.header {
+  position: sticky;
+  height: 7vh;
+  width: 100vw;
+  background-color: $dark;
+  color: white;
+  @include displayFlexRow();
+  justify-content: space-between;
+  padding: 0 10vw;
+}

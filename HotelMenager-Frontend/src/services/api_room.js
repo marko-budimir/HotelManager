@@ -1,10 +1,13 @@
-const BASE_URL = "";
+import axios from "axios";
 
-const getAllRooms = () => {};
+const BASE_URL = "https://localhost:44327/api/room";
 
-const getByIdRoom = () => {};
-
-export default {
-  getAllRooms,
-  getByIdRoom,
+const getAllRooms = async () => {
+  return await axios.get(`${BASE_URL}`);
 };
+
+const getByIdRoom = async (id) => {
+  return await axios.get(`${BASE_URL}/${id}`);
+};
+
+export { getAllRooms, getByIdRoom };
