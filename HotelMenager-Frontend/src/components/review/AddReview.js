@@ -1,15 +1,49 @@
-
+import React, { useState } from 'react';
 
 const AddReview = () => {
-    if (rating < 1 || rating > 5) {
-      throw new Error("Rating must be a number between 1 and 5.");
-    }
-  
-    if (!comment || comment.length === 0) {
-      throw new Error("Comment cannot be empty.");
-    }
-  
-    alert("Review added successfully!");
+  const [rating, setRating] = useState(0);
+  const [text, setText] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Simulate sending data to server (replace with your actual API call)
+    console.log(`Submitting review: rating: ${rating}, text: ${text}`);
+
+    // Clear form after submit
+    setRating(0);
+    setText('');
   };
-  
-  export default AddReview;
+
+  return (
+    <form onSubmit={handleSubmit} className="add-review-form">
+      <h3>Add Review</h3>
+      <div className="rating">
+        <label htmlFor="rating">Rating:</label>
+        <input
+          type="number"
+          id="rating"
+          min={0}
+          max={5}
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+          className="rating-input"
+        />
+      </div>
+      <div className="review-text">
+        <label htmlFor="review-text">Review Text:</label>
+        <textarea
+          id="review-text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="review-text-area"
+        />
+      </div>
+      <button type="submit" className="submit-button">
+        Submit Review
+      </button>
+    </form>
+  );
+};
+
+export default AddReview;
