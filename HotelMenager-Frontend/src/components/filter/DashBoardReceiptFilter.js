@@ -1,17 +1,17 @@
 import React from "react";
-import DateSelectUser from './FilterDateSelectUser.js';
 import PriceRange from './FilterPriceRange.js';
+import IsPaidReceipt from './FilterIsPaidReceipt.js';
 import SearchQuery from './FilterSearchQuery.js'
 
-const DashBoardReservationFilter = () => {
+const DashBoardReceiptFilter = () => {
 
     return(
-        <div className="DashBoardReservationFilter">
-        <DateSelectUser/>
+        <div className="DashBoardReceiptFilter">
         <PriceRange minValue={0} maxValue={100} />
+        <IsPaidReceipt/>
         <SearchQuery/>
         </div>
     );
 }
 
-export default DashBoardReservationFilter;
+export default DashBoardReceiptFilter;

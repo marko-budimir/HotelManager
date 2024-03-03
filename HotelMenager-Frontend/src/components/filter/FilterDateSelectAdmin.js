@@ -22,7 +22,6 @@ const DatePickerAdmin = ({ onChange, ...props }) => {
     <DateRangePicker
       onChange={handleSelect}
       ranges={state}
-      minDate={addDays(new Date(),0)}
       {...props}
     />
   );

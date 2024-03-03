@@ -20,7 +20,7 @@ const SearchInput = ({ onSearch }) => {
         type="text"
         value={searchQuery}
         onChange={handleChange}
-        placeholder="Enter your search query..."
+        placeholder="Search by email..."
       />
       <button type="submit">Search</button>
     </form>

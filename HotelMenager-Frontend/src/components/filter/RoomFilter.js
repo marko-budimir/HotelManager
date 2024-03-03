@@ -1,17 +1,21 @@
 import React from "react";
 import DateSelectUser from './FilterDateSelectUser.js';
 import PriceRange from './FilterPriceRange.js';
-import SearchQuery from './FilterSearchQuery.js'
+import NumberOfBeds from './FilterNumberOfBeds.js';
+import RoomTypes from './FilterRoomTypes.js';
 
-const DashBoardReservationFilter = () => {
+const RoomFilter = () => {
 
     return(
-        <div className="DashBoardReservationFilter">
+        <div className="RoomFilter">
         <DateSelectUser/>
         <PriceRange minValue={0} maxValue={100} />
-        <SearchQuery/>
+        <NumberOfBeds/>
+        <RoomTypes/>
         </div>
+
+
     );
 }
 
-export default DashBoardReservationFilter;
+export default RoomFilter;
