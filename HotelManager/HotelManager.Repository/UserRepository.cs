@@ -39,7 +39,7 @@ namespace HotelManager.Repository
                                     LastName = reader.GetString(reader.GetOrdinal("LastName")),
                                     Email = reader.GetString(reader.GetOrdinal("Email")),
                                     Password = reader.GetString(reader.GetOrdinal("Password")),
-                                    Phone = reader.GetString(reader.GetOrdinal("Phone")),
+                                    Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? null : reader.GetString(reader.GetOrdinal("Phone")),
                                     RoleId = reader.GetGuid(reader.GetOrdinal("RoleId")),
                                     CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                     UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),

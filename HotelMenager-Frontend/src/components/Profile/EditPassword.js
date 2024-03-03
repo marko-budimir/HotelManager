@@ -5,13 +5,11 @@ export const EditPassword = ({ handleEdit }) => {
 
   const handleChange = (e) => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
-    console.log({ ...passwordData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleEdit(passwordData);
-    console.log(passwordData);
     e.target.reset();
   };
 
