@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { HomePage } from "./pages/HomePage";
-import Error from "./components/Error";
-import { Profile } from "./components/Profile/Profile";
+import Error from "./components/Common/Error";
+import { ProfilePage } from "./pages/ProfilePage";
 import {
   Route,
   RouterProvider,
@@ -17,7 +17,9 @@ import "./style/style.css";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<HomePage />} errorElement={<Error />}></Route>
+      <Route path="/" element={<HomePage />} errorElement={<Error />}>
+        <Route path="my-profile" element={<ProfilePage />}></Route>
+      </Route>
       <Route
         path="/login"
         element={<LoginPage />}

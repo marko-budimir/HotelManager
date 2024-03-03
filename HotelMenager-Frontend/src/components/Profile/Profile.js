@@ -14,16 +14,11 @@ export const Profile = () => {
   });
 
   const headers = {
-    Authorization:
-      "",
+    Authorization: "",
   };
 
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-    headers.Authorization = `Bearer ${token}`;
+    fetchToken();
     try {
       const userData = await getUser(headers);
       setUser(userData.data);
@@ -32,11 +27,21 @@ export const Profile = () => {
     }
   };
 
+  const fetchToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+    headers.Authorization = `Bearer ${token}`;
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const handleProfileEdit = async (userData) => {
+    fetchToken();
+    console.log(userData, headers);
     try {
       await updateUser(userData, headers);
       fetchData();
@@ -46,6 +51,7 @@ export const Profile = () => {
   };
 
   const handlePasswordEdit = async (passwordData) => {
+    fetchToken();
     try {
       await updatePassword(passwordData, headers);
       fetchData();
