@@ -15,6 +15,7 @@ import RegisterPage from "./pages/RegisterPage";
 import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
+import { AddReviewPage } from "./pages/AddReviewPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
+        <Route path="/addreview/:roomId" element={<AddReviewPage/>}></Route>
       </Route>
       <Route
         path="/login"

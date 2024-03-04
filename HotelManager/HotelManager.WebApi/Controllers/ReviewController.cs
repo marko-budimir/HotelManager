@@ -30,7 +30,7 @@ namespace HotelManager.WebApi.Controllers
         [HttpGet]
         [Route("{roomId:guid}")]
         public async Task<HttpResponseMessage> GetReviewsForRoomAsync(int pageNumber = 1,
-            int pageSize = 10,
+            int pageSize = 5,
             string sortBy = "",
             string isAsc = "ASC",
             string searchQuery = null,
