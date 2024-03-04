@@ -16,6 +16,8 @@ import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
 import { AddReviewPage } from "./pages/AddReviewPage";
+import { DashboardServicesPage } from "./pages/DashboardServicesPage";
+import { EditServicePage } from "./pages/EditServicePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,7 +26,15 @@ const router = createBrowserRouter(
         <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
-        <Route path="/addreview/:roomId" element={<AddReviewPage/>}></Route>
+        <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
+        <Route
+          path="/dashboardServices"
+          element={<DashboardServicesPage />}
+        ></Route>
+        <Route
+          path="/edit-service/:service:id"
+          element={<EditServicePage />}
+        ></Route>
       </Route>
       <Route
         path="/login"
