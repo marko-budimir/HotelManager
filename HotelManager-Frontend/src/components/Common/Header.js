@@ -3,7 +3,7 @@ export const Header = () => {
   return (
     <>
       <Link to="/">
-        <h1 className="main-title">Hotel Menager</h1>
+        <h1 className="main-title">Hotel Manager</h1>
       </Link>
       <ul className="headerLinks">
         <li className="headerLink">
