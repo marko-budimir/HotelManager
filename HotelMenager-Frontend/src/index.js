@@ -15,6 +15,8 @@ import RegisterPage from "./pages/RegisterPage";
 import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
+import DashBoardRoomPage from './pages/DashBoardRoomPage.js';
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +25,8 @@ const router = createBrowserRouter(
         <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
+        <Route path="/dashBoardRoom/:id" element={<DashBoardRoomPage />}></Route>
+
       </Route>
       <Route
         path="/login"

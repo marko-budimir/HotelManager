@@ -1,23 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
-const FilterNumberOfBeds = () => {
+const FilterNumberOfBeds = ({isDisabled=false}) => {
+    const [numberOfBeds, setNumberOfBeds] = useState('');
 
     const handleChange = (event) => {
-        console.log(event.target.value);
-    }
+        setNumberOfBeds(event.target.value);    }
 
     return(
         <label className="NumberOfBedsRow">
-                <span>Number of beds:</span>
-        <div className="FilterNumberOfBeds">
-            <select onChange={handleChange}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </div>
+            <span>Number of beds:</span>
+            <br/>
+            <input
+                type="text"
+                value={numberOfBeds}
+                disabled={isDisabled}
+                onChange={handleChange}
+            />
+            <br/><br/>
         </label>
     );
 }
