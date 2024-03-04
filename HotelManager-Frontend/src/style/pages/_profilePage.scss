@@ -1,0 +1,7 @@
+@import "../utils/mixins";
+@import "../utils/variables";
+
+.profile-page {
+  @include displayFlexRow();
+  justify-content: flex-start;
+}

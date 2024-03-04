@@ -14,7 +14,7 @@ const updateService = () => {};
 
 const deleteService = () => {};
 
-export default {
+export {
   getAllServices,
   getByIdService,
   createService,
