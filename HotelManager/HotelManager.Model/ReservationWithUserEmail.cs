@@ -22,5 +22,6 @@ namespace HotelManager.Model
         public DateTime DateCreated { get; set; }
         public bool IsActive { get; set; }
         public string UserEmail { get; set; }
+        public int RoomNumber { get; set; }
     }
 }
