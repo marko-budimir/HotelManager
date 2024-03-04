@@ -13,8 +13,6 @@ const RoomFilter = () => {
         <NumberOfBeds/>
         <RoomTypes/>
         </div>
-
-
     );
 }
 

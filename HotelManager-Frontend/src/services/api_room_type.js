@@ -23,5 +23,5 @@ export  {
   getAllRoomType,
   getByIdRoomType,
   createRoomType,
-  updateRoomType,
+  updateRoomType
 };

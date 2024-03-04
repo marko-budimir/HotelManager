@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import api_room_type from '../../services/api_room_type';
+import { createRoomType } from "../../services/api_room_type";
+
 
 const RoomTypeAdd = () => {
   const [roomType, setRoomType] = useState({});
@@ -13,7 +14,7 @@ const RoomTypeAdd = () => {
     e.preventDefault();
     try {
         console.log(roomType);
-      await api_room_type.createRoomType(roomType);
+      await createRoomType(roomType);
       // Handle success, maybe redirect or show a success message
       console.log("Room type added successfully!");
     } catch (error) {
