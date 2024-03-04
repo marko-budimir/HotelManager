@@ -53,9 +53,10 @@ namespace HotelManager.Repository
                     await connection.OpenAsync();
 
                     var queryBuilder = new StringBuilder();
-                    queryBuilder.AppendLine("SELECT res.*, u.\"Email\"");
+                    queryBuilder.AppendLine("SELECT res.*, u.\"Email\", ro.\"Number\" AS \"RoomNumber\"");
                     queryBuilder.AppendLine(" FROM \"Reservation\" res");
                     queryBuilder.AppendLine(" JOIN \"User\" u ON res.\"UserId\" = u.\"Id\"");
+                    queryBuilder.AppendLine(" JOIN \"Room\" ro ON res.\"RoomId\" = ro.\"Id\"");
                     queryBuilder.AppendLine(" WHERE res.\"IsActive\" = TRUE");
 
                     
@@ -89,8 +90,8 @@ namespace HotelManager.Repository
                                     DateCreated = (DateTime)reader["DateCreated"],
                                     DateUpdated = (DateTime)reader["DateUpdated"],
                                     IsActive = (bool)reader["IsActive"],
-                                    UserEmail = (string)reader["Email"]
-
+                                    UserEmail = (string)reader["Email"],
+                                    RoomNumber = (int)reader["RoomNumber"]
                                 });
                             }
                         }
@@ -273,6 +274,11 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@SearchQuery", $"%{reservationFilter.SearchQuery}%");
                 queryBuilder.AppendLine(" AND u.\"Email\" ILIKE @SearchQuery");
             }
+            if(reservationFilter.UserId != null && reservationFilter.UserId != Guid.Empty)
+            {
+                command.Parameters.AddWithValue("@UserId", reservationFilter.UserId);
+                queryBuilder.AppendLine(" AND res.\"UserId\" = @UserId");
+            }
 
             command.CommandText = queryBuilder.ToString();
         }
@@ -308,7 +314,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Invoice\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Reservation\" res WHERE res.\"IsActive\" = TRUE";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try

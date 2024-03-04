@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import MyReservationsPage from "./pages/MyReservationsPage";
 
 import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<HomePage />} errorElement={<Error />}>
         <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
+        <Route path="/my-reservations" element={<MyReservationsPage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
         <Route path="/addreview/:roomId" element={<AddReviewPage/>}></Route>
         <Route path="/dashBoardRoom/:id" element={<DashBoardRoomPage />}></Route>
