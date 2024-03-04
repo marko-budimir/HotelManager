@@ -1,6 +1,10 @@
-const BASE_URL = "";
+import { get, post, put } from "./api_base";
 
-const getAllServices = () => {};
+const URL_PATH = "/api/hotelService";
+
+const getAllServices = async () => {
+  return await get(`${URL_PATH}`);
+};
 
 const getByIdService = () => {};
 
@@ -10,7 +14,7 @@ const updateService = () => {};
 
 const deleteService = () => {};
 
-export default {
+export {
   getAllServices,
   getByIdService,
   createService,
