@@ -7,7 +7,7 @@ const getAllReservations = async (query) => {
   try {
     const response = await get(`${BASE_URL}${queryString}`);
     if (response.status === 200) {
-      return response.data.items;
+      return [response.data.items, response.data.totalPages];
     }
     return [];
   }

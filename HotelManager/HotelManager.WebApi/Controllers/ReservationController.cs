@@ -49,8 +49,9 @@ namespace HotelManager.WebApi.Controllers
             {
                 
                 var currentUser = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.NameIdentifier).Value;
+                var isAdmin = User.IsInRole("Admin");
 
-                if (currentUser != userId?.ToString())
+                if (!isAdmin && currentUser != userId?.ToString())
                 {
                     return Request.CreateResponse(HttpStatusCode.Forbidden, "Access denied.");
                 }

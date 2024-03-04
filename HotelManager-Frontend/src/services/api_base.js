@@ -6,7 +6,6 @@ const get = async (url) => {
     const headers = {
         Authorization: getToken(),
     };
-    console.log(`${BASE_URL}${url}`);
     return await axios.get(`${BASE_URL}${url}`, { headers: headers });
 }
 

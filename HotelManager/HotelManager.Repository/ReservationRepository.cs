@@ -314,7 +314,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Invoice\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Reservation\" res WHERE res.\"IsActive\" = TRUE";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try

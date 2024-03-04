@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import api_reservation from "../services/api_reservation";
 import { getUser } from "../services/api_user";
 import { useNavigate } from "react-router";
+import Paging from "../components/Common/Paging";
 
 const MyReservationsPage = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const MyReservationsPage = () => {
         },
         currentPage: 1,
         pageSize: 10,
+        totalPages: 1,
         sortBy: "CheckInDate",
         sortOrder: "ASC"
     });
@@ -42,15 +44,28 @@ const MyReservationsPage = () => {
 
     useEffect(() => {
         if (!query.filter.userId) return;
-        api_reservation.getAllReservations(query).then((data) => {
-            console.log("data", data);
+        api_reservation.getAllReservations(query).then((response) => {
+            const [data, totalPages] = response;
             setReservations(data.map(reservation => ({
                 ...reservation,
                 checkInDate: formatDate(reservation.checkInDate),
                 checkOutDate: formatDate(reservation.checkOutDate)
             })));
+            setQuery({
+                ...query,
+                totalPages
+            });
         });
-    }, [query]);
+    }, [query.filter.userId, query.currentPage, query.sortBy, query.sortOrder]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1) {
+            setQuery({
+                ...query,
+                currentPage: newPage
+            });
+        }
+    }
 
 
     const columns = [
@@ -71,6 +86,7 @@ const MyReservationsPage = () => {
         <div className="my-reservations-page">
             <NavBar />
             <DataTable data={reservations} columns={columns} handle={handle} />
+            <Paging totalPages={query.totalPages} currentPage={query.currentPage} onPageChange={handlePageChange} />
         </div>
     );
 }
