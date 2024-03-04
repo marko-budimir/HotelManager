@@ -418,5 +418,61 @@ namespace HotelManager.Repository
             roomUpdate.IsActive = room.IsActive;
             roomUpdate.TypeId = room.TypeId;
         }
+
+        public async Task<Room> PostRoomAsync(Room room)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var query = @"
+            INSERT INTO ""Room"" (
+                ""Id"", ""Number"", ""BedCount"", ""Price"", ""IsActive"", ""ImageUrl"", ""TypeId"", ""CreatedBy"", ""UpdatedBy"", ""DateCreated"", ""DateUpdated""
+            ) VALUES (
+                @Id, @Number, @BedCount, @Price, @IsActive, @ImageUrl, @TypeId, @CreatedBy, @UpdatedBy, @DateCreated, @DateUpdated
+            )
+            RETURNING *
+        ";
+
+                using (var cmd = new NpgsqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Id", room.Id);
+                    cmd.Parameters.AddWithValue("@Number", room.Number);
+                    cmd.Parameters.AddWithValue("@BedCount", room.BedCount);
+                    cmd.Parameters.AddWithValue("@Price", room.Price);
+                    cmd.Parameters.AddWithValue("@IsActive", room.IsActive);
+                    cmd.Parameters.AddWithValue("@ImageUrl", room.ImageUrl);
+                    cmd.Parameters.AddWithValue("@TypeId", room.TypeId);
+                    cmd.Parameters.AddWithValue("@CreatedBy", room.CreatedBy);
+                    cmd.Parameters.AddWithValue("@UpdatedBy", room.UpdatedBy);
+                    cmd.Parameters.AddWithValue("@DateCreated", room.DateCreated);
+                    cmd.Parameters.AddWithValue("@DateUpdated", room.DateUpdated);
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new Room
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Number = reader.GetInt32(reader.GetOrdinal("Number")),
+                                BedCount = reader.GetInt32(reader.GetOrdinal("BedCount")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                                TypeId = reader.GetGuid(reader.GetOrdinal("TypeId")),
+                                CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
+                                UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
+                                DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
+                                DateUpdated = reader.GetDateTime(reader.GetOrdinal("DateUpdated"))
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null; // Return null if insertion fails
+        }
+
     }
 }

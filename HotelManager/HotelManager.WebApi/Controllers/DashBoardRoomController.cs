@@ -1,6 +1,7 @@
 ﻿using HotelManager.Common;
 using HotelManager.Model;
 using HotelManager.Service.Common;
+using HotelManager.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,5 +96,39 @@ namespace HotelManager.WebApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost] 
+        public async Task<HttpResponseMessage> PostRoomAsync([FromBody] RoomCreate roomCreate)
+        {
+            try
+            {
+                if (roomCreate == null)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid room data");
+
+                Guid typeId;
+                if (!Guid.TryParse(roomCreate.TypeId, out typeId))
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid TypeId format");
+
+                var room = new Room
+                {
+                    Number = roomCreate.Number,
+                    BedCount = roomCreate.BedCount,
+                    Price = roomCreate.Price,
+                    IsActive= roomCreate.IsActive,
+                    IsAvailable = roomCreate.IsAvailable ?? false,
+                    ImageUrl = roomCreate.ImageUrl,
+                    TypeId = typeId
+                };
+
+                var createdRoom = await _roomService.PostRoomAsync(room);
+                return Request.CreateResponse(HttpStatusCode.Created, createdRoom);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
+    }
 }

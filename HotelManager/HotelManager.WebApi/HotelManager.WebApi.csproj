@@ -282,6 +282,7 @@
     <Compile Include="Models\HotelServiceView.cs" />
     <Compile Include="Models\InvoiceReceiptView.cs" />
     <Compile Include="Models\ReservationEditView.cs" />
+    <Compile Include="Models\RoomCreate.cs" />
     <Compile Include="Models\UserRegistered.cs" />
     <Compile Include="Models\UserUpdated.cs" />
     <Compile Include="Models\UserView.cs" />

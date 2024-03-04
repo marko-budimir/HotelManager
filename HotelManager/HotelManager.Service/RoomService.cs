@@ -56,6 +56,21 @@ namespace HotelManager.Service
             
         }
 
+        public async Task<Room> PostRoomAsync(Room room)
+        {
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+
+            room.Id = Guid.NewGuid();
+            room.CreatedBy = userId;
+            room.UpdatedBy= userId;
+            room.DateUpdated = DateTime.UtcNow;
+            room.DateCreated = DateTime.UtcNow;
+
+
+            return await RoomRepository.PostRoomAsync(room);
+        }
+
+
         public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate)
         {
             var room = await RoomRepository.GetByIdAsync(id);
@@ -63,7 +78,7 @@ namespace HotelManager.Service
                 throw new ArgumentException("Room not found");
 
             var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
-            roomUpdate.DateUpdated = DateTime.Now;
+            roomUpdate.DateUpdated = DateTime.UtcNow;
             roomUpdate.UpdatedBy = userId;
             return await RoomRepository.UpdateRoomAsync(id,roomUpdate, userId);
         }

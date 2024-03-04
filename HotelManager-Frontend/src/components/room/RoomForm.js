@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { updateDashboardRoom, getDashboardRoomUpdateById } from '../../services/api_dashboard_room';
+import { updateDashboardRoom, getDashboardRoomUpdateById, createDashboardRoom } from '../../services/api_dashboard_room';
 import RoomType from '../filter/FilterRoomTypes';
 
 export default function RoomForm() {
@@ -14,25 +14,26 @@ export default function RoomForm() {
     typeId: '',
     isActive: true
   });
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (id && !submitted) {
+    if (id) {
       getDashboardRoomUpdateById(id)
         .then(response => {
           setRoomData(response.data);
-          setMode('view');
         })
         .catch(error => console.error("Error fetching room details:", error));
+    } else {
+      setMode('add');
     }
-  }, [id, submitted]);
+  }, [id]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    if (mode === 'view') {
-      setMode('edit');
-    } else {
+    if (mode === 'add') {
+      createDashboardRoom(roomData)
+        .then(() => handleSuccess())
+        .catch(error => console.error("Error creating room:", error));
+    } else if (mode === 'edit') {
       updateDashboardRoom(id, roomData)
         .then(() => handleSuccess())
         .catch(error => console.error("Error updating room:", error));
@@ -40,7 +41,7 @@ export default function RoomForm() {
   };
 
   const handleSuccess = () => {
-    console.log('Room updated successfully!');
+    console.log('Room operation successful!');
   };
 
   const handleRoomTypeChange = (selectedRoomType) => {
@@ -49,9 +50,11 @@ export default function RoomForm() {
       typeId: selectedRoomType,
     });
   };
-  
 
-  console.log(roomData);
+  const handleEdit = () => {
+    setMode('edit'); 
+  };
+
   return (
     <div>
       <br/>
@@ -72,21 +75,22 @@ export default function RoomForm() {
 
         <RoomType onChangeHandle={handleRoomTypeChange} isDisabled={mode === 'view'} />
 
-
         <label>
-          Is Active:
-          <input 
-            type="text" 
-            name="isActive" 
-            value={roomData.isActive}
-            checked={roomData.isActive} 
-            disabled={mode === 'view'} 
-            onChange={(e) => setRoomData({ ...roomData, isActive: e.target.value })} 
-            />
-        </label>
+        Is Active:
+        <input 
+          type="value"
+          name="isActive" 
+          value={roomData.isActive} 
+          disabled={mode === 'view'} 
+          onChange={(e) => setRoomData({ ...roomData, isActive: e.target.value })} 
+        />
+      </label>
 
         <br />
-        <button type="submit" >{mode === 'view' ? 'Edit' : 'Finish'}</button>
+        {mode === 'view' && <button type="button" onClick={handleEdit}>Edit</button>} 
+        {mode === 'edit' && <button type="submit">{mode === 'view' ? 'Edit' : 'Finish'}</button>}
+        {mode === 'add' && <button type="submit">{mode === 'view' ? 'Edit' : 'Finish'}</button>}
+
       </form> 
     </div>
   );

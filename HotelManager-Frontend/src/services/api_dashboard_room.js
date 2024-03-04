@@ -3,8 +3,6 @@ import { get, post, put } from "./api_base";
 const URL_PATH = "/api/DashBoardRoom";
 
 const updateDashboardRoom = (roomId, roomData) => {
-  console.log(roomId,roomData);
-  console.log(put(`${URL_PATH}/${roomId}`, roomData));
   return put(`${URL_PATH}/${roomId}`, roomData);
 };
 
