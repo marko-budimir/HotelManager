@@ -1,6 +1,10 @@
-const BASE_URL = "";
+import { get } from "./api_base";
 
-const getAllRoomType = () => {};
+const URL_PATH = "/api/RoomType";
+
+const getAllRoomType = () => {
+  return get(`${URL_PATH}/`);
+};
 
 const getByIdRoomType = () => {};
 
@@ -8,7 +12,7 @@ const createRoomType = () => {};
 
 const updateRoomType = () => {};
 
-export default {
+export  {
   getAllRoomType,
   getByIdRoomType,
   createRoomType,

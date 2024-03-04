@@ -152,7 +152,7 @@ namespace HotelManager.Repository
                 var query = "SELECT r.*, rt.\"Name\" AS TypeName " +
             "FROM \"Room\" r " +
             "JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\" " +
-            "WHERE r.\"Id\" = @Id AND r.\"IsActive\" = TRUE";
+            "WHERE r.\"Id\" = @Id";
 
 
 
@@ -171,6 +171,7 @@ namespace HotelManager.Repository
                                 BedCount = reader.GetInt32(reader.GetOrdinal("BedCount")),
                                 Price = reader.GetDecimal(reader.GetOrdinal("Price")),
                                 IsAvailable = reader.GetBoolean(reader.GetOrdinal("IsAvailable")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 TypeId = reader.GetGuid(reader.GetOrdinal("TypeId")),
                                 TypeName = reader.GetString(reader.GetOrdinal("TypeName"))
@@ -246,7 +247,7 @@ namespace HotelManager.Repository
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);
-                    queryBuilder.AppendLine(" WHERE \"Id\" = @id AND \"IsActive\" = TRUE");
+                    queryBuilder.AppendLine(" WHERE \"Id\" = @id");
 
 
                     cmd.Connection = connection;
