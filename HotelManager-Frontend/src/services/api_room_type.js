@@ -1,12 +1,23 @@
-const BASE_URL = "";
+import { get, post, put} from "./api_base";
 
-const getAllRoomType = () => {};
+const URL_PATH = "/api/RoomType/";
 
-const getByIdRoomType = () => {};
+const getAllRoomType = async () => {
+  return await get(URL_PATH)
+};
 
-const createRoomType = () => {};
+const getByIdRoomType = async (roomyTypeId) => {
+  return await get(URL_PATH+roomyTypeId)
+};
 
-const updateRoomType = () => {};
+const createRoomType = async (roomType) => {
+  console.log(roomType)
+  return await post(`${URL_PATH}`,roomType)
+};
+
+const updateRoomType = async (roomyTypeId, roomType) => {
+  return await put(`${URL_PATH}${roomyTypeId}`, roomType)
+};
 
 export default {
   getAllRoomType,
