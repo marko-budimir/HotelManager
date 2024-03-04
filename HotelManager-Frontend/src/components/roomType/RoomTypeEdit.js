@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api_room_type from '../../services/api_room_type';
+import { getByIdRoomType, updateRoomType } from "../../services/api_room_type";
 
 const RoomTypeEdit = ({ roomId }) => {
   const [roomType, setRoomType] = useState({});
@@ -8,7 +8,7 @@ const RoomTypeEdit = ({ roomId }) => {
   useEffect(() => {
     const fetchRoomType = async () => {
       try {
-        const response = await api_room_type.getByIdRoomType(roomId);
+        const response = await getByIdRoomType(roomId);
         setRoomType(response.data);
         setLoading(false);
       } catch (error) {
@@ -26,7 +26,7 @@ const RoomTypeEdit = ({ roomId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api_room_type.updateRoomType(roomId, roomType);
+      await updateRoomType(roomId, roomType);
       console.log("Room type updated successfully!");
     } catch (error) {
       console.error("Error updating room type:", error);
