@@ -7,14 +7,14 @@ const Reviews = ({ id }) => {
   const [reviews, setReviews] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const pageSize = 4;
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async (page) => {
       try {
         const roomId = id;
-        const response = await api_review.getReviewForRoomPaging(roomId, page);
+        const response = await api_review.getReviewForRoomPaging(roomId, page, pageSize);
         const reviewsData = response.data.items;
         const totalPages = response.data.totalPages;
         

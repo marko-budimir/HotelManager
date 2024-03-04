@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
+import { useParams } from "react-router-dom";
+import api_review from '../../services/api_review';
 
 const ReviewAdd = () => {
-  const [rating, setRating] = useState(0);
+  const { roomId } = useParams();
+  const [rating, setRating] = useState(1);
   const [text, setText] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Clear form after submit
-    setRating(0);
-    setText('');
+  
+    try {
+      const review = { rating, Comment: text };
+  
+      await api_review.createReviewForRoom(roomId, review);
+  
+      setRating(1);
+      setText('');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="add-review-form">
@@ -20,7 +31,7 @@ const ReviewAdd = () => {
         <input
           type="number"
           id="rating"
-          min={0}
+          min={1}
           max={5}
           value={rating}
           onChange={(e) => setRating(e.target.value)}

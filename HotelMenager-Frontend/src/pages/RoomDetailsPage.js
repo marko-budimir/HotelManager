@@ -32,7 +32,6 @@ export const RoomDetailsPage = () => {
       <p>Number of beds: {room.bedCount}🛏️</p>
       <p>Room type: {room.typeName}</p>
       <Reviews id={id}/>
-
     </div>
   );
 };
