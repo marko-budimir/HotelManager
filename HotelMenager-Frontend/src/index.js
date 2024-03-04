@@ -15,6 +15,9 @@ import RegisterPage from "./pages/RegisterPage";
 import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
+import Review from "./components/review/Review";
+import Reviews from "./components/review/Reviews";
+import ReviewAdd from "./components/review/ReviewAdd";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +26,9 @@ const router = createBrowserRouter(
         <Route path="/" element={<RoomsPage />}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
+        <Route path="/review" element={<Review rating="3" comment="beautiful" userFullName="toni" dateCreated="2.1.2023." id="43434"/>}></Route>
+        <Route path="/reviews" element={<Reviews/>}></Route>
+        <Route path="/addreview" element={<ReviewAdd/>}></Route>
       </Route>
       <Route
         path="/login"

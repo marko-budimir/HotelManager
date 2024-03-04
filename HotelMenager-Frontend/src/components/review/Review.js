@@ -1,10 +1,10 @@
-const Review = ({ review }) => {
-    const { rating, comment, userFullName, dateCreated } = review;
-  
+const Review = ({review}) => {
+    const { id, rating, comment, userFullName, dateCreated } = review;
+    
     const formattedDate = new Date(dateCreated).toLocaleDateString();
-  
+
     return (
-      <div className="review" key={review.id}>
+      <div className="review" key={id}>
         <div className="review-rating">
           <span>Rating:</span> {rating}
         </div>

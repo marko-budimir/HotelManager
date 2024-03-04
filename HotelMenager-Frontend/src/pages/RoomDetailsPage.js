@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getByIdRoom } from "../services/api_room";
+import Reviews from "../components/review/Reviews";
 
 export const RoomDetailsPage = () => {
   const { id } = useParams();
@@ -30,6 +31,8 @@ export const RoomDetailsPage = () => {
       <p>Price per day: {room.price}€</p>
       <p>Number of beds: {room.bedCount}🛏️</p>
       <p>Room type: {room.typeName}</p>
+      <Reviews id={id}/>
+
     </div>
   );
 };

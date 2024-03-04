@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 
-const AddReview = () => {
+const ReviewAdd = () => {
   const [rating, setRating] = useState(0);
   const [text, setText] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Simulate sending data to server (replace with your actual API call)
-    console.log(`Submitting review: rating: ${rating}, text: ${text}`);
 
     // Clear form after submit
     setRating(0);
@@ -46,4 +43,4 @@ const AddReview = () => {
   );
 };
 
-export default AddReview;
+export default ReviewAdd;
