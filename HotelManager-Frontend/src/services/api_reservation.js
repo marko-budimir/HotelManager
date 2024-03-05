@@ -30,26 +30,6 @@ const deleteReservation = async (reservationId) => {
     if (response.status === 200) {
       console.log("Reservation deleted successfully.");
       return true;
-<<<<<<< HEAD
-=======
-    }
-    return false;
-  } catch (error) {
-    console.error("Error deleting reservation:", error);
-    return false;
-  }
-};
-
-const buildQueryString = ({ filter, currentPage, pageSize, sortBy, sortOrder }) => {
-  let queryString = '';
-  queryString += `?pageNumber=${currentPage}&pageSize=${pageSize}`;
-  if (sortBy) {
-    queryString += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-  }
-  for (const key in filter) {
-    if (filter[key]) {
-      queryString += `&${key}=${filter[key]}`;
->>>>>>> 5ca590a (dashboard reservation view edit delete)
     }
     return false;
   } catch (error) {
