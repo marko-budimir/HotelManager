@@ -1,9 +1,21 @@
 import { get, post, put, remove} from "./api_base";
+import { buildQueryString } from "../common/HelperFunctions";
 
 const URL_PATH = "/api/Discount/";
 
-const getAllDiscounts = async () => {
-  return await get(URL_PATH);
+const getAllDiscounts = async (query) => {
+  const queryString = buildQueryString(query);
+  try {
+    const response = await get(`${URL_PATH}${queryString}`);
+    if (response.status === 200) {
+      return [response.data.items, response.data.totalPages];
+    }
+    return [];
+  }
+  catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 const getByIdDiscount = async (discountId) => {
