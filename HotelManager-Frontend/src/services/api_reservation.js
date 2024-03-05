@@ -24,12 +24,14 @@ const createReservation = () => { };
 
 const updateReservation = () => { };
 
-const deleteReservation = async (reservationId) => {
+const deleteReservation = async (reservationId, invoiceId) => {
   try {
-    const response = await remove(`${BASE_URL}/${reservationId}`);
+    console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
+    const response = await remove(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
     if (response.status === 200) {
       console.log("Reservation deleted successfully.");
       return true;
+
     }
     return false;
   } catch (error) {
