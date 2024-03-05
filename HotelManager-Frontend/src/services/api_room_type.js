@@ -1,4 +1,4 @@
-import { get, post, put} from "./api_base";
+import { get, post, put, remove} from "./api_base";
 
 const URL_PATH = "/api/RoomType/";
 
@@ -19,9 +19,14 @@ const updateRoomType = async (roomyTypeId, roomType) => {
   return await put(`${URL_PATH}${roomyTypeId}`, roomType)
 };
 
+const deleteRoomType = async (roomyTypeId) => {
+  return await remove(`${URL_PATH}${roomyTypeId}`)
+}
+
 export  {
   getAllRoomType,
   getByIdRoomType,
   createRoomType,
-  updateRoomType
+  updateRoomType,
+  deleteRoomType
 };

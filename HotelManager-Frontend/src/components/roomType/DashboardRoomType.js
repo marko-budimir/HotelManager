@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DataTable from "../Common/DataTable";
-import { getAllRoomType } from "../../services/api_room_type";
+import { deleteRoomType, getAllRoomType } from "../../services/api_room_type";
 
 export const DashboardRoomType = () => {
   const [roomTypes, setRoomTypes] = useState([]);
@@ -11,7 +11,6 @@ export const DashboardRoomType = () => {
     const fetchData = async () => {
       try {
         const response = await getAllRoomType();
-        console.log("Room types data:", response.data); // Log the data property
         if (response.data && response.data.items && Array.isArray(response.data.items)) {
           setRoomTypes([...response.data.items]);
         } else {
@@ -36,14 +35,27 @@ export const DashboardRoomType = () => {
     {
       label: "Delete",
       onClick: (row) => {
-        navigate("/delete-service");
-        console.log("Delete clicked for service:", row);
+        const confirmed = window.confirm("Are you sure you want to delete this room type?");
+        if (confirmed) 
+        {
+          deleteRoomType(row.id)
+            .then(() => {
+              console.log("Delete successful");
+              window.location.reload();
+            })
+            .catch((error) => {
+              console.error("Error deleting room type:", error);
+            });
+        } else 
+        {
+          console.log("Delete cancelled");
+        }
       },
     },
     {
       label: "Edit",
       onClick: (row) => {
-        navigate(`/dashboard-roomtype/${row.id}`); // Navigate to the edit page with roomTypeId
+        navigate(`/dashboard-roomtype/${row.id}`);
       },
     },
   ];

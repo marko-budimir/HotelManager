@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import { createRoomType } from "../../services/api_room_type";
-
+import { useNavigate } from "react-router-dom";
 
 const RoomTypeAdd = () => {
   const [roomType, setRoomType] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setRoomType({...roomType,[e.target.name]: e.target.value});
-    console.log(roomType);
+    setRoomType({ ...roomType, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-        console.log(roomType);
-      await createRoomType(roomType);
-      // Handle success, maybe redirect or show a success message
-      console.log("Room type added successfully!");
-    } catch (error) {
-      // Handle error, maybe show an error message
-      console.error("Error adding room type:", error);
+    const confirmed = window.confirm("Are you sure you want to add this room type?");
+    if (confirmed) {
+      try {
+        await createRoomType(roomType);
+        console.log("Room type added successfully!");
+        navigate("/dashboard-roomtype");
+      } catch (error) {
+        console.error("Error adding room type:", error);
+      }
+    } else {
+      console.log("Addition cancelled");
     }
   };
 
@@ -33,7 +36,7 @@ const RoomTypeAdd = () => {
             type="text"
             id="name"
             name="name"
-            value={roomType.name}
+            value={roomType.name || ""}
             onChange={handleChange}
           />
         </div>
@@ -42,11 +45,10 @@ const RoomTypeAdd = () => {
           <textarea
             id="description"
             name="description"
-            value={roomType.description}
+            value={roomType.description || ""}
             onChange={handleChange}
           />
         </div>
-        {/* Add inputs for other room type properties here */}
         <button type="submit">Add Room Type</button>
       </form>
     </div>
