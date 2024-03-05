@@ -13,8 +13,8 @@ namespace HotelManager.Service.Common
     {
         Task<RoomType> GetByIdAsync(Guid id);
         Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
-
         Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate);
         Task<RoomType> PostAsync(RoomType roomType);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

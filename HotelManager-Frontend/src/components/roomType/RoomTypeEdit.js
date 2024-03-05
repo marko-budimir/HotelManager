@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getByIdRoomType, updateRoomType } from "../../services/api_room_type";
+import { useNavigate } from "react-router-dom";
 
 const RoomTypeEdit = ({ roomId }) => {
   const [roomType, setRoomType] = useState({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRoomType = async () => {
@@ -20,16 +22,25 @@ const RoomTypeEdit = ({ roomId }) => {
   }, [roomId]);
 
   const handleChange = (e) => {
-    setRoomType({...roomType, [e.target.name]: e.target.value});
+    setRoomType({ ...roomType, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await updateRoomType(roomId, roomType);
-      console.log("Room type updated successfully!");
-    } catch (error) {
-      console.error("Error updating room type:", error);
+    const confirmed = window.confirm("Are you sure you want to update this room type?");
+    if (confirmed) {
+      try 
+      {
+        await updateRoomType(roomId, roomType);
+        console.log("Room type updated successfully!");
+        navigate(`/dashboard-roomtype`);
+      } catch (error) 
+      {
+        console.error("Error updating room type:", error);
+      }
+    } else 
+    {
+      console.log("Update cancelled");
     }
   };
 
@@ -60,7 +71,6 @@ const RoomTypeEdit = ({ roomId }) => {
             onChange={handleChange}
           />
         </div>
-        {/* Add inputs for other room type properties here */}
         <button type="submit">Update Room Type</button>
       </form>
     </div>
