@@ -12,8 +12,8 @@ namespace HotelManager.Repository.Common
     {
         Task<RoomType> GetByIdAsync(Guid id);
         Task<PagedList<RoomType>> GetAllAsync(Paging paging, Sorting sorting);
-
         Task<RoomTypeUpdate> UpdateAsync(Guid id, RoomTypeUpdate roomTypeUpdate, Guid roomId);
         Task<RoomType> PostAsync(RoomType roomType, Guid roomId);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

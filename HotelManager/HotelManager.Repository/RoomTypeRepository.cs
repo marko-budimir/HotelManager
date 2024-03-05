@@ -232,6 +232,22 @@ namespace HotelManager.Repository
 
         }
 
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "UPDATE \"RoomType\" SET \"IsActive\" = FALSE WHERE \"Id\" = @Id";
+
+                using (var cmd = new NpgsqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
+                }
+            }
+        }
+
 
         private RoomTypeUpdate SetValue(RoomType roomType, RoomTypeUpdate editedRoomType)
         {
