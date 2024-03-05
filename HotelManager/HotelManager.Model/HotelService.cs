@@ -18,7 +18,6 @@ namespace HotelManager.Model
         public DateTime DateUpdated { get; set; }
         public bool IsActive { get; set; }
 
-        public HotelService() {
-        }
+        public HotelService() { }
     }
 }

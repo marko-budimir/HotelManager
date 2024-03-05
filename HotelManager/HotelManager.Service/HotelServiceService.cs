@@ -48,7 +48,6 @@ namespace HotelManager.Service
                 hotelService.DateUpdated = DateTime.UtcNow;
                 hotelService.CreatedBy = userId;
                 hotelService.UpdatedBy = userId;
-                hotelService.IsActive = true;
                 return _HotelServiceRepository.CreateServiceAsync(hotelService);
             }
             catch (Exception ex)
