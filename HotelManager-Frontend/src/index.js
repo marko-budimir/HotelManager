@@ -22,6 +22,7 @@ import DashBoardAddRoomPage from './pages/DashBoardAddRoomPage.js';
 import { AddRoomTypePage } from "./pages/AddRoomTypePage";
 import { EditRoomTypePage } from "./pages/EditRoomTypePage";
 import DashboardRoomTypePage from "./pages/DashboardRoomTypePage.js";
+import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,10 @@ const router = createBrowserRouter(
         <Route path="/dashboard-roomtype/" element={<DashboardRoomTypePage/>}></Route>
         <Route path="/dashboard-roomtype/add" element={<AddRoomTypePage/>}></Route>
         <Route path="/dashboard-roomtype/:roomTypeId" element={<EditRoomTypePage/>}></Route>
+        <Route path="/dashboard-reservation/" element={<DashBoardReservationsPage/>}></Route>
+        <Route path="/dashboard-reservation/view" element={<DashBoardReservationsPage/>}></Route>
+
+
       </Route>
       <Route
         path="/login"

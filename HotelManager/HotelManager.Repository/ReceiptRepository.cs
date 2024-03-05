@@ -183,6 +183,11 @@ namespace HotelManager.Repository
                 commandText.Append(" AND \"Invoice\".\"DateUpdated\"=@endDate");
                 command.Parameters.AddWithValue("endDate", filter.dateUpdated);
             }
+            if (filter.ReservationId != null)
+            {
+                commandText.Append(" AND \"Invoice\".\"ReservationId\"=@reservationId");
+                command.Parameters.AddWithValue("reservationId", filter.ReservationId);
+            }
 
             command.CommandText = commandText.ToString();
         }
