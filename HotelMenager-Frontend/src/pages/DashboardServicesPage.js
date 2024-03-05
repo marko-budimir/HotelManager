@@ -1,6 +1,7 @@
 import { getAllServices } from "../services/api_hotel_service";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { NavBar } from "../components/Common/NavBar";
 import DataTable from "../components/Common/DataTable";
 
 export const DashboardServicesPage = () => {
@@ -34,7 +35,7 @@ export const DashboardServicesPage = () => {
     {
       label: "Delete",
       onClick: (row) => {
-        navigate("/delete-service");
+        navigate(`/delete-service/${row.id}`);
         console.log("Delete clicked for service:", row);
       },
     },
@@ -50,6 +51,7 @@ export const DashboardServicesPage = () => {
 
   return (
     <div className="service-list">
+      <NavBar />
       <DataTable data={services} columns={columns} handle={handle} />
     </div>
   );
