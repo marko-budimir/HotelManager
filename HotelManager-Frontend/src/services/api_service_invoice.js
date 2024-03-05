@@ -1,12 +1,31 @@
-const BASE_URL = "";
+import { get, post } from "./api_base";
+import { buildQueryString } from "../common/HelperFunctions";
 
-const getByInvoiceId = () => {};
+const BASE_URL = "/api/ServiceInvoice";
 
-const getAllServiceInvoice = () => {};
+const getByInvoiceId = async (query) => {
+  const queryString = buildQueryString(query);
+  try {
+    const response = await get(`${BASE_URL}${queryString}`);
+    if (response.status === 200) {
+      return response.data.items;
+    }
+    return [];
+  }
+  catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 
-const deleteServiceInvoice = () => {};
+const getAllServiceInvoice = () => { };
 
-const createServiceInvoice = () => {};
+const deleteServiceInvoice = () => { };
+
+const createServiceInvoice = (data) => {
+  console.log( "test", data);
+  return post(BASE_URL, data);
+};
 
 export default {
   getByInvoiceId,

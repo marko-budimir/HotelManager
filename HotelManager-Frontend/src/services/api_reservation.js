@@ -1,4 +1,5 @@
 import { get } from "./api_base";
+import { buildQueryString } from "../common/HelperFunctions";
 
 const BASE_URL = "/api/reservation";
 
@@ -25,19 +26,7 @@ const updateReservation = () => { };
 
 const deleteReservation = () => { };
 
-const buildQueryString = ({ filter, currentPage, pageSize, sortBy, sortOrder }) => {
-  let queryString = '';
-  queryString += `?pageNumber=${currentPage}&pageSize=${pageSize}`;
-  if (sortBy) {
-    queryString += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-  }
-  for (const key in filter) {
-    if (filter[key]) {
-      queryString += `&${key}=${filter[key]}`;
-    }
-  }
-  return queryString;
-}
+
 
 export default {
   getAllReservations,

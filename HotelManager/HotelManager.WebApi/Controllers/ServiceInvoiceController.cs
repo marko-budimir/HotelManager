@@ -27,16 +27,13 @@ namespace HotelManager.WebApi.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetServiceInvoiceByInvoiceIdAsync (
             Guid id,
-            int pageNumber = 1,
-            int pageSize = 10,
-            string sortBy = "",
+            string sortBy = "DateCreated",
             string isAsc = "ASC")
         {
-            Paging paging = new Paging() { PageNumber = pageNumber,PageSize = pageSize};
             Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
             try
             {
-                PagedList<IServiceInvoiceHistory> serviceInvoiceHistories = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id,sorting,paging);
+                PagedList<IServiceInvoiceHistory> serviceInvoiceHistories = await _receiptService.GetServiceInvoiceByInvoiceIdAsync(id,sorting);
                 return Request.CreateResponse(HttpStatusCode.OK, serviceInvoiceHistories);
             }
             catch (Exception e)
@@ -92,19 +89,13 @@ namespace HotelManager.WebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<HttpResponseMessage> CreateInvoiceServiceAsync([FromBody]ServiceInvoice invoiceCreate)
+        public async Task<HttpResponseMessage> CreateInvoiceServiceAsync([FromBody] ServiceInvoiceCreate invoiceCreate)
         {
             IServiceInvoice invoiceAdd = new ServiceInvoice
             {
-                Id = Guid.NewGuid(),
-                NumberOfService = invoiceCreate.NumberOfService,
+                NumberOfService = invoiceCreate.Quantity,
                 InvoiceId = invoiceCreate.InvoiceId,
                 ServiceId = invoiceCreate.ServiceId,
-                CreatedBy = invoiceCreate.CreatedBy,
-                UpdatedBy = invoiceCreate.UpdatedBy,
-                DateCreated = invoiceCreate.DateCreated,
-                DateUpdated = invoiceCreate.DateUpdated,
-                IsActive = invoiceCreate.IsActive
             };
 
             string result = await _receiptService.CreateInvoiceServiceAsync(invoiceAdd);

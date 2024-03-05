@@ -66,6 +66,7 @@ namespace HotelManager.WebApi.Controllers
             }
  
             PagedList<ReceiptView> receiptViews = new PagedList<ReceiptView>();
+            receiptViews.Items = new List<ReceiptView>();
             foreach (var receipt in receipts.Items)
             {
                 var receiptView = _mapper.Map<ReceiptView>(receipt);

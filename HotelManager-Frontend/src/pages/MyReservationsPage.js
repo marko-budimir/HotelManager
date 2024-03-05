@@ -5,6 +5,7 @@ import api_reservation from "../services/api_reservation";
 import { getUser } from "../services/api_user";
 import { useNavigate } from "react-router";
 import Paging from "../components/Common/Paging";
+import { formatDate } from "../common/HelperFunctions";
 
 const MyReservationsPage = () => {
     const navigate = useNavigate();
@@ -24,23 +25,17 @@ const MyReservationsPage = () => {
     useEffect(() => {
         try {
             getUser().then((user) => {
-                setQuery({
-                    ...query,
+                setQuery((prevQuery) => ({
+                    ...prevQuery,
                     filter: {
-                        userId: user.data.id
-                    }
-                });
+                        userId: user.data.id,
+                    },
+                }));
             });
         } catch (error) {
             console.error(error);
         }
     }, []);
-
-    const formatDate = (dateString) => {
-        const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB', options);
-    };
 
     useEffect(() => {
         if (!query.filter.userId) return;
@@ -51,10 +46,10 @@ const MyReservationsPage = () => {
                 checkInDate: formatDate(reservation.checkInDate),
                 checkOutDate: formatDate(reservation.checkOutDate)
             })));
-            setQuery({
-                ...query,
+            setQuery((prevQuery) => ({
+                ...prevQuery,
                 totalPages
-            });
+            }));
         });
     }, [query.filter.userId, query.currentPage, query.sortBy, query.sortOrder]);
 

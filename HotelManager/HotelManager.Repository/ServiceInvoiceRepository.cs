@@ -27,10 +27,10 @@ namespace HotelManager.Repository
                 NpgsqlCommand command = new NpgsqlCommand();
                 command.Connection = connection;
                 command.CommandText = $"SELECT * FROM \"InvoiceService\" WHERE \"InvoiceService\".\"IsActive\"=true";
-                if(paging != null)
+                if(sorting != null)
                     ApplySorting(command, sorting);
                 itemCount = await GetItemCountAsync();
-                if(sorting != null)
+                if(paging != null)
                     ApplyPaging(command, paging, itemCount);
 
                 try
@@ -128,7 +128,7 @@ namespace HotelManager.Repository
             }
         }
 
-        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id,Sorting sorting, Paging paging)
+        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id,Sorting sorting)
         {
             List<IServiceInvoiceHistory> serviceInvoiceHistories = new List<IServiceInvoiceHistory>();
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -142,6 +142,8 @@ namespace HotelManager.Repository
                 command.CommandText = commandText;
                 command.Connection = connection;
                 command.Parameters.AddWithValue("invoiceId", id);
+                if (sorting != null)
+                    ApplySorting(command, sorting);
 
                 try
                 {
@@ -168,7 +170,7 @@ namespace HotelManager.Repository
                     await connection.CloseAsync();
                 }
             }
-            return new PagedList<IServiceInvoiceHistory>(serviceInvoiceHistories, paging.PageNumber, paging.PageSize,serviceInvoiceHistories.Count);
+            return new PagedList<IServiceInvoiceHistory>(serviceInvoiceHistories, 0, 0,serviceInvoiceHistories.Count);
         }
         
 

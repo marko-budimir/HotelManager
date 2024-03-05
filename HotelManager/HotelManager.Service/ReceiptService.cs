@@ -15,6 +15,8 @@ using System.Net;
 using System.Linq;
 using System.Net.Configuration;
 using System.Configuration;
+using System.Web;
+using Microsoft.AspNet.Identity;
 
 namespace HotelManager.Service
 {
@@ -53,11 +55,11 @@ namespace HotelManager.Service
             }
         }
 
-        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id, Sorting sorting, Paging paging)
+        public async Task<PagedList<IServiceInvoiceHistory>> GetServiceInvoiceByInvoiceIdAsync(Guid id, Sorting sorting)
         {
             try
             {
-                return await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(id,sorting,paging);
+                return await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(id,sorting);
             }
             catch (Exception e)
             {
@@ -84,6 +86,13 @@ namespace HotelManager.Service
 
         public async Task<string> CreateInvoiceServiceAsync(IServiceInvoice serviceInvoice)
         {
+            var userId = Guid.Parse(HttpContext.Current.User.Identity.GetUserId());
+            serviceInvoice.Id = Guid.NewGuid();
+            serviceInvoice.CreatedBy = userId;
+            serviceInvoice.UpdatedBy = userId;
+            serviceInvoice.DateCreated = DateTime.UtcNow;
+            serviceInvoice.DateUpdated = DateTime.UtcNow;
+            serviceInvoice.IsActive = true;
             try
             {
                 return await _invoiceServiceRepository.CreateInvoiceServiceAsync(serviceInvoice);
@@ -141,7 +150,7 @@ namespace HotelManager.Service
             PdfPage page = pdfDocument.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id,null,new Paging { PageNumber = 0, PageSize = 0});
+            var services = await _invoiceServiceRepository.GetServiceInvoiceByInvoiceIdAsync(receipt.Id, null);
             AddReceiptContent(gfx, receipt, services.Items);
 
             return pdfDocument;
