@@ -29,7 +29,7 @@ const RoomTypeAdd = () => {
   return (
     <div>
       <h2>Add New Room Type</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="roomtype-add-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
           <input

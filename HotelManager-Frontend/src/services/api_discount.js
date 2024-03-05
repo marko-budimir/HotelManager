@@ -1,19 +1,31 @@
-const BASE_URL = "";
+import { get, post, put, remove} from "./api_base";
 
-const getAllDiscounts = () => {};
+const URL_PATH = "/api/Discount/";
 
-const getByIdDiscount = () => {};
+const getAllDiscounts = async () => {
+  return await get(URL_PATH);
+};
 
-const createDiscount = () => {};
+const getByIdDiscount = async (discountId) => {
+  return await get(URL_PATH+discountId)
+};
 
-const updateDiscount = () => {};
+const createDiscount = async (discount) => {
+  return await post(`${URL_PATH}`, discount)
+};
 
-const deleteDiscount = () => {};
+const updateDiscount = async (discountId, discount) => {
+  return await put(`${URL_PATH}${discountId}`, discount)
+};
 
-export default {
+const deleteDiscount = async (discountId) => {
+  return await remove(`${URL_PATH}${discountId}`)
+};
+
+export {
   getAllDiscounts,
   getByIdDiscount,
   createDiscount,
   updateDiscount,
-  deleteDiscount,
+  deleteDiscount
 };

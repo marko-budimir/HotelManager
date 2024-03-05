@@ -51,7 +51,7 @@ const RoomTypeEdit = ({ roomId }) => {
   return (
     <div>
       <h2>Edit Room Type</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="roomtype-edit-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
           <input
