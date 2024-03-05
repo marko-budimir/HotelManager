@@ -18,6 +18,7 @@ import { RoomDetailsPage } from "./pages/RoomDetailsPage";
 import { AddReviewPage } from "./pages/AddReviewPage";
 import { DashboardServicesPage } from "./pages/DashboardServicesPage";
 import { EditServicePage } from "./pages/EditServicePage";
+import { AddServicePage } from "./pages/AddServicePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,7 +33,7 @@ const router = createBrowserRouter(
           element={<DashboardServicesPage />}
         ></Route>
         <Route
-          path="/edit-service/:service:id"
+          path="/edit-service/:serviceId"
           element={<EditServicePage />}
         ></Route>
         <Route path="/add-service" element={<AddServicePage />}></Route>

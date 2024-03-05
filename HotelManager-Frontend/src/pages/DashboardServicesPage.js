@@ -1,6 +1,7 @@
 import { getAllServices } from "../services/api_hotel_service";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { NavBar } from "../components/Common/NavBar";
 import DataTable from "../components/Common/DataTable";
 import { deleteService } from "../services/api_hotel_service";
 
@@ -49,6 +50,7 @@ export const DashboardServicesPage = () => {
 
   return (
     <div className="service-list">
+      <NavBar />
       <DataTable data={services} columns={columns} handle={handle} />
     </div>
   );
