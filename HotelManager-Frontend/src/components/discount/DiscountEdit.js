@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { getDiscountById, updateDiscount } from "../../services/api_discount";
+import { getByIdDiscount, updateDiscount } from "../../services/api_discount";
+import { useNavigate } from "react-router-dom";
 
 const DiscountEdit = ({ discountId }) => {
   const [discount, setDiscount] = useState({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDiscount = async () => {
       try {
-        const response = await getDiscountById(discountId);
-        setDiscount(response.data);
+        const response = await getByIdDiscount(discountId);
+        const { validFrom, validTo, ...rest } = response.data;
+        // Formatiraj datume iz odgovora u odgovarajući format "yyyy-MM-dd"
+        const formattedValidFrom = new Date(validFrom).toISOString().split('T')[0];
+        const formattedValidTo = new Date(validTo).toISOString().split('T')[0];
+        setDiscount({ ...rest, validFrom: formattedValidFrom, validTo: formattedValidTo });
         setLoading(false);
       } catch (error) {
         console.error("Error fetching discount:", error);
@@ -20,16 +26,26 @@ const DiscountEdit = ({ discountId }) => {
   }, [discountId]);
 
   const handleChange = (e) => {
-    setDiscount({ ...discount, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "validFrom" || name === "validTo") {
+      // Formatirajte datum u odgovarajući format "yyyy-MM-dd"
+      const formattedDate = new Date(value).toISOString().split('T')[0];
+      setDiscount({ ...discount, [name]: formattedDate });
+    } else {
+      setDiscount({ ...discount, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await updateDiscount(discountId, discount);
-      console.log("Discount updated successfully!");
-    } catch (error) {
-      console.error("Error updating discount:", error);
+    if (window.confirm("Are you sure you want to update this discount?")) {
+      try {
+        await updateDiscount(discountId, discount);
+        console.log("Discount updated successfully!");
+        navigate(`/dashboard-discount`);
+      } catch (error) {
+        console.error("Error updating discount:", error);
+      }
     }
   };
 
@@ -40,7 +56,7 @@ const DiscountEdit = ({ discountId }) => {
   return (
     <div>
       <h2>Edit Discount</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="discount-edit-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="code">Code:</label>
           <input

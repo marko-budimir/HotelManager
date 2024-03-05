@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { createDiscount } from '../../services/api_discount';
+import { useNavigate } from "react-router-dom";
 
 const DiscountAdd = () => {
+    const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     code: '',
     percent: 0,
@@ -15,18 +18,21 @@ const DiscountAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createDiscount(formData);
-      console.log("Discount added successfully!");
-    } catch (error) {
-      console.error("Error adding discount:", error);
+    if (window.confirm("Are you sure you want to create this discount?")) {
+      try {
+        await createDiscount(formData);
+        console.log("Discount added successfully!");
+        navigate(`/dashboard-discount/`);
+      } catch (error) {
+        console.error("Error adding discount:", error);
+      }
     }
   };
 
   return (
     <div>
       <h2>Add New Discount</h2>
-      <form onSubmit={handleSubmit}>
+      <form className='discount-add-form' onSubmit={handleSubmit}>
         <div>
           <label htmlFor="code">Code:</label>
           <input

@@ -2,30 +2,25 @@ import { get, post, put, remove} from "./api_base";
 
 const URL_PATH = "/api/Discount/";
 
-const getAllDiscounts = async (startingValue = 0, endValue = 100, code = "", pageNum = 1, pageSize = 10, sortOrder = "ASC", sortBy = "Percent", dateCreated = null, dateUpdated = null) => {
-  try {
-    const response = await get(URL_PATH, {
-      startingValue,
-      endValue
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching all discounts:", error);
-    throw error;
-  }
+const getAllDiscounts = async () => {
+  return await get(URL_PATH);
 };
 
-const getByIdDiscount = async (id) => {
-  
+const getByIdDiscount = async (discountId) => {
+  return await get(URL_PATH+discountId)
 };
 
 const createDiscount = async (discount) => {
   return await post(`${URL_PATH}`, discount)
 };
 
-const updateDiscount = () => {};
+const updateDiscount = async (discountId, discount) => {
+  return await put(`${URL_PATH}${discountId}`, discount)
+};
 
-const deleteDiscount = () => {};
+const deleteDiscount = async (discountId) => {
+  return await remove(`${URL_PATH}${discountId}`)
+};
 
 export {
   getAllDiscounts,
