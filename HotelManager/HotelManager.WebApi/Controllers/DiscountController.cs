@@ -27,7 +27,17 @@ namespace HotelManager.WebApi.Controllers
 
         // GET: api/Discount
         [Authorize(Roles = "Admin")]
-        public async Task<HttpResponseMessage> GetAsync([FromUri] int startingValue = 0, int endValue = 100, string code="",int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "Percent", DateTime? dateCreated = null, DateTime? dateUpdated = null)
+        public async Task<HttpResponseMessage> GetAsync(
+            [FromUri] int startingValue = 0, 
+            int endValue = 100, 
+            string code="",
+            int pageNum = 1, 
+            int pageSize = 10, 
+            string sortOrder = "ASC", 
+            string sortBy = "Percent", 
+            DateTime? dateCreated = null, 
+            DateTime? dateUpdated = null
+            )
         {
             DiscountFilter filter = new DiscountFilter
             {

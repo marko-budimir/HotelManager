@@ -22,6 +22,7 @@ import DashBoardAddRoomPage from './pages/DashBoardAddRoomPage.js';
 import { AddRoomTypePage } from "./pages/AddRoomTypePage";
 import { EditRoomTypePage } from "./pages/EditRoomTypePage";
 import DashboardRoomTypePage from "./pages/DashboardRoomTypePage.js";
+import DiscountAdd from "./components/discount/DiscountAdd.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,8 @@ const router = createBrowserRouter(
         <Route path="/dashboard-roomtype/" element={<DashboardRoomTypePage/>}></Route>
         <Route path="/dashboard-roomtype/add" element={<AddRoomTypePage/>}></Route>
         <Route path="/dashboard-roomtype/:roomTypeId" element={<EditRoomTypePage/>}></Route>
+
+        <Route path="/dashboard-discount/add" element={<DiscountAdd/>}></Route>
       </Route>
       <Route
         path="/login"

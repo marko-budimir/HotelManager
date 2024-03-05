@@ -11,7 +11,6 @@ const getByIdRoomType = async (roomyTypeId) => {
 };
 
 const createRoomType = async (roomType) => {
-  console.log(roomType)
   return await post(`${URL_PATH}`,roomType)
 };
 
