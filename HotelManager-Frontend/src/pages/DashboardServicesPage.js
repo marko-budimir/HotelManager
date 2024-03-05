@@ -2,6 +2,7 @@ import { getAllServices } from "../services/api_hotel_service";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DataTable from "../components/Common/DataTable";
+import { deleteService } from "../services/api_hotel_service";
 
 export const DashboardServicesPage = () => {
   const [services, setServices] = useState([]);
@@ -33,17 +34,15 @@ export const DashboardServicesPage = () => {
   const handle = [
     {
       label: "Delete",
-      onClick: (row) => {
-        navigate("/delete-service");
-        console.log("Delete clicked for service:", row);
+      onClick: async (row) => {
+        await deleteService(row.id);
+        fetchData();
       },
     },
     {
       label: "Edit",
       onClick: (row) => {
         navigate(`/edit-service/${row.id}`);
-        console.log(`${row.id}`);
-        console.log("Edit clicked for service:", row);
       },
     },
   ];
