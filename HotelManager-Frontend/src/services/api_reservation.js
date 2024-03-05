@@ -1,5 +1,5 @@
-import { get } from "./api_base";
 import { buildQueryString } from "../common/HelperFunctions";
+import { get, remove } from "./api_base";
 
 const BASE_URL = "/api/reservation";
 
@@ -24,7 +24,19 @@ const createReservation = () => { };
 
 const updateReservation = () => { };
 
-const deleteReservation = () => { };
+const deleteReservation = async (reservationId) => {
+  try {
+    const response = await remove(`${BASE_URL}/${reservationId}`);
+    if (response.status === 200) {
+      console.log("Reservation deleted successfully.");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error deleting reservation:", error);
+    return false;
+  }
+};
 
 
 
