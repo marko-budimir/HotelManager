@@ -3,24 +3,36 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import DataTable from "../Common/DataTable";
 import { deleteDiscount, getAllDiscounts } from "../../services/api_discount";
+import Paging from "../Common/Paging";
 
 export const DashboardDiscount = () => {
   const [discounts, setDiscounts] = useState([]);
   const navigate = useNavigate();
+  const [query, setQuery] = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 1,
+    sortBy: "DateCreated",
+    sortOrder: "DESC",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getAllDiscounts();
-        if (response.data && response.data.items && Array.isArray(response.data.items)) {
-          const formattedDiscounts = response.data.items.map(discount => ({
+        const [items, totalPages] = await getAllDiscounts(query);
+        if (items && Array.isArray(items)) {
+          const formattedDiscounts = items.map(discount => ({
             ...discount,
             validFrom: format(new Date(discount.validFrom), 'dd-MM-yyyy'),
             validTo: format(new Date(discount.validTo), 'dd-MM-yyyy')
           }));
           setDiscounts(formattedDiscounts);
+          setQuery((prevQuery) => ({
+            ...prevQuery,
+            totalPages
+          }));
         } else {
-          console.error("Unexpected discount data format:", response.data);
+          console.error("Unexpected discount data format:", items);
         }
       } catch (error) {
         console.error("Error fetching room types:", error);
@@ -28,7 +40,7 @@ export const DashboardDiscount = () => {
     };
   
     fetchData();
-  }, []);
+  }, [query.currentPage]);
   
   const columns = [
     { key: "code", label: "Code" },
@@ -46,15 +58,11 @@ export const DashboardDiscount = () => {
         {
           deleteDiscount(row.id)
             .then(() => {
-              console.log("Delete successful");
               window.location.reload();
             })
             .catch((error) => {
               console.error("Error deleting discount:", error);
             });
-        } else 
-        {
-          console.log("Delete cancelled");
         }
       },
     },
@@ -66,9 +74,23 @@ export const DashboardDiscount = () => {
     },
   ];
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1) {
+      setQuery({
+        ...query,
+        currentPage: newPage
+      });
+    }
+  }
+
   return (
     <div className="discount-list">
       <DataTable data={discounts} columns={columns} handle={handle} />
+      <Paging
+        currentPage={query.currentPage}
+        totalPages={query.totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

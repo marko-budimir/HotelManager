@@ -31,7 +31,7 @@ namespace HotelManager.WebApi.Controllers
             [FromUri] int startingValue = 0, 
             int endValue = 100, 
             string code="",
-            int pageNum = 1, 
+            int pageNumber = 1, 
             int pageSize = 10, 
             string sortOrder = "ASC", 
             string sortBy = "Percent", 
@@ -54,7 +54,7 @@ namespace HotelManager.WebApi.Controllers
 
             Paging paging = new Paging
             {
-                PageNumber = pageNum,
+                PageNumber = pageNumber,
                 PageSize = pageSize
             };
 

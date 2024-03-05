@@ -33,13 +33,13 @@ namespace HotelManager.WebApi.Controllers
             int pageNumber = 1,
             int pageSize = 10,
             string sortBy = "",
-            string isAsc = "ASC"
+            string sortOrder = "ASC"
             )
         {
             try
             {
                 Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
-                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
+                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = sortOrder };
                 var roomTypes = await _roomTypeService.GetAllAsync(paging, sorting);
 
                 if (roomTypes.Items.Any())
