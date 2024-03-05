@@ -2,6 +2,7 @@ import DataTable from "../components/Common/DataTable";
 import { NavBar } from "../components/Common/NavBar";
 import { useState, useEffect } from "react";
 import api_reservation from "../services/api_reservation";
+import api_receipt from "../services/api_dashboard_invoice";
 import { useNavigate } from "react-router";
 import Paging from "../components/Common/Paging";
 
@@ -15,6 +16,12 @@ const DashBoardReservationsPage = () => {
         totalPages: 1,
         sortBy: "CheckInDate",
         sortOrder: "ASC"
+    });
+
+    const [queryReceipt, setQueryReceipt] = useState({
+        filter: {
+            ReservationId : ""
+        },
     });
 
     const [reservations, setReservations] = useState([]);
@@ -69,22 +76,57 @@ const DashBoardReservationsPage = () => {
     const handle = [
         {
             label: "Delete",
-            onClick: (item) => deleteReservation(item.id)
+            onClick: (item) => handleDeleteReservation(item.id)
         },
         {
             label: "View",
             onClick: (item) => navigate(`/dashboard-reservation/view/${item.id}`)
         }
     ];
+
+    useEffect(() => {
+        console.log(queryReceipt);
+    }, [queryReceipt]);
+
+    const handleDeleteReservation = async (reservationId) => {
+        try {
+            const invoicesResponse = await api_receipt.getAllDashboardInvoice({
+                filter: {
+                    ReservationId: reservationId
+                }
+            });
+            const invoices = invoicesResponse[0]; // Access the first element of the array
+            console.log("Invoices:", invoices);
+            console.log(reservationId);
+            // Check if invoices array is not empty
+            if (invoices.length > 0) {
+                const invoiceId = invoices[0].id; // Assuming you only need the first invoice
+                console.log("Invoice ID:", invoiceId);
     
-    const deleteReservation = (reservationId) => {
-        api_reservation.deleteReservation(reservationId).then(() => {
-            setReservations(prevReservations => prevReservations.filter(reservation => reservation.id !== reservationId));
-        }).catch(error => {
-            console.error("Failed to delete reservation:", error);
-        });
+                // Proceed with deleting the reservation
+                const deleteResponse = await api_reservation.deleteReservation(reservationId, invoiceId);
+                if (deleteResponse.status === 200) {
+                    console.log("Reservation deleted successfully.");
+                    return true;
+                } else {
+                    console.error("Error deleting reservation:", deleteResponse.statusText);
+                    return false;
+                }
+            } else {
+                console.error("No invoices found for reservationId:", reservationId);
+                return false;
+            }
+        } catch (error) {
+            console.error("Error deleting reservation:", error);
+            return false;
+        }
     };
     
+    
+    
+    
+    
+
 
     return (
         <div className="dashboard-reservations-page">

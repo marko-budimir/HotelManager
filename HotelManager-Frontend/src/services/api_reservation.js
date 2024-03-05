@@ -24,17 +24,14 @@ const createReservation = () => { };
 
 const updateReservation = () => { };
 
-const deleteReservation = async (reservationId) => {
+const deleteReservation = async (reservationId, invoiceId) => {
   try {
-    const response = await remove(`${BASE_URL}/${reservationId}`);
+    console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
+    const response = await remove(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
     if (response.status === 200) {
       console.log("Reservation deleted successfully.");
       return true;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 80a2b921608e16094ea1edc0d29b093f26c58b52
+
     }
     return false;
   } catch (error) {
@@ -42,25 +39,6 @@ const deleteReservation = async (reservationId) => {
     return false;
   }
 };
-
-const buildQueryString = ({ filter, currentPage, pageSize, sortBy, sortOrder }) => {
-  let queryString = '';
-  queryString += `?pageNumber=${currentPage}&pageSize=${pageSize}`;
-  if (sortBy) {
-    queryString += `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-  }
-  for (const key in filter) {
-    if (filter[key]) {
-      queryString += `&${key}=${filter[key]}`;
->>>>>>> 5ca590a (dashboard reservation view edit delete)
-    }
-    return false;
-  } catch (error) {
-    console.error("Error deleting reservation:", error);
-    return false;
-  }
-};
-
 
 
 export default {
