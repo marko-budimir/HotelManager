@@ -60,7 +60,7 @@ namespace HotelManager.Repository
                     if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
                     {
                         queryBuilder.Append(" ORDER BY ");
-                        queryBuilder.Append(sorting.SortBy);
+                        queryBuilder.Append($"\"{sorting.SortBy}\"");
 
                         if (!string.IsNullOrEmpty(sorting.SortOrder))
                         {
