@@ -31,7 +31,10 @@ const deleteReservation = async (reservationId) => {
       console.log("Reservation deleted successfully.");
       return true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 80a2b921608e16094ea1edc0d29b093f26c58b52
     }
     return false;
   } catch (error) {
