@@ -36,10 +36,7 @@ const router = createBrowserRouter(
           path="/edit-service/:serviceId"
           element={<EditServicePage />}
         ></Route>
-        <Route
-          path="/add-service/:serviceId"
-          element={<AddServicePage />}
-        ></Route>
+        <Route path="/add-service" element={<AddServicePage />}></Route>
       </Route>
       <Route
         path="/login"
