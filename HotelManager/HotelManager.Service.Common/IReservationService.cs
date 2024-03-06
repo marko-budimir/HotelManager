@@ -18,5 +18,6 @@ namespace HotelManager.Service.Common
 
         Task<ReservationUpdate> UpdateAsync(Guid id, Guid invoiceId,ReservationUpdate reservationUpdate);
         Task<Reservation> PostAsync(ReservationCreate reservation);
+        Task<ReservationUpdate> DeleteAsync(Guid id, Guid invoiceId);
     }
 }
