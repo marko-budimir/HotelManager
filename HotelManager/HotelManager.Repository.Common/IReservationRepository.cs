@@ -16,6 +16,7 @@ namespace HotelManager.Repository.Common
 
         Task<ReservationUpdate> UpdateAsync(Guid id, ReservationUpdate reservationUpdate, Guid userId);
         Task<Reservation> PostAsync(Reservation reservationCreate);
+        Task<ReservationUpdate> DeleteAsync(Guid id);
         Task<bool> CheckIfAvailableAsync(ReservationRoom reservationRoom);
     }
 }

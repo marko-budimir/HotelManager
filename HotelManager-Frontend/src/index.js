@@ -12,7 +12,6 @@ import {
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MyReservationsPage from "./pages/MyReservationsPage";
-
 import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
@@ -30,6 +29,8 @@ import DashboardReceiptEditPage from "./pages/DashboardReceiptEditPage.js";
 import { DashboardServicesPage } from "./pages/DashboardServicesPage";
 import { EditServicePage } from "./pages/EditServicePage";
 import { AddServicePage } from "./pages/AddServicePage";
+import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
+import ViewEditReservationPage from './pages/DashBoardReservationViewEdit.js'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -98,6 +99,15 @@ const router = createBrowserRouter(
           element={<EditServicePage />}
         ></Route>
         <Route path="/add-service" element={<AddServicePage />}></Route>
+        <Route path="/dashboard-discount/" element={<DashboardDiscountPage/>}></Route>
+        <Route path="/dashboard-discount/add" element={<AddDiscountPage/>}></Route>
+        <Route path="/dashboard-discount/:discountId" element={<EditDiscountPage/>}></Route>
+        <Route path="/dashboardReceipt" element={<DashboardReceiptPage />}></Route>
+        <Route path="/dashboardReceipt/edit/:receiptId" element={<DashboardReceiptEditPage />}></Route>
+        <Route path="/dashboard-reservation/" element={<DashBoardReservationsPage/>}></Route>
+        <Route path="/dashboard-reservation/view/:id" element={<ViewEditReservationPage/>}></Route>
+
+
       </Route>
       <Route
         path="/login"

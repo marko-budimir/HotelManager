@@ -183,6 +183,11 @@ namespace HotelManager.Repository
                 commandText.Append(" AND \"Invoice\".\"DateUpdated\"=@endDate");
                 command.Parameters.AddWithValue("endDate", filter.dateUpdated);
             }
+            if (filter.ReservationId != null)
+            {
+                commandText.Append(" AND \"Invoice\".\"ReservationId\"=@reservationId");
+                command.Parameters.AddWithValue("reservationId", filter.ReservationId);
+            }
 
             command.CommandText = commandText.ToString();
         }
@@ -297,7 +302,7 @@ namespace HotelManager.Repository
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
+                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 
@@ -306,6 +311,8 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@UpdatedBy", invoiceUpdate.UpdatedBy);
                 command.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
                 command.Parameters.AddWithValue("@Id", invoiceId);
+
+
 
                 try
                 {
