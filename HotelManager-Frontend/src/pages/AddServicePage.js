@@ -4,9 +4,11 @@ import { NavBar } from "../components/Common/NavBar";
 
 export const AddServicePage = () => {
   return (
-    <div className="add-service-page">
+    <div className="add-service-page page">
       <NavBar />
-      <ServiceAddForm />
+      <div className="container">
+        <ServiceAddForm />
+      </div>
     </div>
   );
 };

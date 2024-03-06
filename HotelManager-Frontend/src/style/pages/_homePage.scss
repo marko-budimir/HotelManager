@@ -3,11 +3,24 @@
 
 .header {
   position: sticky;
-  height: 7vh;
+  height: 9vh;
   width: 100vw;
   background-color: $dark;
   color: white;
   @include displayFlexRow();
   justify-content: space-between;
   padding: 0 10vw;
+}
+
+.main {
+  height: 91vh;
+  width: 100vw;
+  .page {
+    @include displayFlexRow();
+    justify-content: space-between;
+    .container {
+      @include displayFlex();
+      width: 80vw;
+    }
+  }
 }

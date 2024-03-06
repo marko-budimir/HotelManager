@@ -3,9 +3,11 @@
 
 .room-list {
   @include displayFlexColumn();
+  width: 80vw;
   gap: 5vh;
+  height: 91vh;
+  overflow-y: scroll;
   .room-link {
-    padding-right: 5vw;
     width: 70vw;
     height: 20vh;
     background-color: $primary;

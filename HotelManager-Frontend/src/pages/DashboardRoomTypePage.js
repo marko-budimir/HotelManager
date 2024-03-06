@@ -4,10 +4,12 @@ import { NavBar } from "../components/Common/NavBar";
 
 const DashboardRoomTypePage = () => {
   return (
-    <>
-        <NavBar/>
-        <DashboardRoomType/>
-    </>
+    <div className="dashboard-room-type-page page">
+      <NavBar />
+      <div className="container">
+        <DashboardRoomType />
+      </div>
+    </div>
   );
 };
 export default DashboardRoomTypePage;

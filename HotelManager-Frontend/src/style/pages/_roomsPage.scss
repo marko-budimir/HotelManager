@@ -1,8 +1,2 @@
 @import "../utils/mixins";
 @import "../utils/variables";
-
-.rooms-page {
-  @include displayFlexRow();
-  gap: 5vw;
-  justify-content: flex-start;
-}

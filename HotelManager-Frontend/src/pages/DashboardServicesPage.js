@@ -25,7 +25,7 @@ export const DashboardServicesPage = () => {
         service.price = service.price + "€";
       });
       setServices([...servicesData]);
-      setQuery( (prev) => ({...prev, totalPages: newTotalPages}) );
+      setQuery((prev) => ({ ...prev, totalPages: newTotalPages }));
     } catch (error) {
       console.error("Error fetching service:", error);
     }
@@ -58,14 +58,15 @@ export const DashboardServicesPage = () => {
   ];
 
   const handlePageChange = (page) => {
-    setQuery( (prev) => ({...prev, currentPage: page}) )
-  }; 
+    setQuery((prev) => ({ ...prev, currentPage: page }));
+  };
 
   return (
-    <div className="service-list">
+    <div className="service-list page">
       <NavBar />
-      <DataTable data={services} columns={columns} handle={handle} />
-      <Paging totalPages={query.totalPages} currentPage={query.currentPage} onPageChange={handlePageChange} />
+      <div className="container">
+        <DataTable data={services} columns={columns} handle={handle} />
+      </div>
     </div>
   );
 };
