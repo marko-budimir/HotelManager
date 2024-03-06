@@ -1,11 +1,5 @@
 import React from 'react';
 
-// Ovaj uradjeni error page nije testiran
-// jer nisam imao komponente s kojim bi inicirao Error
-// Trenutno hvaca sve Errore i vraca default, nisam siguran da li vraca dobro
-// vrste errora (400,404...) - treba testirati!
-// Testirano ce biti do kraja kada se napravi neka od komponenti!
-
 const ErrorComponent = ({ errorCode }) => {
   let errorMessage = '';
   switch (errorCode) {

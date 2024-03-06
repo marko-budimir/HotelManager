@@ -9,10 +9,13 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MyReservationsPage from "./pages/MyReservationsPage";
 import "./style/style.css";
+import AdminRouteGuard from "./components/authentication/AdminRouteGuard.js";
+
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
 import { AddReviewPage } from "./pages/AddReviewPage";
@@ -46,55 +49,61 @@ const router = createBrowserRouter(
 
         <Route
           path="/dashboardRoom"
+<<<<<<< HEAD
           element={<DashboardRoomTablePage />}
         ></Route>
+=======
+          element={<AdminRouteGuard><DashboardRoomTablePage/></AdminRouteGuard>}
+        ></Route> 
+>>>>>>> f6f7535 (Implemented admin route guard - needs testing)
         <Route
           path="/dashBoardRoom/:id"
-          element={<DashboardRoomEditPage />}
+          element={<AdminRouteGuard><DashboardRoomEditPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashBoardRoom/add"
-          element={<DashBoardAddRoomPage />}
+          element={<AdminRouteGuard><DashBoardAddRoomPage /></AdminRouteGuard>}
         ></Route>
-        <Route path="/addroomtype" element={<AddRoomTypePage />}></Route>
+        <Route path="/addroomtype" element={<AdminRouteGuard><AddRoomTypePage /></AdminRouteGuard>}></Route>
         <Route
           path="/editroomtype/:roomId"
-          element={<EditRoomTypePage />}
+          element={<AdminRouteGuard><EditRoomTypePage /></AdminRouteGuard>}
         ></Route>
 
         <Route
           path="/dashboard-roomtype/"
-          element={<DashboardRoomTypePage />}
+          element={<AdminRouteGuard><DashboardRoomTypePage /></AdminRouteGuard>}
         ></Route>
+
         <Route
           path="/dashboard-roomtype/add"
-          element={<AddRoomTypePage />}
+          element={<AdminRouteGuard><AddRoomTypePage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboard-roomtype/:roomTypeId"
-          element={<EditRoomTypePage />}
+          element={<AdminRouteGuard><EditRoomTypePage /></AdminRouteGuard>}
         ></Route>
 
         <Route
           path="/dashboard-discount/"
-          element={<DashboardDiscountPage />}
+          element={<AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboard-discount/add"
-          element={<AddDiscountPage />}
+          element={<AdminRouteGuard><AddDiscountPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboard-discount/:discountId"
-          element={<EditDiscountPage />}
+          element={<AdminRouteGuard><EditDiscountPage /></AdminRouteGuard>}
         ></Route>
 
         <Route
           path="/dashboardReceipt"
-          element={<DashboardReceiptPage />}
+          element={<AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
-          element={<DashboardReceiptEditPage />}
+          element={<AdminRouteGuard><DashboardReceiptEditPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboardReceipt/view/:receiptId"
@@ -104,11 +113,11 @@ const router = createBrowserRouter(
 
         <Route
           path="/dashboardServices"
-          element={<DashboardServicesPage />}
+          element={<AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/edit-service/:serviceId"
-          element={<EditServicePage />}
+          element={<AdminRouteGuard><EditServicePage /></AdminRouteGuard>}
         ></Route>
         <Route path="/add-service" element={<AddServicePage />}></Route>
         <Route
