@@ -4,9 +4,11 @@ import { NavBar } from "../components/Common/NavBar";
 
 export const RoomsPage = () => {
   return (
-    <div className="rooms-page">
+    <div className="rooms-page page">
       <NavBar />
-      <RoomList />
+      <div className="container">
+        <RoomList />
+      </div>
     </div>
   );
 };

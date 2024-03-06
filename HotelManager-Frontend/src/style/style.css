@@ -23,7 +23,7 @@
 
 .navbar {
   width: 20vw;
-  height: 93vh;
+  height: 91vh;
   background-color: #7a95ba;
 }
 
@@ -32,10 +32,12 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 80vw;
   gap: 5vh;
+  height: 91vh;
+  overflow-y: scroll;
 }
 .room-list .room-link {
-  padding-right: 5vw;
   width: 70vw;
   height: 20vh;
   background-color: #7a95ba;
@@ -62,7 +64,7 @@
 
 .header {
   position: sticky;
-  height: 7vh;
+  height: 9vh;
   width: 100vw;
   background-color: #003554;
   color: white;
@@ -74,21 +76,22 @@
   padding: 0 10vw;
 }
 
-.rooms-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 5vw;
-  justify-content: flex-start;
+.main {
+  height: 91vh;
+  width: 100vw;
 }
-
-.profile-page {
+.main .page {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
+}
+.main .page .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
 }
 
 *,

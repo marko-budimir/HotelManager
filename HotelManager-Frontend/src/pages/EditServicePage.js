@@ -4,9 +4,11 @@ import { ServiceEditForm } from "../components/services/ServiceEditForm";
 
 export const EditServicePage = () => {
   return (
-    <div className="edit-service-page">
+    <div className="edit-service-page page">
       <NavBar />
-      <ServiceEditForm />
+      <div className="container">
+        <ServiceEditForm />
+      </div>
     </div>
   );
 };

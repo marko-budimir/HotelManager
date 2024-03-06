@@ -4,14 +4,12 @@ import { buildQueryString } from "../common/HelperFunctions";
 const URL_PATH = "/api/RoomType/";
 
 const getAllRoomType = async (query = null) => {
-  const queryString = "";
+  let queryString = "";
   if (query !== null) {
     queryString = buildQueryString(query);
   }
-  console.log(queryString);
   try {
     const response = await get(`${URL_PATH}${queryString}`);
-    console.log(response);
     if (response.status === 200) {
       return [response.data.items, response.data.totalPages];
     }
