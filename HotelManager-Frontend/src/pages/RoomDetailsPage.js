@@ -69,6 +69,25 @@ export const RoomDetailsPage = () => {
     // apiReservation.createReservation(reservationData);
 };
 
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      try {
+        const [discountsData,totalPages] = await getAllDiscounts(query);
+        console.log("DISCOUNT:",discountsData); 
+        setDiscount(discountsData);
+        
+      } catch (error) {
+        console.error("Error fetching discounts:", error);
+        setDiscount([]);
+      }
+      console.log(discount);
+    };
+
+    fetchDiscounts();
+  }, [discountCode]);
+
+
+
   if (!room) {
     return <div>Loading...</div>;
   }
