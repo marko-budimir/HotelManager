@@ -15,7 +15,7 @@ const DashboardReceiptEditPage = () => {
 
   const servicesQuery = {
     filter: {},
-    sortBy: "DateCreated",
+    sortBy: "Name",
     sortOrder: "ASC",
   };
   const invoiceServicesQuery = {
@@ -27,11 +27,13 @@ const DashboardReceiptEditPage = () => {
   };
 
   useEffect(() => {
-    getAllServices(servicesQuery).then((response) => {
-      const data = response.data.items;
-      setServices(data);
-    });
+    fetchServices();
   }, []);
+
+  const fetchServices = async () => {
+    const [servicesData] = await getAllServices(servicesQuery);
+    setServices(servicesData);
+  };
 
   useEffect(() => {
     api_service_invoice.getByInvoiceId(invoiceServicesQuery).then((data) => {
@@ -70,7 +72,7 @@ const DashboardReceiptEditPage = () => {
   };
 
   return (
-    <div>
+    <div className="dashboard-receipt-edit">
       <NavBar />
       <h2 className="dashboard-receipt-edit-title">Edit receipt</h2>
       <div className="dashboard-receipt-edit-input-service">

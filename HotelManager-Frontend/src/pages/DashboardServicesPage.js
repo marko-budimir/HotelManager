@@ -4,19 +4,28 @@ import { useState, useEffect } from "react";
 import { NavBar } from "../components/Common/NavBar";
 import DataTable from "../components/Common/DataTable";
 import { deleteService } from "../services/api_hotel_service";
+import Paging from "../components/Common/Paging";
 
 export const DashboardServicesPage = () => {
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
+  const [query, setQuery] = useState({
+    filter: {},
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 1,
+    sortBy: "Name",
+    sortOrder: "ASC",
+  });
 
   const fetchData = async () => {
     try {
-      const serviceData = await getAllServices();
-      const servicesData = serviceData.data.items;
+      const [servicesData, newTotalPages] = await getAllServices(query);
       [...servicesData].map((service) => {
         service.price = service.price + "€";
       });
       setServices([...servicesData]);
+      setQuery( (prev) => ({...prev, totalPages: newTotalPages}) );
     } catch (error) {
       console.error("Error fetching service:", error);
     }
@@ -24,7 +33,7 @@ export const DashboardServicesPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [query.currentPage]);
 
   const columns = [
     { key: "name", label: "Service name" },
@@ -48,10 +57,15 @@ export const DashboardServicesPage = () => {
     },
   ];
 
+  const handlePageChange = (page) => {
+    setQuery( (prev) => ({...prev, currentPage: page}) )
+  }; 
+
   return (
     <div className="service-list">
       <NavBar />
       <DataTable data={services} columns={columns} handle={handle} />
+      <Paging totalPages={query.totalPages} currentPage={query.currentPage} onPageChange={handlePageChange} />
     </div>
   );
 };

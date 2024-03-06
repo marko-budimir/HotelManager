@@ -27,7 +27,6 @@ namespace HotelManager.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllRoomTypesAsync(
             int pageNumber = 1,

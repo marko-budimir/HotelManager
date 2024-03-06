@@ -68,7 +68,7 @@ const DashboardReceiptPage = () => {
     ]
 
     return (
-        <>
+        <div className="dashboard-receipt">
             <NavBar />
             <DataTable
                 data={receipts}
@@ -80,7 +80,7 @@ const DashboardReceiptPage = () => {
                 currentPage={query.currentPage}
                 onPageChange={handlePageChange}
             />
-        </>
+        </div>
     );
 }
 
