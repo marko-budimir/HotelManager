@@ -9,7 +9,7 @@ namespace HotelManager.Model
     public class ReservationCreate
     {
         public ReservationCreate() { }
-        public Guid DiscountId { get; set; }
+        public Guid? DiscountId { get; set; }
         public Guid RoomId { get; set; }
         public decimal PricePerNight { get; set; }
         public DateTime CheckInDate { get; set; }

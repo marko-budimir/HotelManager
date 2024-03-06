@@ -1,5 +1,5 @@
 import { buildQueryString } from "../common/HelperFunctions";
-import { get, remove, put } from "./api_base";
+import { get, remove, put, post } from "./api_base";
 
 const BASE_URL = "/api/reservation";
 
@@ -33,7 +33,21 @@ const getByIdReservation = async (reservationId) => {
   }
  };
 
-const createReservation = () => { };
+ const createReservation = async (reservationData) => {
+  try {
+    console.log(`${BASE_URL}/`,reservationData);
+    const response = await post(`${BASE_URL}/`,reservationData);
+    if(response.status ===200){
+      return true
+    }else{
+      return false
+    }
+  } catch (error) {
+    console.error("Error creating reservation:", error);
+    return false;
+  }
+};
+
 
 const updateReservation = async (reservationId,invoiceId,reservationData) => {
 try
@@ -78,3 +92,4 @@ export default {
   updateReservation,
   deleteReservation,
 };
+
