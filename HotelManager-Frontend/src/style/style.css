@@ -1,3 +1,6 @@
+/*----------UTILS----------*/
+/*----------COMPONENTS----------*/
+/*-----common-----*/
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 .main-title {
   font-size: 3rem;
@@ -27,6 +30,13 @@
   background-color: #7a95ba;
 }
 
+/*-----discount-----*/
+/*-----authentification-----*/
+/*-----filter-----*/
+/*-----profile-----*/
+/*-----reservation-----*/
+/*-----review-----*/
+/*-----room-----*/
 .room-list {
   display: flex;
   align-items: center;
@@ -62,6 +72,7 @@
   font-size: 1.3rem;
 }
 
+/*----------PAGES----------*/
 .header {
   position: sticky;
   height: 9vh;
@@ -94,6 +105,7 @@
   width: 80vw;
 }
 
+/*----------BASE----------*/
 *,
 *:before,
 *:after {
@@ -234,4 +246,6 @@ button {
 }
 button:hover {
   cursor: pointer;
-}/*# sourceMappingURL=style.css.map */
+}
+
+/*----------LAYOUT----------*//*# sourceMappingURL=style.css.map */

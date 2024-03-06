@@ -11,6 +11,7 @@ export const Header = () => {
         const token = window.localStorage.getItem("token");
         if (token) {
           const role = await getUserRole();
+          console.log(role);
           setUserRole(role);
         }
       } catch (error) {
