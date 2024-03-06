@@ -2,6 +2,14 @@ import { get, post, put } from "./api_base";
 
 const URL_PATH = "/api/user";
 
+const getUserRole = async () => {
+  var personData = await get("/api/user");
+  console.log(personData);
+  var role = personData.data.role;
+  console.log(role);
+  return role;
+};
+
 const getUser = async () => {
   return await get("/api/user");
 };
@@ -41,4 +49,4 @@ const loginUser = async ({ email, password }) => {
   }
 };
 
-export { getUser, createUser, updateUser, updatePassword, loginUser };
+export { getUser, getUserRole, createUser, updateUser, updatePassword, loginUser };

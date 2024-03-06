@@ -2,6 +2,7 @@ import AuthenticationForm from "../components/authentication/AuthenticationForm"
 import { useState } from "react";
 import { loginUser } from "../services/api_user";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
@@ -42,6 +43,9 @@ const LoginPage = () => {
         handleChange={handleChange}
         handleSubmit={handleSubmit}
       />
+      <Link to="/register">
+        <h2>Dont have an account? Register Here</h2>
+      </Link>
     </div>
   );
 };

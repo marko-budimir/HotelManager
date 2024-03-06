@@ -2,9 +2,9 @@ import React from "react";
 import RoomForm from "../components/room/RoomForm";
 import { NavBar } from "../components/Common/NavBar";
 
-const DashBoardRoomPage = () => {
+const DashboardRoomEditPage = () => {
   return (
-    <div className="dashboard-room-page page">
+    <div className="dashboard-room-edit-page page">
       <NavBar />
       <div className="container">
         <RoomForm />
@@ -12,4 +12,4 @@ const DashBoardRoomPage = () => {
     </div>
   );
 };
-export default DashBoardRoomPage;
+export default DashboardRoomEditPage;
