@@ -16,7 +16,7 @@ import "./style/style.css";
 import { RoomsPage } from "./pages/RoomsPage";
 import { RoomDetailsPage } from "./pages/RoomDetailsPage";
 import { AddReviewPage } from "./pages/AddReviewPage";
-import DashBoardRoomPage from "./pages/DashBoardRoomPage.js";
+import DashboardRoomEditPage from "./pages/DashboardRoomEditPage.js";
 import DashBoardAddRoomPage from "./pages/DashBoardAddRoomPage.js";
 import { AddRoomTypePage } from "./pages/AddRoomTypePage";
 import { EditRoomTypePage } from "./pages/EditRoomTypePage";
@@ -31,6 +31,7 @@ import { EditServicePage } from "./pages/EditServicePage";
 import { AddServicePage } from "./pages/AddServicePage";
 import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
 import ViewEditReservationPage from './pages/DashBoardReservationViewEdit.js'
+import DashboardRoomTablePage from "./pages/DashboardRoomTablePage.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,8 +44,12 @@ const router = createBrowserRouter(
         <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
 
         <Route
+          path="/dashboardRoom"
+          element={<DashboardRoomTablePage/>}
+        ></Route> 
+        <Route
           path="/dashBoardRoom/:id"
-          element={<DashBoardRoomPage />}
+          element={<DashboardRoomEditPage />}
         ></Route>
         <Route
           path="/dashBoardRoom/add"
@@ -81,6 +86,7 @@ const router = createBrowserRouter(
           path="/dashboard-discount/:discountId"
           element={<EditDiscountPage />}
         ></Route>
+
         <Route
           path="/dashboardReceipt"
           element={<DashboardReceiptPage />}
@@ -90,6 +96,7 @@ const router = createBrowserRouter(
           element={<DashboardReceiptEditPage />}
         ></Route>
         <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
+
         <Route
           path="/dashboardServices"
           element={<DashboardServicesPage />}
@@ -109,6 +116,7 @@ const router = createBrowserRouter(
 
 
       </Route>
+
       <Route
         path="/login"
         element={<LoginPage />}
