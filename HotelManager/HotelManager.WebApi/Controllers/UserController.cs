@@ -36,6 +36,7 @@ namespace HotelManager.WebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
                 var profileView = _mapper.Map<UserView>(profile);
+                profileView.Role = await _userService.GetRoleTypeByRoleIdAsync(profile.RoleId);
                 return Request.CreateResponse(HttpStatusCode.OK, profileView);
             }
             catch(Exception ex)
