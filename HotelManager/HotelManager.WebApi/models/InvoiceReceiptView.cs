@@ -12,7 +12,7 @@ namespace HotelManager.WebApi.Models
         public decimal TotalPrice { get; set; }
         public bool IsPaid { get; set; }
         public Guid ReservationId { get; set; }
-        public Guid DiscountId { get; set; }
+        public Guid? DiscountId { get; set; }
         public string InvoiceNumber { get; set; }
         public string ReservationNumber { get; set; }
         public decimal PricePerNight { get; set; }

@@ -32,6 +32,7 @@ import { AddServicePage } from "./pages/AddServicePage";
 import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
 import ViewEditReservationPage from './pages/DashBoardReservationViewEdit.js'
 import DashboardRoomTablePage from "./pages/DashboardRoomTablePage.js";
+import DashboardReceiptViewPage from "./pages/DahsboardReceiptViewPage.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -94,6 +95,10 @@ const router = createBrowserRouter(
         <Route
           path="/dashboardReceipt/edit/:receiptId"
           element={<DashboardReceiptEditPage />}
+        ></Route>
+        <Route
+          path="/dashboardReceipt/view/:receiptId"
+          element={<DashboardReceiptViewPage />}
         ></Route>
         <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
 

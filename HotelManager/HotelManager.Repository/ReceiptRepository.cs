@@ -42,7 +42,7 @@ namespace HotelManager.Repository
                             TotalPrice = (decimal)reader["TotalPrice"],
                             IsPaid = (bool)reader["IsPaid"],
                             ReservationId = (Guid)reader["ReservationId"],
-                            DiscountId = (Guid)reader["DiscountId"],
+                            DiscountId = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? (Guid?)null : reader.GetGuid(reader.GetOrdinal("DiscountId")),
                             CreatedBy = (Guid)reader["CreatedBy"],
                             UpdatedBy = (Guid)reader["UpdatedBy"],
                             DateCreated = (DateTime)reader["DateCreated"],
@@ -68,7 +68,7 @@ namespace HotelManager.Repository
             IInvoiceReceipt receipt = null;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             string commandText = "SELECT i.*, r.\"CheckInDate\", r.\"CheckOutDate\", r.\"PricePerNight\", r.\"ReservationNumber\", " +
-                        "rm.\"Number\" AS \"RoomNumber\", d.\"Code\" AS \"DiscountCode\", d.\"Percent\" AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
+                        "rm.\"Number\" AS \"RoomNumber\", COALESCE(d.\"Code\", '') AS \"DiscountCode\", COALESCE(d.\"Percent\", 0) AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
                         "FROM \"Invoice\" i " +
                         "JOIN \"Reservation\" r ON i.\"ReservationId\" = r.\"Id\" " +
                         "JOIN \"Room\" rm ON r.\"RoomId\" = rm.\"Id\" " +
@@ -96,7 +96,7 @@ namespace HotelManager.Repository
                                 TotalPrice = (decimal)reader["TotalPrice"],
                                 IsPaid = (bool)reader["IsPaid"],
                                 ReservationId = reader.GetGuid(reader.GetOrdinal("ReservationId")),
-                                DiscountId = reader.GetGuid(reader.GetOrdinal("DiscountId")),
+                                DiscountId = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? (Guid?)null : reader.GetGuid(reader.GetOrdinal("DiscountId")),
                                 CreatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                 UpdatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
@@ -112,11 +112,11 @@ namespace HotelManager.Repository
                                     ReservationNumber = (string)reader["ReservationNumber"]
                                 },
                                 RoomNumber = (int)reader["RoomNumber"],
-                                Discount = reader["DiscountId"] != DBNull.Value ? new Discount()
+                                Discount = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? null : new Discount()
                                 {
                                     Code = (string)reader["DiscountCode"],
                                     Percent = (int)reader["DiscountPercent"]
-                                } : null,
+                                },
                                 User = new User()
                                 {
                                     FirstName = (string)reader["FirstName"],
@@ -269,7 +269,14 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@TotalPrice", invoice.TotalPrice);
                 command.Parameters.AddWithValue("@IsPaid", invoice.IsPaid);
                 command.Parameters.AddWithValue("@ReservationId", invoice.ReservationId);
-                command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
+                if (invoice.DiscountId != null)
+                {
+                    command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@DiscountId", DBNull.Value);
+                }
                 command.Parameters.AddWithValue("@CreatedBy", invoice.CreatedBy);
                 command.Parameters.AddWithValue("@UpdatedBy", invoice.UpdatedBy);
                 command.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);

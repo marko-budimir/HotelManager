@@ -37,6 +37,9 @@ const DashboardReceiptEditPage = () => {
 
   useEffect(() => {
     api_service_invoice.getByInvoiceId(invoiceServicesQuery).then((data) => {
+      if(!data) {
+        return;
+      }
       setinvoiceServices(
         data.map((service) => ({
           ...service,

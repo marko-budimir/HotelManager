@@ -18,8 +18,15 @@ const formatDate = (dateString) => {
     return date.toLocaleDateString('en-GB', options);
 };
 
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: "EUR",
+    }).format(amount);
+};
 
 export {
     buildQueryString,
-    formatDate
+    formatDate,
+    formatCurrency
 }

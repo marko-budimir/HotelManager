@@ -10,11 +10,11 @@ const getByInvoiceId = async (query) => {
     if (response.status === 200) {
       return response.data.items;
     }
-    return [];
+    return null;
   }
   catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
@@ -23,7 +23,6 @@ const getAllServiceInvoice = () => { };
 const deleteServiceInvoice = () => { };
 
 const createServiceInvoice = (data) => {
-  console.log( "test", data);
   return post(BASE_URL, data);
 };
 
