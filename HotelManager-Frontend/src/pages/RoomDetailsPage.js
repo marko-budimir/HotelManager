@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getByIdRoom } from "../services/api_room";
 import { getAllDiscounts } from "../services/api_discount";
+import apiReservation from '../services/api_reservation';
 import Reviews from "../components/review/Reviews";
 
 export const RoomDetailsPage = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
-  const [discounts, setDiscounts] = useState([]);
+  const [discount, setDiscount] = useState(['']);
   const [query, setQuery] = useState({
     filter: {
       code: ''
@@ -28,26 +29,27 @@ export const RoomDetailsPage = () => {
         console.error("Error fetching room:", error);
       }
     };
-
+  
     fetchRoom();
   }, [id]);
+  
 
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
         const [discountsData, totalPages] = await getAllDiscounts(query);
         console.log("DISCOUNT:", discountsData);
-        setDiscounts(discountsData);
+        setDiscount(discountsData);
 
       } catch (error) {
         console.error("Error fetching discounts:", error);
-        setDiscounts([]);
+        setDiscount([]);
       }
-      console.log(discounts);
+
     };
 
     fetchDiscounts();
-  }, [discountCode]);
+  }, [query]);
 
   const handleApplyDiscount = () => {
     console.log('Discount code applied:', discountCode);
@@ -61,8 +63,23 @@ export const RoomDetailsPage = () => {
   };
 
   const handleReserve = () => {
-    console.log('Room reserved');
-  };
+    console.log('Discount:', discount); 
+    const appliedDiscount = discount[0]; 
+    if (appliedDiscount) {
+        console.log('Discount ID:', appliedDiscount.id);
+        console.log('Discount Code:', appliedDiscount.code);
+    } else {
+        console.log('No discounts found.');
+    }
+    console.log("RoomId:", id);
+    console.log("Room:", room); 
+  
+    
+    //apiReservation.createReservation(reservationData);
+};
+
+  
+  
 
   if (!room) {
     return <div>Loading...</div>;
