@@ -16,5 +16,6 @@ namespace HotelManager.Repository.Common
 
         Task<PagedList<IReceipt>> GetAllAsync(ReceiptFilter filter, Sorting sorting, Paging paging);
         Task<IInvoiceReceipt> GetByIdAsync(Guid id);
+        Task<bool> PutIsPaidAsync(Guid invoiceId, InvoicePaid invoicePaid);
     }
 }

@@ -136,6 +136,26 @@ namespace HotelManager.Service
                 throw new Exception("Receipt not found");
             }
 
+            InvoicePaid invoicePaid = new InvoicePaid
+            {
+                IsPaid = true,
+                UpdatedBy = Guid.Parse(HttpContext.Current.User.Identity.GetUserId()),
+                DateUpdated = DateTime.UtcNow
+            };
+
+            try
+            {
+                bool result = await _receiptRepository.PutIsPaidAsync(id, invoicePaid);
+                if (!result)
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
             PdfDocument pdfDocument = await CreateReceiptPdf(receipt);
             MemoryStream memoryStream = SavePdfToMemoryStream(pdfDocument);
 

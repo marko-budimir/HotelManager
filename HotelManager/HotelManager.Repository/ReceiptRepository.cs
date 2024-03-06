@@ -346,5 +346,38 @@ namespace HotelManager.Repository
                 }
             }
         }
+
+        public async Task<bool> PutIsPaidAsync(Guid invoiceId, InvoicePaid invoicePaid)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = "UPDATE \"Invoice\" SET \"IsPaid\" = @IsPaid, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated WHERE \"Id\" = @Id";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@IsPaid", invoicePaid.IsPaid);
+                command.Parameters.AddWithValue("@UpdatedBy", invoicePaid.UpdatedBy);
+                command.Parameters.AddWithValue("@DateUpdated", invoicePaid.DateUpdated);
+                command.Parameters.AddWithValue("@Id", invoiceId);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    if (rowsAffected > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while updating the is paid status of the invoice.", ex);
+                }
+            }
+        }
     }
 }

@@ -30,6 +30,7 @@ const DashboardReceiptPage = () => {
         data.map((receipt) => ({
           ...receipt,
           dateCreated: formatDate(receipt.dateCreated),
+          isPaid: receipt.isPaid ? "Yes" : "No",
         }))
       );
       setQuery({
@@ -50,7 +51,7 @@ const DashboardReceiptPage = () => {
     { key: "invoiceNumber", label: "Receipt number" },
     { key: "dateCreated", label: "Date of creation" },
     { key: "totalPrice", label: "Total price" },
-    { key: "email", label: "User email" },
+    { key: "userEmail", label: "User email" },
     { key: "isPaid", label: "Is paid" },
   ];
 
