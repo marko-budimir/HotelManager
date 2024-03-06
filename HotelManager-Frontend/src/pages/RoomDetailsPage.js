@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getByIdRoom } from "../services/api_room";
 import { getAllDiscounts } from "../services/api_discount";
+import apiReservation from '../services/api_reservation';
 import Reviews from "../components/review/Reviews";
 
 export const RoomDetailsPage = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
   const [discountCode, setDiscountCode] = useState('');
-  const [discounts, setDiscounts] = useState([]);
+  const [discount, setDiscount] = useState(['']);
   const [query, setQuery] = useState({
     filter: {
-      code:''
+      code: ''
     },
     currentPage: 1,
     pageSize: 1,
@@ -28,39 +29,55 @@ export const RoomDetailsPage = () => {
         console.error("Error fetching room:", error);
       }
     };
-
+  
     fetchRoom();
   }, [id]);
+  
 
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
-        const [discountsData,totalPages] = await getAllDiscounts(query);
-        console.log("DISCOUNT:",discountsData); 
-        setDiscounts(discountsData);
-        
-      } catch (error) {
+        const [discountsData, totalPages] = await getAllDiscounts(query);
+        setDiscount(discountsData);
+      } 
+      catch (error) {
         console.error("Error fetching discounts:", error);
-        setDiscounts([]);
+        setDiscount([]);
       }
-      console.log(discounts);
+
     };
 
     fetchDiscounts();
-  }, [discountCode]);
+  }, [query]);
 
   const handleApplyDiscount = () => {
     console.log('Discount code applied:', discountCode);
-    setQuery({...query,
-      filter:
-      {
-        code:discountCode
-      }})
+    setQuery({
+      ...query,
+      filter: {
+        code: discountCode
+      }
+    });
   };
 
   const handleReserve = () => {
-    console.log('Room reserved');
-  };
+    console.log('Discount:', discount); 
+    const appliedDiscount = discount[0]; 
+    if (appliedDiscount) {
+        console.log('Discount ID:', appliedDiscount.id);
+        console.log('Discount Code:', appliedDiscount.code);
+    } else {
+        console.log('No discounts found.');
+    }
+    console.log("RoomId:", id);
+    console.log("Room:", room); 
+  
+    
+    //apiReservation.createReservation(reservationData);
+};
+
+  
+  
 
   if (!room) {
     return <div>Loading...</div>;
@@ -74,18 +91,17 @@ export const RoomDetailsPage = () => {
       <p>Number of beds: {room.bedCount}🛏️</p>
       <p>Room type: {room.typeName}</p>
 
-      <input 
-        type="text" 
-        placeholder="Enter discount code" 
-        value={discountCode} 
+      <input
+        type="text"
+        placeholder="Enter discount code"
+        value={discountCode}
         onChange={(e) => setDiscountCode(e.target.value)}
       />
       <button onClick={handleApplyDiscount}>Apply</button>
-      <br/>
+      <br />
       <button onClick={handleReserve}>Reserve</button>
 
-      <Reviews id={id}/>
-      
+      <Reviews id={id} />
     </div>
   );
 };
