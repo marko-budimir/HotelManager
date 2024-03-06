@@ -89,34 +89,39 @@ const DashBoardReservationsPage = () => {
 
     const handleDeleteReservation = async (reservationId) => {
         try {
-            const invoicesResponse = await api_receipt.getAllDashboardInvoice({
-                filter: {
-                    ReservationId: reservationId
-                }
-            });
-            const invoices = invoicesResponse[0]; 
-            if (invoices.length > 0) {
-                const invoiceId = invoices[0].id;
-    
-                const isDeleted = await api_reservation.deleteReservation(reservationId, invoiceId);
-                if (isDeleted) {
-                    fetch();
-                    return true;
-                } 
-                else {
-                    console.error("Error deleting reservation:", isDeleted);
-                    return false;
-                }
-            } else {
-                console.error("No invoices found for reservationId:", reservationId);
-                return false;
+          const invoicesResponse = await api_receipt.getAllDashboardInvoice({
+            filter: {
+              ReservationId: reservationId
             }
-        } catch (error) {
-            console.error("Error deleting reservation:", error);
+          });
+          const invoices = invoicesResponse[0];
+          if (invoices.length > 0) {
+            const invoiceId = invoices[0].id;
+      
+            // Prikaži potvrdu korisniku
+            const isConfirmed = window.confirm("Are you sure you want to delete this reservation?");
+            if (isConfirmed) {
+              const isDeleted = await api_reservation.deleteReservation(reservationId, invoiceId);
+              if (isDeleted) {
+                fetch();
+                return true;
+              } else {
+                console.error("Error deleting reservation:", isDeleted);
+                return false;
+              }
+            } else {
+              // Ako korisnik odustane od brisanja
+              return false;
+            }
+          } else {
+            console.error("No invoices found for reservationId:", reservationId);
             return false;
+          }
+        } catch (error) {
+          console.error("Error deleting reservation:", error);
+          return false;
         }
-    };
-    
+      };
 
     return (
         <div className="dashboard-reservations-page">
