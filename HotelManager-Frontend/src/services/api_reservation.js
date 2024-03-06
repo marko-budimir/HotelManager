@@ -71,7 +71,6 @@ const deleteReservation = async (reservationId, invoiceId) => {
 };
 
 
-
 export default {
   getAllReservations,
   getByIdReservation,
