@@ -28,6 +28,7 @@ import DashboardDiscountPage from "./pages/DashboardDiscountPage.js";
 import DashboardReceiptPage from "./pages/DashboardReceiptPage.js";
 import DashboardReceiptEditPage from "./pages/DashboardReceiptEditPage.js";
 import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
+import ViewEditReservationPage from './pages/DashBoardReservationViewEdit.js'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,7 +55,7 @@ const router = createBrowserRouter(
         <Route path="/dashboardReceipt" element={<DashboardReceiptPage />}></Route>
         <Route path="/dashboardReceipt/edit/:receiptId" element={<DashboardReceiptEditPage />}></Route>
         <Route path="/dashboard-reservation/" element={<DashBoardReservationsPage/>}></Route>
-        <Route path="/dashboard-reservation/view" element={<DashBoardReservationsPage/>}></Route>
+        <Route path="/dashboard-reservation/view/:id" element={<ViewEditReservationPage/>}></Route>
 
 
       </Route>

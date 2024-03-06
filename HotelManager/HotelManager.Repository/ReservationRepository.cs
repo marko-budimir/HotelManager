@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace HotelManager.Repository
 {
+
     public class ReservationRepository : IReservationRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
@@ -33,7 +34,7 @@ namespace HotelManager.Repository
                     cmd.Parameters.AddWithValue("@RoomId", reservationRoom.RoomId);
                     cmd.Parameters.AddWithValue("@CheckInDate", reservationRoom.CheckInDate);
                     cmd.Parameters.AddWithValue("@CheckOutDate", reservationRoom.CheckOutDate);
-                    int result = (int)await cmd.ExecuteScalarAsync();
+                    int result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
                     isAvailable = result == 0;
                     
                 }
@@ -334,5 +335,39 @@ namespace HotelManager.Repository
                 }
             }
         }
+
+        public async Task<ReservationUpdate> DeleteAsync(Guid id)
+        {
+            ReservationUpdate reservationUpdate = new ReservationUpdate
+            {
+                IsActive = false
+            };
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var sql = "UPDATE \"Reservation\" SET \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
+
+                    using (var cmd = new NpgsqlCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@IsActive", reservationUpdate.IsActive);
+                        cmd.Parameters.AddWithValue("@Id", id);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                return reservationUpdate;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating reservation: " + ex.Message);
+            }
+        }
+
+
     }
 }

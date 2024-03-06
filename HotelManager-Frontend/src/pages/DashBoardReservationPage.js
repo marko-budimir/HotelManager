@@ -85,7 +85,6 @@ const DashBoardReservationsPage = () => {
     ];
 
     useEffect(() => {
-        console.log(queryReceipt);
     }, [queryReceipt]);
 
     const handleDeleteReservation = async (reservationId) => {
@@ -95,21 +94,17 @@ const DashBoardReservationsPage = () => {
                     ReservationId: reservationId
                 }
             });
-            const invoices = invoicesResponse[0]; // Access the first element of the array
-            console.log("Invoices:", invoices);
-            console.log(reservationId);
-            // Check if invoices array is not empty
+            const invoices = invoicesResponse[0]; 
             if (invoices.length > 0) {
-                const invoiceId = invoices[0].id; // Assuming you only need the first invoice
-                console.log("Invoice ID:", invoiceId);
+                const invoiceId = invoices[0].id;
     
-                // Proceed with deleting the reservation
-                const deleteResponse = await api_reservation.deleteReservation(reservationId, invoiceId);
-                if (deleteResponse.status === 200) {
-                    console.log("Reservation deleted successfully.");
+                const isDeleted = await api_reservation.deleteReservation(reservationId, invoiceId);
+                if (isDeleted) {
+                    fetch();
                     return true;
-                } else {
-                    console.error("Error deleting reservation:", deleteResponse.statusText);
+                } 
+                else {
+                    console.error("Error deleting reservation:", isDeleted);
                     return false;
                 }
             } else {
@@ -122,11 +117,6 @@ const DashBoardReservationsPage = () => {
         }
     };
     
-    
-    
-    
-    
-
 
     return (
         <div className="dashboard-reservations-page">

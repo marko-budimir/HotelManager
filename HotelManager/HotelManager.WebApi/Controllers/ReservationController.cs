@@ -128,22 +128,27 @@ namespace HotelManager.WebApi.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public async Task<HttpResponseMessage> DeleteAsync(Guid id,Guid invoiceId)
+        public async Task<HttpResponseMessage> DeleteAsync(Guid id, Guid invoiceId)
         {
-            var reservationUpdate = new ReservationUpdate(){
-                IsActive=false
-            };
+           
 
             try
             {
-                ReservationUpdate reservationUpdated = await _reservationService.UpdateAsync(id,invoiceId, reservationUpdate);
-                IReservation reservation = await _reservationService.GetByIdAsync(id);
-                return Request.CreateResponse(HttpStatusCode.OK, reservation);
+                var updatedReservation = await _reservationService.DeleteAsync(id, invoiceId);
+                if (updatedReservation != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Reservation deleted successfully.");
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Reservation not found or could not be updated.");
+                }
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }        
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Error deleting reservation: " + ex.Message);
+            }
         }
+
     }
 }
