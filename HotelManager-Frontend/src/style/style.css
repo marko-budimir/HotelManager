@@ -83,6 +83,14 @@
   justify-content: flex-start;
 }
 
+.profile-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
 *,
 *:before,
 *:after {

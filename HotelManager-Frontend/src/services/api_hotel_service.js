@@ -6,15 +6,23 @@ const getAllServices = async () => {
   return await get(`${URL_PATH}`);
 };
 
-const getByIdService = () => {};
+const getByIdService = async (id) => {
+  return await get(`${URL_PATH}/${id}`);
+};
 
-const createService = () => {};
+const createService = async (serviceData) => {
+  return await post(`${URL_PATH}`, serviceData);
+};
 
-const updateService = () => {};
+const updateService = async (id, serviceData) => {
+  return await put(`${URL_PATH}/${id}`, serviceData);
+};
 
-const deleteService = () => {};
+const deleteService = async (id) => {
+  return await remove(`${URL_PATH}/${id}`);
+};
 
-export default {
+export {
   getAllServices,
   getByIdService,
   createService,
