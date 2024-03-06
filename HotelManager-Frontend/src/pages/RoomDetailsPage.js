@@ -84,8 +84,7 @@ export const RoomDetailsPage = () => {
     };
 
     fetchDiscounts();
-  }, [discountCode]);
-
+  }, [query]);
 
 
   if (!room) {
