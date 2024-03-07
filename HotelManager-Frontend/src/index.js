@@ -49,16 +49,8 @@ const router = createBrowserRouter(
 
         <Route
           path="/dashboardRoom"
-<<<<<<< HEAD
-<<<<<<< HEAD
-          element={<DashboardRoomTablePage />}
-        ></Route>
-=======
-=======
->>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
           element={<AdminRouteGuard><DashboardRoomTablePage/></AdminRouteGuard>}
         ></Route> 
->>>>>>> f6f7535 (Implemented admin route guard - needs testing)
         <Route
           path="/dashBoardRoom/:id"
           element={<AdminRouteGuard><DashboardRoomEditPage /></AdminRouteGuard>}
@@ -90,7 +82,6 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard-discount/"
           element={<AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard>}
-<<<<<<< HEAD
         ></Route>
         <Route
           path="/dashboard-discount/add"
@@ -111,10 +102,11 @@ const router = createBrowserRouter(
         ></Route>
         <Route
           path="/dashboardReceipt/view/:receiptId"
-          element={<DashboardReceiptViewPage />}
+          element={<AdminRouteGuard><DashboardReceiptViewPage /></AdminRouteGuard>}
         ></Route>
-        <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
 
+        
+        <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
         <Route
           path="/dashboardServices"
           element={<AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard>}
@@ -127,41 +119,30 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard-discount/"
           element={<DashboardDiscountPage />}
-=======
->>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
         ></Route>
         <Route
           path="/dashboard-discount/add"
-          element={<AdminRouteGuard><AddDiscountPage /></AdminRouteGuard>}
+          element={<AddDiscountPage />}
         ></Route>
         <Route
           path="/dashboard-discount/:discountId"
-          element={<AdminRouteGuard><EditDiscountPage /></AdminRouteGuard>}
+          element={<EditDiscountPage />}
         ></Route>
         <Route
           path="/dashboardReceipt"
-          element={<AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard>}
+          element={<DashboardReceiptPage />}
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
-          element={<AdminRouteGuard><DashboardReceiptEditPage /></AdminRouteGuard>}
+          element={<DashboardReceiptEditPage />}
         ></Route>
         <Route
-<<<<<<< HEAD
           path="/dashboard-reservation/"
           element={<DashBoardReservationsPage />}
         ></Route>
         <Route
           path="/dashboard-reservation/view/:id"
           element={<ViewEditReservationPage />}
-=======
-          path="/dashboardServices"
-          element={<AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard>}
-        ></Route>
-        <Route
-          path="/edit-service/:serviceId"
-          element={<AdminRouteGuard><EditServicePage /></AdminRouteGuard>}
->>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
         ></Route>
       </Route>
 
