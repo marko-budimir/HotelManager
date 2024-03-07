@@ -16,6 +16,7 @@ export const Profile = () => {
   const fetchData = async () => {
     try {
       const userData = await getUser();
+      delete userData.data.role;
       setUser(userData.data);
     } catch (error) {
       console.error("Error fetching user:", error);
