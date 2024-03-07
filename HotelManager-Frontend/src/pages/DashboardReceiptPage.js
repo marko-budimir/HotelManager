@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import api_receipt from "../services/api_dashboard_invoice";
 import { useNavigate } from "react-router";
 import { formatDate } from "../common/HelperFunctions";
+import { DashboardReceiptsNavbar } from "../components/navigation/DashboardReceiptsNavbar";
 
 const DashboardReceiptPage = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const DashboardReceiptPage = () => {
 
   return (
     <div className="dashboard-receipt-page page">
-      <NavBar />
+      <DashboardReceiptsNavbar />
       <div className="container">
         <DataTable data={receipts} columns={columns} handle={handle} />
         <Paging

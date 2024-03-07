@@ -6,6 +6,7 @@ import { getUser } from "../services/api_user";
 import { useNavigate } from "react-router";
 import Paging from "../components/Common/Paging";
 import { formatDate } from "../common/HelperFunctions";
+import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
 
 const MyReservationsPage = () => {
   const navigate = useNavigate();

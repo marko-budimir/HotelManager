@@ -1,11 +1,12 @@
 import React from "react";
 import { DashboardRoomType } from "../components/roomType/DashboardRoomType";
 import { NavBar } from "../components/Common/NavBar";
+import { DashboardHomeRoomTypeNavbar } from "../components/navigation/DashboardHomeRoomTypeNavbar";
 
 const DashboardRoomTypePage = () => {
   return (
     <div className="dashboard-room-type-page page">
-      <NavBar />
+      <DashboardHomeRoomTypeNavbar />
       <div className="container">
         <DashboardRoomType />
       </div>
