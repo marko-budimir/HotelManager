@@ -53,7 +53,7 @@ namespace HotelManager.Repository
                 await connection.OpenAsync();
 
                 var queryBuilder = new StringBuilder();
-                queryBuilder.AppendLine("SELECT r.*, rt.\"Name\" AS TypeName, res.\"CheckInDate\", res.\"CheckInDate\"");
+                queryBuilder.AppendLine("SELECT DISTINCT r.*");
                 queryBuilder.AppendLine(" FROM \"Room\" r");
                 queryBuilder.AppendLine(" JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\"");
                 queryBuilder.AppendLine(" LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\"");
@@ -126,7 +126,6 @@ namespace HotelManager.Repository
                                 Price = reader.GetDecimal(reader.GetOrdinal("Price")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 TypeId = reader.GetGuid(reader.GetOrdinal("TypeId")),
-                                TypeName = reader.GetString(reader.GetOrdinal("TypeName")),
                                 CreatedBy = reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                 UpdatedBy = reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
