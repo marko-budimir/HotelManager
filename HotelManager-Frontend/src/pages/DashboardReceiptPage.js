@@ -1,6 +1,5 @@
 import DataTable from "../components/Common/DataTable";
 import Paging from "../components/Common/Paging";
-import { NavBar } from "../components/Common/NavBar";
 import { useState, useEffect } from "react";
 import api_receipt from "../services/api_dashboard_invoice";
 import { useNavigate } from "react-router";

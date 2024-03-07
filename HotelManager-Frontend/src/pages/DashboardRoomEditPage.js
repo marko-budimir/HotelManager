@@ -1,6 +1,5 @@
 import React from "react";
 import RoomForm from "../components/room/RoomForm";
-import { NavBar } from "../components/Common/NavBar";
 import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
 
 const DashboardRoomEditPage = () => {

@@ -1,5 +1,4 @@
 import DataTable from "../components/Common/DataTable";
-import { NavBar } from "../components/Common/NavBar";
 import { useState, useEffect } from "react";
 import api_service_invoice from "../services/api_service_invoice";
 import { getAllServices } from "../services/api_hotel_service";

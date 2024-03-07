@@ -1,11 +1,15 @@
-import React from 'react';
-import ReservationForm from '../components/reservation/ReservationForm';
+import React from "react";
+import ReservationForm from "../components/reservation/ReservationForm";
+import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
 
 export default function ReservationViewEdit() {
   return (
-    <div>
-      <h2>Reservation Details</h2>
-      <ReservationForm />
+    <div className="dashboard-reservation-view-page page">
+      <DashboardEditViewNavbar />
+      <div className="container">
+        <h2>Reservation Details</h2>
+        <ReservationForm />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import { NavBar } from "../components/Common/NavBar";
 import DiscountAdd from "../components/discount/DiscountAdd";
 import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
 

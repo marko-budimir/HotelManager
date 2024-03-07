@@ -1,5 +1,4 @@
 import React from "react";
-import { NavBar } from "../components/Common/NavBar";
 import { useParams } from "react-router-dom";
 import RoomTypeEdit from "../components/roomType/RoomTypeEdit";
 import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
