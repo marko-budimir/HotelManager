@@ -160,10 +160,14 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@emailQuery", $"%{filter.userEmailQuery}%");
             }
 
-            if (filter.minPrice > 0 && filter.maxPrice < 1000)
+            if (filter.minPrice >= 0 )
             {
-                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice::money AND @maxPrice::money");
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" >= @minPrice::money");
                 command.Parameters.AddWithValue("minPrice", filter.minPrice);
+            }
+            if (filter.maxPrice != null && filter.maxPrice >= filter.minPrice )
+            {
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" <= @maxPrice::money");
                 command.Parameters.AddWithValue("maxPrice", filter.maxPrice);
             }
 
@@ -195,7 +199,7 @@ namespace HotelManager.Repository
         private void ApplySorting(NpgsqlCommand command, Sorting sorting)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            commandText.Append(" ORDER BY \"");
+            commandText.Append(" ORDER BY \"Invoice\".\"");
             commandText.Append(sorting.SortBy).Append("\" ");
             commandText.Append(sorting.SortOrder == "ASC" ? "ASC" : "DESC");
             command.CommandText = commandText.ToString();

@@ -30,7 +30,7 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpGet]
         // GET: api/DashboardReceipt
-        public async Task<HttpResponseMessage> GetReceipts([FromUri] int minPrice = 0, int maxPrice = 100, bool? isPaid = null, string userEmailQuery = null, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "TotalPrice", DateTime? dateCreated = null, DateTime? dateUpdated = null, Guid? reservationId = null)
+        public async Task<HttpResponseMessage> GetReceipts([FromUri] decimal minPrice = 0, decimal? maxPrice = null, bool? isPaid = null, string userEmailQuery = null, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "TotalPrice", DateTime? dateCreated = null, DateTime? dateUpdated = null, Guid? reservationId = null)
         {
             ReceiptFilter filter = new ReceiptFilter
             {
