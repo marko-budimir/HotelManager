@@ -6,7 +6,9 @@ const URL_PATH = "/api/Discount/";
 const getAllDiscounts = async (query) => {
   const queryString = buildQueryString(query);
   try {
+    console.log(`${URL_PATH}${queryString}`);
     const response = await get(`${URL_PATH}${queryString}`);
+    console.log(response);
     if (response.status === 200) {
       return [response.data.items, response.data.totalPages];
     }
@@ -17,6 +19,21 @@ const getAllDiscounts = async (query) => {
     return [];
   }
 };
+
+const getDiscounts = async () => {
+  const response = await get(`${URL_PATH}`);
+  try{
+    console.log(response);
+    if (response.status === 200) {
+      return [response.data.items];
+    }
+    return [];
+  }
+  catch (error) {
+    console.error(error);
+    return [];
+  }
+}
 
 const getByIdDiscount = async (discountId) => {
   return await get(URL_PATH+discountId)
@@ -36,6 +53,7 @@ const deleteDiscount = async (discountId) => {
 
 export {
   getAllDiscounts,
+  getDiscounts,
   getByIdDiscount,
   createDiscount,
   updateDiscount,

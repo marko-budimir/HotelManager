@@ -269,7 +269,7 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@TotalPrice", invoice.TotalPrice);
                 command.Parameters.AddWithValue("@IsPaid", invoice.IsPaid);
                 command.Parameters.AddWithValue("@ReservationId", invoice.ReservationId);
-                if (invoice.DiscountId != null)
+                if (invoice.DiscountId != null && invoice.DiscountId != Guid.Empty)
                 {
                     command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
                 }
