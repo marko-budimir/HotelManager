@@ -65,6 +65,18 @@ const MyReservationsPage = () => {
     }
   };
 
+  const handleReviewClick = (item) => {
+    const currentDate = new Date();
+    console.log(currentDate);
+    const checkOutDate = new Date(item.checkOutDate);
+    console.log(checkOutDate);
+    if (currentDate > checkOutDate) {
+      navigate(`/addreview/${item.roomId}`);
+    } else {
+      alert("You cannot review this reservation yet.");
+    }
+  };
+
   const columns = [
     { key: "roomNumber", label: "Room Number" },
     { key: "checkInDate", label: "Start Date" },
@@ -75,7 +87,7 @@ const MyReservationsPage = () => {
   const handle = [
     {
       label: "Review it!",
-      onClick: (item) => navigate(`/addreview/${item.roomId}`),
+      onClick: handleReviewClick,
     },
   ];
 
