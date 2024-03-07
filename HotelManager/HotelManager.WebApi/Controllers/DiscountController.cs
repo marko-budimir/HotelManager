@@ -26,7 +26,7 @@ namespace HotelManager.WebApi.Controllers
 
 
         // GET: api/Discount
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<HttpResponseMessage> GetAsync(
             [FromUri] int startingValue = 0, 
             int endValue = 100, 

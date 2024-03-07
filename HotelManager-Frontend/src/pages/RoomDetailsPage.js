@@ -8,7 +8,6 @@ import Reviews from "../components/review/Reviews";
 export const RoomDetailsPage = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
-  const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(['']);
   const [query, setQuery] = useState({
     filter: {
@@ -35,49 +34,49 @@ export const RoomDetailsPage = () => {
   
 
   useEffect(() => {
-    const fetchDiscounts = async () => {
-      try {
-        const [discountsData, totalPages] = await getAllDiscounts(query);
-        setDiscount(discountsData);
-      } 
-      catch (error) {
-        console.error("Error fetching discounts:", error);
-        setDiscount([]);
-      }
+    
 
-    };
-
-    fetchDiscounts();
+    
   }, [query]);
 
-  const handleApplyDiscount = () => {
-    console.log('Discount code applied:', discountCode);
-    setQuery({
-      ...query,
-      filter: {
-        code: discountCode
-      }
-    });
+  const fetchDiscounts = async () => {
+    try {
+      const [discountsData, totalPages] = await getAllDiscounts(query);
+      setDiscount(discountsData);
+    } 
+    catch (error) {
+      console.error("Error fetching discounts:", error);
+      setDiscount([]);
+    }
+
+  };
+
+  const handleQueryChange = (discountCode) => {
+    setQuery({...query, filter: { code: discountCode }})
   };
 
   const handleReserve = () => {
     console.log('Discount:', discount); 
     const appliedDiscount = discount[0]; 
     if (appliedDiscount) {
-        console.log('Discount ID:', appliedDiscount.id);
         console.log('Discount Code:', appliedDiscount.code);
     } else {
         console.log('No discounts found.');
     }
-    console.log("RoomId:", id);
-    console.log("Room:", room); 
-  
     
-    //apiReservation.createReservation(reservationData);
-};
+    const reservationData = {
+        discountId: appliedDiscount ? appliedDiscount.id : null,
+        roomId: room.id,
+        pricePerNight: room.price,
+        checkInDate: "2025-03-07T09:00:06.2932106+01:00",
+        checkOutDate: "2025-03-07T09:00:06.2932106+01:00"
+    };
 
-  
-  
+    console.log(reservationData);
+
+    // Call the API to create the reservation
+    // apiReservation.createReservation(reservationData);
+};
 
   if (!room) {
     return <div>Loading...</div>;
@@ -94,10 +93,10 @@ export const RoomDetailsPage = () => {
       <input
         type="text"
         placeholder="Enter discount code"
-        value={discountCode}
-        onChange={(e) => setDiscountCode(e.target.value)}
+        value={query.filter.code}
+        onChange={(e) => handleQueryChange(e.target.value)}
       />
-      <button onClick={handleApplyDiscount}>Apply</button>
+      <button onClick={fetchDiscounts}>Apply</button>
       <br />
       <button onClick={handleReserve}>Reserve</button>
 
