@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { createSearchParams, useLocation, useParams } from "react-router-dom";
 import { getByIdRoom } from "../services/api_room";
 import { getAllDiscounts } from "../services/api_discount";
 import { formatReservationDate } from "../common/HelperFunctions";
-import apiReservation from '../services/api_reservation';
+import apiReservation from "../services/api_reservation";
 import Reviews from "../components/review/Reviews";
+import { getUserRole } from "../services/api_user";
 
 export const RoomDetailsPage = () => {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
-  const [discount, setDiscount] = useState(['']);
+  const [discount, setDiscount] = useState([""]);
   const [query, setQuery] = useState({
     filter: {
-      code: ''
+      code: "",
     },
     currentPage: 1,
     pageSize: 1,
@@ -23,6 +24,7 @@ export const RoomDetailsPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const startDate = queryParams.get("startDate");
   const endDate = queryParams.get("endDate");
+  const [userRole, setUserRole] = useState("");
   /*
     console.log(startDate,"   ",endDate);
     console.log(formatReservationDate(startDate,13));
@@ -41,36 +43,42 @@ export const RoomDetailsPage = () => {
     fetchRoom();
   }, [id]);
 
-
   useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const role = await getUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error("Error fetching user role: ", error);
+      }
+    };
 
+    fetchUserRole();
+  }, []);
 
-
-  }, [query]);
+  useEffect(() => {}, [query]);
 
   const fetchDiscounts = async () => {
     try {
       const [discountsData, totalPages] = await getAllDiscounts(query);
       setDiscount(discountsData);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching discounts:", error);
       setDiscount([]);
     }
-
   };
 
   const handleQueryChange = (discountCode) => {
-    setQuery({ ...query, filter: { code: discountCode } })
+    setQuery({ ...query, filter: { code: discountCode } });
   };
 
   const handleReserve = () => {
-    console.log('Discount:', discount);
+    console.log("Discount:", discount);
     const appliedDiscount = discount[0];
     if (appliedDiscount) {
-      console.log('Discount Code:', appliedDiscount.code);
+      console.log("Discount Code:", appliedDiscount.code);
     } else {
-      console.log('No discounts found.');
+      console.log("No discounts found.");
     }
 
     const reservationData = {
@@ -78,7 +86,7 @@ export const RoomDetailsPage = () => {
       roomId: room.id,
       pricePerNight: room.price,
       checkInDate: formatReservationDate(startDate, 13),
-      checkOutDate: formatReservationDate(endDate, 10)
+      checkOutDate: formatReservationDate(endDate, 10),
     };
 
     console.log(reservationData);
@@ -100,20 +108,22 @@ export const RoomDetailsPage = () => {
           </p>
           <p className="room-detail-number">Room type: {room.typeName}</p>
         </div>
-        <div className="discount-reservation-form">
-          <p>Reservaton start date: {startDate}</p>
-          <p>Reservation end date: {endDate}</p>
+        {userRole !== "Admin" && (
+          <div className="discount-reservation-form">
+            <p>Reservaton start date: {startDate}</p>
+            <p>Reservation end date: {endDate}</p>
 
-          <input
-            type="text"
-            placeholder="Enter discount code"
-            value={query.filter.code}
-            onChange={(e) => handleQueryChange(e.target.value)}
-          />
-          <button onClick={fetchDiscounts}>Apply</button>
-          <br />
-          <button onClick={handleReserve}>Reserve</button>
-        </div>
+            <input
+              type="text"
+              placeholder="Enter discount code"
+              value={query.filter.code}
+              onChange={(e) => handleQueryChange(e.target.value)}
+            />
+            <button onClick={fetchDiscounts}>Apply</button>
+            <br />
+            <button onClick={handleReserve}>Reserve</button>
+          </div>
+        )}
       </div>
       <Reviews id={id} />
     </div>
