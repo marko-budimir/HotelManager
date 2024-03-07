@@ -4,20 +4,25 @@ import { getAllRooms } from "../../services/api_room";
 
 export const RoomList = () => {
   const [rooms, setRooms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchData = async () => {
+  const fetchData = async (pageNumber) => {
     try {
-      const roomData = await getAllRooms();
+      const roomData = await getAllRooms(pageNumber);
       const roomsData = roomData.data.items;
+      const paging = roomData.data;
+      console.log("room data:", roomData.data);
       setRooms([...roomsData]);
+      setTotalPages(paging.totalPages);
     } catch (error) {
       console.error("Error fetching room:", error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   return (
     <div className="room-list">
@@ -32,6 +37,13 @@ export const RoomList = () => {
           </Link>
         </div>
       ))}
+      <div className="pagination">
+        {Array.from({ length: totalPages }).map((_, index) => (
+          <button key={index} onClick={() => setCurrentPage(index + 1)}>
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
