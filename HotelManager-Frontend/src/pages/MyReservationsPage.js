@@ -75,7 +75,7 @@ const MyReservationsPage = () => {
   const handle = [
     {
       label: "Review it!",
-      onClick: (item) => navigate(`/addreview/${item.id}`),
+      onClick: (item) => navigate(`/addreview/${item.roomId}`),
     },
   ];
 
