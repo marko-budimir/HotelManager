@@ -25,13 +25,19 @@ export const RoomDetailsPage = () => {
   }
 
   return (
-    <div className="roomDetail">
-      <img src={room.imageUrl} alt="room" />
-      <p>Room number: {room.number}</p>
-      <p>Price per day: {room.price}€</p>
-      <p>Number of beds: {room.bedCount}🛏️</p>
-      <p>Room type: {room.typeName}</p>
-      <Reviews id={id}/>
+    <div className="room-detail">
+      <div className="room-info-section">
+        <img src={room.imageUrl} alt="room" className="room-detail-image" />
+        <div className="room-detail-info">
+          <p className="room-detail-number">Room number: {room.number}</p>
+          <p className="room-detail-number">Price per day: {room.price}€</p>
+          <p className="room-detail-number">
+            Number of beds: {room.bedCount}🛏️
+          </p>
+          <p className="room-detail-number">Room type: {room.typeName}</p>
+        </div>
+      </div>
+      <Reviews id={id} />
     </div>
   );
 };

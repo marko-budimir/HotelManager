@@ -28,3 +28,19 @@ button {
     cursor: pointer;
   }
 }
+
+/*-----global styling-----*/
+
+.filter-label {
+  font-size: 1.2rem;
+}
+
+.filter-input {
+  height: 3.5vh;
+  width: 10vw;
+  font-size: 1.1rem;
+  background: white;
+  border: 0.05rem solid black;
+  border-radius: 0.8rem;
+  padding-left: 0.5rem;
+}

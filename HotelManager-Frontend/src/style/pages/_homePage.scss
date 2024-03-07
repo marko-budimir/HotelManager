@@ -18,6 +18,9 @@
   .page {
     @include displayFlexRow();
     justify-content: space-between;
+    .navbar {
+      @include displayFlexColumn();
+    }
     .container {
       @include displayFlex();
       width: 80vw;

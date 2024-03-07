@@ -1,21 +1,20 @@
-const Review = ({review}) => {
-    const { id, rating, comment, userFullName, dateCreated } = review;
-    
-    const formattedDate = new Date(dateCreated).toLocaleDateString();
+import { convertRating } from "../../common/HelperFunctions";
 
-    return (
-      <div className="review" key={id}>
-        <div className="review-rating">
-          <span>Rating:</span> {rating}
-        </div>
-        <div className="review-text">{comment}</div>
-        <div className="review-author">
-          <span>By:</span> {userFullName}
-        </div>
+const Review = ({ review }) => {
+  const { id, rating, comment, userFullName, dateCreated } = review;
+
+  const formattedDate = new Date(dateCreated).toLocaleDateString();
+
+  return (
+    <div className="review" key={id}>
+      <div className="author-rating-section">
+        <div className="review-author">{userFullName} :</div>
+        <div className="review-rating">{convertRating(rating)}</div>
         <div className="review-date">{formattedDate}</div>
       </div>
-    );
-  };
-  
-  export default Review;
-  
+      <div className="review-text">{comment}</div>
+    </div>
+  );
+};
+
+export default Review;

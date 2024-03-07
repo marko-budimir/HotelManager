@@ -1,2 +1,8 @@
 @import "../../utils/mixins";
 @import "../../utils/variables";
+
+.room-filter {
+  @include displayFlexColumn();
+  gap: 1rem;
+  align-items: flex-start;
+}

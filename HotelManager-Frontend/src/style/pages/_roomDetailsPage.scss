@@ -1,2 +1,26 @@
 @import "../utils/mixins";
 @import "../utils/variables";
+
+.room-detail {
+  padding-top: 5vh;
+  @include displayFlexColumn();
+  .room-detail-image {
+    width: 25vw;
+    height: 30vh;
+  }
+
+  .room-info-section {
+    @include displayFlexRow();
+    gap: 2rem;
+  }
+  .room-detail-info {
+    background-color: $dark;
+    color: white;
+    width: 25vw;
+    height: 30vh;
+    @include displayFlexColumn();
+    gap: 1rem;
+    font-size: 1.3rem;
+    border-radius: 0.8rem;
+  }
+}

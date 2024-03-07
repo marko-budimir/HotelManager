@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import Review from './Review';
-import api_review from '../../services/api_review';
-import Paging from '../Common/Paging';
+import React, { useState, useEffect } from "react";
+import Review from "./Review";
+import api_review from "../../services/api_review";
+import Paging from "../Common/Paging";
 
 const Reviews = ({ id }) => {
   const [reviews, setReviews] = useState([]);
@@ -14,15 +14,19 @@ const Reviews = ({ id }) => {
     const fetchReviews = async (page) => {
       try {
         const roomId = id;
-        const response = await api_review.getReviewForRoomPaging(roomId, page, pageSize);
+        const response = await api_review.getReviewForRoomPaging(
+          roomId,
+          page,
+          pageSize
+        );
         const reviewsData = response.data.items;
         const totalPages = response.data.totalPages;
-        
+
         setReviews(reviewsData);
         setTotalPages(totalPages);
       } catch (error) {
-        console.error('Error fetching reviews:', error);
-        setError('Could not fetch reviews. Please try again later.');
+        console.error("Error fetching reviews:", error);
+        setError("Could not fetch reviews. Please try again later.");
       }
     };
 
@@ -31,21 +35,27 @@ const Reviews = ({ id }) => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };  
+  };
 
   return (
     <div className="reviews">
-      <h2>Reviews</h2>
+      <h2 className="reviews-heading">Room reviews: </h2>
       {error ? (
         <p>{error}</p>
       ) : reviews.length > 0 ? (
-        reviews.map((review) => (
-          <Review key={review.id} review={review} />
-        ))
+        <div className="reviews-list">
+          {reviews.map((review) => (
+            <Review key={review.id} review={review} />
+          ))}
+        </div>
       ) : (
         <p>No reviews available</p>
       )}
-      <Paging totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+      <Paging
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

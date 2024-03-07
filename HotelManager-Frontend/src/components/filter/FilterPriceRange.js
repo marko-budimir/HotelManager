@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const PriceRange = () => {
   const [minValue, setMinValue] = useState(0);
@@ -17,8 +17,11 @@ const PriceRange = () => {
   return (
     <div className="range-price">
       <div className="input-container">
-        <label htmlFor="min">Min:</label>
+        <label htmlFor="min" className="filter-label">
+          Min:
+        </label>
         <input
+          className="input-container filter-input"
           type="number"
           id="min"
           value={minValue}
@@ -26,8 +29,11 @@ const PriceRange = () => {
         />
       </div>
       <div className="input-container">
-        <label htmlFor="max">Max:</label>
+        <label htmlFor="max" className="filter-label">
+          Max:
+        </label>
         <input
+          className="input-container filter-input"
           type="number"
           id="max"
           value={maxValue}
