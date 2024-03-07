@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import {formatDate} from '../../common/HelperFunctions';
 
 const DatePickerUser = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -13,6 +14,7 @@ const DatePickerUser = () => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
+    console.log(formatDate(start),"  ",formatDate(end));
   };
 
   return (

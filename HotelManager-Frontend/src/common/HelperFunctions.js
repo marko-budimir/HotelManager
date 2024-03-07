@@ -15,7 +15,9 @@ const buildQueryString = ({ filter, currentPage, pageSize, sortBy, sortOrder }) 
 const formatDate = (dateString) => {
     const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', options);
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+    const [day, month, year] = formattedDate.split('/');
+    return `${day}.${month}.${year}`;
 };
 
 const formatCurrency = (amount) => {
@@ -25,7 +27,16 @@ const formatCurrency = (amount) => {
     }).format(amount);
 };
 
+const formatReservationDate = (inputDate,hours) => {
+    const [day, month, year] = inputDate.split('.');
+    const date = new Date(`${year}-${month}-${day}T${hours}:00:00`);
+    const timeZoneOffsetMs = date.getTimezoneOffset() * 60000;
+    const utcDate = new Date(date.getTime() + timeZoneOffsetMs);
+    const formattedDate = utcDate.toISOString();
+    return formattedDate;
+};
 export {
+    formatReservationDate,
     buildQueryString,
     formatDate,
     formatCurrency
