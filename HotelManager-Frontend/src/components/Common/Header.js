@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUserRole } from "../../services/api_user";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [userRole, setUserRole] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    window.location.reload();
+  };
 
   useEffect(() => {
     const checkTokenAndFetchUserRole = async () => {
@@ -36,6 +44,7 @@ export const Header = () => {
             <li className="headerLink">
               <Link to="/my-profile">My Profile</Link>
             </li>
+            <button className="header-link" onClick={handleLogout}>Logout</button>
           </>
         )}
         {userRole === "User" && (
@@ -46,6 +55,7 @@ export const Header = () => {
             <li className="headerLink">
               <Link to="/my-profile">My profile</Link>
             </li>
+            <button className="header-link" onClick={handleLogout}>Logout</button>
           </>
         )}
         {!userRole && (
