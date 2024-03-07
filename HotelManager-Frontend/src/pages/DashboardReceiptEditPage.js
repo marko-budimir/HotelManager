@@ -5,6 +5,7 @@ import api_service_invoice from "../services/api_service_invoice";
 import { getAllServices } from "../services/api_hotel_service";
 import { useParams } from "react-router-dom";
 import { formatDate } from "../common/HelperFunctions";
+import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditViewNavbar";
 
 const DashboardReceiptEditPage = () => {
   const { receiptId } = useParams();
@@ -37,7 +38,7 @@ const DashboardReceiptEditPage = () => {
 
   useEffect(() => {
     api_service_invoice.getByInvoiceId(invoiceServicesQuery).then((data) => {
-      if(!data) {
+      if (!data) {
         return;
       }
       setinvoiceServices(
@@ -76,7 +77,7 @@ const DashboardReceiptEditPage = () => {
 
   return (
     <div className="receipt-edit-page page">
-      <NavBar />
+      <DashboardEditViewNavbar />
       <div className="container">
         <h2 className="dashboard-receipt-edit-title">Edit receipt</h2>
         <div className="dashboard-receipt-edit-input-service">
