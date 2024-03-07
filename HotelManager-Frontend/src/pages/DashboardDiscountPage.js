@@ -1,12 +1,12 @@
 import React from "react";
 import { NavBar } from "../components/Common/NavBar";
 import { DashboardDiscount } from "../components/discount/DashboardDiscount";
-import { DashboardDiscountsNavbar } from "../components/navigation/DashboardDiscountsNavbar";
+import { DashboardHomeDiscountsNavbar } from "../components/navigation/DashboardHomeDiscountNavbar";
 
 const DashboardDiscountPage = () => {
   return (
     <div className="dashboard-discount-page page">
-      <DashboardDiscountsNavbar />
+      <DashboardHomeDiscountsNavbar />
       <div className="container">
         <DashboardDiscount />
       </div>

@@ -6,7 +6,7 @@ import { DashboardEditViewNavbar } from "../components/navigation/DashboardEditV
 export const ProfilePage = () => {
   return (
     <div className="profile-page page">
-      <DashboardEditViewNavbar />
+      <NavBar />
       <div className="container">
         <Profile />
       </div>

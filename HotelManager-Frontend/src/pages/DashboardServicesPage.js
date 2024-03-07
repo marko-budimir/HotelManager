@@ -5,7 +5,7 @@ import { NavBar } from "../components/Common/NavBar";
 import DataTable from "../components/Common/DataTable";
 import { deleteService } from "../services/api_hotel_service";
 import Paging from "../components/Common/Paging";
-import { DashboardServicesNavbar } from "../components/navigation/DashboardServicesNavbar";
+import { DashboardServicesHomeNavbar } from "../components/navigation/DashboardServicesHomeNavbar";
 
 export const DashboardServicesPage = () => {
   const [services, setServices] = useState([]);
@@ -64,7 +64,7 @@ export const DashboardServicesPage = () => {
 
   return (
     <div className="service-list page">
-      <DashboardServicesNavbar />
+      <DashboardServicesHomeNavbar />
       <div className="container">
         <DataTable data={services} columns={columns} handle={handle} />
       </div>

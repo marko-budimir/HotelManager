@@ -1,12 +1,11 @@
 import React from "react";
-import DashboardReceiptsFilter from "../filter/DashBoardReceiptFilter";
 import DashboardNavigation from "./DashboardNavigation";
 
-export const DashboardReceiptsNavbar = () => {
+export const DashboardHomeRoomTypeNavbar = () => {
   return (
     <div className="navbar">
       <DashboardNavigation />
-      <DashboardReceiptsFilter />
+      <button>Add room type</button>
     </div>
   );
 };

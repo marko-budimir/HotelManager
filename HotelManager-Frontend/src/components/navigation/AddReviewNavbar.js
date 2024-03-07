@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import DashboardNavigation from "./DashboardNavigation";
 
-export const DashboardEditViewNavbar = () => {
+export const AddReviewNavbar = () => {
   return (
     <div className="navbar">
-      <DashboardNavigation />
+      <Link to="/my-reservations">Go back</Link>
     </div>
   );
 };

@@ -81,7 +81,7 @@ const MyReservationsPage = () => {
 
   return (
     <div className="my-reservations-page page">
-      <DashboardEditViewNavbar />
+      <NavBar />
       <div className="container">
         <DataTable data={reservations} columns={columns} handle={handle} />
         <Paging
