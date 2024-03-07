@@ -50,9 +50,12 @@ const router = createBrowserRouter(
         <Route
           path="/dashboardRoom"
 <<<<<<< HEAD
+<<<<<<< HEAD
           element={<DashboardRoomTablePage />}
         ></Route>
 =======
+=======
+>>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
           element={<AdminRouteGuard><DashboardRoomTablePage/></AdminRouteGuard>}
         ></Route> 
 >>>>>>> f6f7535 (Implemented admin route guard - needs testing)
@@ -87,6 +90,7 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard-discount/"
           element={<AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard>}
+<<<<<<< HEAD
         ></Route>
         <Route
           path="/dashboard-discount/add"
@@ -123,30 +127,41 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard-discount/"
           element={<DashboardDiscountPage />}
+=======
+>>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
         ></Route>
         <Route
           path="/dashboard-discount/add"
-          element={<AddDiscountPage />}
+          element={<AdminRouteGuard><AddDiscountPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboard-discount/:discountId"
-          element={<EditDiscountPage />}
+          element={<AdminRouteGuard><EditDiscountPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboardReceipt"
-          element={<DashboardReceiptPage />}
+          element={<AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard>}
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
-          element={<DashboardReceiptEditPage />}
+          element={<AdminRouteGuard><DashboardReceiptEditPage /></AdminRouteGuard>}
         ></Route>
         <Route
+<<<<<<< HEAD
           path="/dashboard-reservation/"
           element={<DashBoardReservationsPage />}
         ></Route>
         <Route
           path="/dashboard-reservation/view/:id"
           element={<ViewEditReservationPage />}
+=======
+          path="/dashboardServices"
+          element={<AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard>}
+        ></Route>
+        <Route
+          path="/edit-service/:serviceId"
+          element={<AdminRouteGuard><EditServicePage /></AdminRouteGuard>}
+>>>>>>> f6f753553b5321e8be18cd430df278f4363ec1d0
         ></Route>
       </Route>
 
