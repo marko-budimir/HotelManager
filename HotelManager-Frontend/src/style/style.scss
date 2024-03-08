@@ -22,6 +22,22 @@
 @import "./components/authentication/authentificationForm";
 @import "./components/authentication/authentificationFormRow";
 
+/*-----naviation-----*/
+@import "./components/navigation/addReviewNavbar";
+@import "./components/navigation/dashboardDiscountsNavbar";
+@import "./components/navigation/dashboardEditViewNavbar";
+@import "./components/navigation/dashboardHomeDiscountNavbar";
+@import "./components/navigation/dashboardHomeRoomNavbar";
+@import "./components/navigation/dashboardHomeRoomTypeNavbar";
+@import "./components/navigation/dashboardNavigation";
+@import "./components/navigation/dashboardReceiptsNavbar";
+@import "./components/navigation/dashboardReservationsNavbar";
+@import "./components/navigation/dashboardRoomNavbar";
+@import "./components/navigation/dashboardRoomTypeNavbar";
+@import "./components/navigation/dashboardServicesHomeNavbar";
+@import "./components/navigation/dashboardServicesNavbar";
+@import "./components/navigation/homePageNavbar";
+
 /*-----filter-----*/
 @import "./components/filter/dashboardReceiptFilter";
 @import "./components/filter/dashboardReservationFilter";
@@ -84,5 +100,6 @@
 /*----------BASE----------*/
 @import "./base/resets";
 @import "./base/base";
+@import "./base/filters";
 /*----------LAYOUT----------*/
 @import "./layout/layout";

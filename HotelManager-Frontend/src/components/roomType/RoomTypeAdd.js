@@ -12,7 +12,9 @@ const RoomTypeAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const confirmed = window.confirm("Are you sure you want to add this room type?");
+    const confirmed = window.confirm(
+      "Are you sure you want to add this room type?"
+    );
     if (confirmed) {
       try {
         await createRoomType(roomType);
@@ -28,11 +30,17 @@ const RoomTypeAdd = () => {
 
   return (
     <div>
-      <h2>Add New Room Type</h2>
-      <form className="roomtype-add-form" onSubmit={handleSubmit}>
+      <h2 className="edit-view-header">Add New Room Type</h2>
+      <form
+        className="roomtype-add-form edit-view-form"
+        onSubmit={handleSubmit}
+      >
         <div>
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name" className="edit-view-label">
+            Name:
+          </label>
           <input
+            className="edit-view-input"
             type="text"
             id="name"
             name="name"
@@ -41,15 +49,20 @@ const RoomTypeAdd = () => {
           />
         </div>
         <div>
-          <label htmlFor="description">Description:</label>
+          <label htmlFor="description" className="edit-view-label">
+            Description:
+          </label>
           <textarea
+            className="edit-view-textarea"
             id="description"
             name="description"
             value={roomType.description || ""}
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Add Room Type</button>
+        <button type="submit" className="edit-view-button">
+          Add Room Type
+        </button>
       </form>
     </div>
   );

@@ -46,7 +46,14 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} errorElement={<Error />}>
-        <Route path="/" element={<RoomFilterProvider><RoomsPage /></RoomFilterProvider>}></Route>
+        <Route
+          path="/"
+          element={
+            <RoomFilterProvider>
+              <RoomsPage />
+            </RoomFilterProvider>
+          }
+        ></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/my-reservations" element={<MyReservationsPage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
@@ -55,108 +62,198 @@ const router = createBrowserRouter(
         {/* DASHBOARD ROOM admin only*/}
         <Route
           path="/dashboardRoom"
-          element={<RoomFilterProvider><AdminRouteGuard><DashboardRoomTablePage /></AdminRouteGuard></RoomFilterProvider>}
+          element={
+            <RoomFilterProvider>
+              <AdminRouteGuard>
+                <DashboardRoomTablePage />
+              </AdminRouteGuard>
+            </RoomFilterProvider>
+          }
         ></Route>
         <Route
           path="/dashBoardRoom/:id"
-          element={<AdminRouteGuard><DashboardRoomEditPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardRoomEditPage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashBoardRoom/add"
-          element={<AdminRouteGuard><DashBoardAddRoomPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashBoardAddRoomPage />
+            </AdminRouteGuard>
+          }
         ></Route>
 
         {/* DASHBOARD ROOMTYPE admin only*/}
         <Route
           path="/dashboard-roomtype/"
-          element={<AdminRouteGuard><DashboardRoomTypePage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardRoomTypePage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashboard-roomtype/add"
-          element={<AdminRouteGuard><AddRoomTypePage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <AddRoomTypePage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashboard-roomtype/:roomTypeId"
-          element={<AdminRouteGuard><EditRoomTypePage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <EditRoomTypePage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/editroomtype/:roomId"
-          element={<AdminRouteGuard><EditRoomTypePage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <EditRoomTypePage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/addroomtype"
-          element={<AdminRouteGuard><AddRoomTypePage /></AdminRouteGuard>}>
-        </Route>
+          element={
+            <AdminRouteGuard>
+              <AddRoomTypePage />
+            </AdminRouteGuard>
+          }
+        ></Route>
 
         {/* DASHBOARD DISCOUNT admin only*/}
         <Route
           path="/dashboard-discount/"
-          element={<DiscountFilterProvider><AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard></DiscountFilterProvider>}
+          element={
+            <DiscountFilterProvider>
+              <AdminRouteGuard>
+                <DashboardDiscountPage />
+              </AdminRouteGuard>
+            </DiscountFilterProvider>
+          }
         ></Route>
         <Route
           path="/dashboard-discount/add"
-          element={<AdminRouteGuard><AddDiscountPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <AddDiscountPage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashboard-discount/:discountId"
-          element={<AdminRouteGuard><EditDiscountPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <EditDiscountPage />
+            </AdminRouteGuard>
+          }
         ></Route>
 
         {/* DASHBOARD RECEIPT admin only*/}
         <Route
           path="/dashboardReceipt"
-          element={<ReceiptFilterProvider><AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard></ReceiptFilterProvider> }
+          element={
+            <ReceiptFilterProvider>
+              <AdminRouteGuard>
+                <DashboardReceiptPage />
+              </AdminRouteGuard>
+            </ReceiptFilterProvider>
+          }
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
-          element={<AdminRouteGuard><DashboardReceiptEditPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardReceiptEditPage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashboardReceipt/view/:receiptId"
-          element={<AdminRouteGuard><DashboardReceiptViewPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardReceiptViewPage />
+            </AdminRouteGuard>
+          }
         ></Route>
 
         {/* PAGE FOR ADDING REVIEW */}
-        <Route
-          path="/addreview/:roomId"
-          element={<AddReviewPage />}>
-        </Route>
+        <Route path="/addreview/:roomId" element={<AddReviewPage />}></Route>
 
         {/* DASHBOARD SERVICES admin only*/}
         <Route
           path="/dashboardServices"
-          element={<ServicesFilterProvider><AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard></ServicesFilterProvider>}
+          element={
+            <ServicesFilterProvider>
+              <AdminRouteGuard>
+                <DashboardServicesPage />
+              </AdminRouteGuard>
+            </ServicesFilterProvider>
+          }
         ></Route>
         <Route
           path="/edit-service/:serviceId"
-          element={<AdminRouteGuard><EditServicePage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <EditServicePage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/add-service"
-          element={<AdminRouteGuard><AddServicePage /></AdminRouteGuard>}>
-        </Route>
+          element={
+            <AdminRouteGuard>
+              <AddServicePage />
+            </AdminRouteGuard>
+          }
+        ></Route>
 
         {/* DASHBOARD RECEIPT admin only*/}
         <Route
           path="/dashboardReceipt"
-          element={<AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardReceiptPage />
+            </AdminRouteGuard>
+          }
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
-          element={<AdminRouteGuard><DashboardReceiptEditPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <DashboardReceiptEditPage />
+            </AdminRouteGuard>
+          }
         ></Route>
 
         {/* DASHBOARD RESERVATION admin only*/}
         <Route
           path="/dashboard-reservation/"
-          element={<ReservationFilterProvider><AdminRouteGuard><DashBoardReservationsPage /></AdminRouteGuard></ReservationFilterProvider>}
+          element={
+            <ReservationFilterProvider>
+              <AdminRouteGuard>
+                <DashBoardReservationsPage />
+              </AdminRouteGuard>
+            </ReservationFilterProvider>
+          }
         ></Route>
         <Route
           path="/dashboard-reservation/view/:id"
-          element={<AdminRouteGuard><ViewEditReservationPage /></AdminRouteGuard>}
+          element={
+            <AdminRouteGuard>
+              <ViewEditReservationPage />
+            </AdminRouteGuard>
+          }
         ></Route>
       </Route>
-
       <Route
         path="/login"
         element={<LoginPage />}

@@ -44,7 +44,9 @@ export const Header = () => {
             <li className="headerLink">
               <Link to="/my-profile">My Profile</Link>
             </li>
-            <button className="header-link" onClick={handleLogout}>Logout</button>
+            <button className="headerLink logout" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         )}
         {userRole === "User" && (
@@ -55,7 +57,9 @@ export const Header = () => {
             <li className="headerLink">
               <Link to="/my-profile">My profile</Link>
             </li>
-            <button className="header-link" onClick={handleLogout}>Logout</button>
+            <button className="headerLink logout" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         )}
         {!userRole && (

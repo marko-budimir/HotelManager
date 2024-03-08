@@ -14,39 +14,50 @@ const DashBoardRoomFilter = () => {
     setFilter((prev) => ({
       ...prev,
       startDate: start,
-      endDate: end
+      endDate: end,
     }));
-  }
+  };
 
   const handlePriceRangeChange = (e) => {
     const value = parseInt(e.target.value);
     setFilter((prev) => ({
       ...prev,
-      [e.target.id]: value
-    }))
+      [e.target.id]: value,
+    }));
   };
 
   const handleNumberOfBedsChange = (e) => {
     const value = parseInt(e.target.value);
     setFilter((prev) => ({
       ...prev,
-      minBeds: value
-    }))
+      minBeds: value,
+    }));
   };
 
   const handleRoomTypeChange = (value) => {
     setFilter((prev) => ({
       ...prev,
-      roomTypeId: value
-    }))
+      roomTypeId: value,
+    }));
   };
-  
+
   return (
-    <div className="DashBoardRoomFilter">
-      <DatePickerUser startDate={filter.startDate} endDate={filter.endDate} onChange={handleDateChange} />
-      <PriceRange minValue={filter.minPrice} maxValue={filter.maxPrice} onChange={handlePriceRangeChange} />
-      <NumberOfBeds numberOfBeds={filter.minBeds} handleChange={handleNumberOfBedsChange} />
-      <RoomTypes onChangeHandle={handleRoomTypeChange}/>
+    <div className="DashBoardRoomFilter filter">
+      <DatePickerUser
+        startDate={filter.startDate}
+        endDate={filter.endDate}
+        onChange={handleDateChange}
+      />
+      <PriceRange
+        minValue={filter.minPrice}
+        maxValue={filter.maxPrice}
+        onChange={handlePriceRangeChange}
+      />
+      <NumberOfBeds
+        numberOfBeds={filter.minBeds}
+        handleChange={handleNumberOfBedsChange}
+      />
+      <RoomTypes onChangeHandle={handleRoomTypeChange} />
     </div>
   );
 };

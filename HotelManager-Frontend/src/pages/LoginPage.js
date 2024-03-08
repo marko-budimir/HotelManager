@@ -2,7 +2,6 @@ import AuthenticationForm from "../components/authentication/AuthenticationForm"
 import { useState } from "react";
 import { loginUser } from "../services/api_user";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [loginForm, setLoginForm] = useState({
@@ -34,18 +33,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
-      <h2 className="login-page-header">Welcome</h2>
+    <div className="login-page authentification-page">
+      <h2 className="login-page-header authentification-page-header">
+        Welcome
+      </h2>
       <AuthenticationForm
-        formType="Login"
+        formType="Log in"
         formLabels={["Email", "Password"]}
         formValues={loginForm}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
       />
-      <Link to="/register">
-        <h2>Dont have an account? Register Here</h2>
-      </Link>
     </div>
   );
 };

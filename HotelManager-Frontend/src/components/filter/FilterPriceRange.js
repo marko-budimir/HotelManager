@@ -1,9 +1,14 @@
 import React from "react";
 
-const PriceRange = ({minValue, maxValue, onChange, minId="minPrice", maxId="maxPrice"}) => {
-
+const PriceRange = ({
+  minValue,
+  maxValue,
+  onChange,
+  minId = "minPrice",
+  maxId = "maxPrice",
+}) => {
   return (
-    <div className="range-price">
+    <div className="range-price filter">
       <div className="input-container">
         <label htmlFor="minPrice" className="filter-label">
           Min:

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { createDiscount } from '../../services/api_discount';
+import React, { useState } from "react";
+import { createDiscount } from "../../services/api_discount";
 import { useNavigate } from "react-router-dom";
 
 const DiscountAdd = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    code: '',
+    code: "",
     percent: 0,
-    validFrom: '',
-    validTo: ''
+    validFrom: "",
+    validTo: "",
   });
 
   const handleChange = (e) => {
@@ -31,11 +31,17 @@ const DiscountAdd = () => {
 
   return (
     <div>
-      <h2>Add New Discount</h2>
-      <form className='discount-add-form' onSubmit={handleSubmit}>
+      <h2 className="edit-view-header">Add New Discount</h2>
+      <form
+        className="discount-add-form edit-view-form"
+        onSubmit={handleSubmit}
+      >
         <div>
-          <label htmlFor="code">Code:</label>
+          <label htmlFor="code" className="edit-view-label">
+            Code:
+          </label>
           <input
+            className="edit-view-input"
             type="text"
             id="code"
             name="code"
@@ -44,8 +50,11 @@ const DiscountAdd = () => {
           />
         </div>
         <div>
-          <label htmlFor="percent">Percent:</label>
+          <label htmlFor="percent" className="edit-view-label">
+            Percent:
+          </label>
           <input
+            className="edit-view-input"
             type="number"
             id="percent"
             name="percent"
@@ -54,8 +63,11 @@ const DiscountAdd = () => {
           />
         </div>
         <div>
-          <label htmlFor="validFrom">Valid From:</label>
+          <label htmlFor="validFrom" className="edit-view-label">
+            Valid From:
+          </label>
           <input
+            className="edit-view-input"
             type="date"
             id="validFrom"
             name="validFrom"
@@ -64,8 +76,11 @@ const DiscountAdd = () => {
           />
         </div>
         <div>
-          <label htmlFor="validTo">Valid To:</label>
+          <label htmlFor="validTo" className="edit-view-label">
+            Valid To:
+          </label>
           <input
+            className="edit-view-input"
             type="date"
             id="validTo"
             name="validTo"
@@ -73,7 +88,9 @@ const DiscountAdd = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Add Discount</button>
+        <button type="submit" className="edit-view-button">
+          Add Discount
+        </button>
       </form>
     </div>
   );

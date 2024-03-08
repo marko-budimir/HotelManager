@@ -121,23 +121,32 @@ export const RoomDetailsPage = () => {
           </p>
           <p className="room-detail-number">Room type: {room.typeName}</p>
         </div>
-        {userRole !== "Admin" && (
-          <div className="discount-reservation-form">
+      </div>
+      {userRole !== "Admin" && (
+        <div className="discount-reservation-form">
+          <div className="reservation-data">
             <p>Reservaton start date: {startDate}</p>
             <p>Reservation end date: {endDate}</p>
-
+          </div>
+          <div className="discount-form">
             <input
+              className="discount-form-input"
               type="text"
               placeholder="Enter discount code"
               value={query.filter.code}
               onChange={(e) => handleQueryChange(e.target.value)}
             />
-            <button onClick={fetchDiscounts}>Apply</button>
+            <button onClick={fetchDiscounts} className="discount-form-button">
+              Apply
+            </button>
             <br />
-            <button onClick={handleReserve}>Reserve</button>
+            <button onClick={handleReserve} className="discount-form-button">
+              Reserve
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
       <Reviews id={id} />
     </div>
   );

@@ -6,8 +6,9 @@ export const AddDiscountPage = () => {
   return (
     <div className="discount-page page">
       <DashboardEditViewNavbar />
-      <div className="container"></div>
-      <DiscountAdd />
+      <div className="container">
+        <DiscountAdd />
+      </div>
     </div>
   );
 };

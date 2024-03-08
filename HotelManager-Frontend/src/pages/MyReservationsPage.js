@@ -96,6 +96,7 @@ const MyReservationsPage = () => {
       <NavBar />
       <div className="container">
         <DataTable data={reservations} columns={columns} handle={handle} />
+
         <Paging
           totalPages={query.totalPages}
           currentPage={query.currentPage}

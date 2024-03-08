@@ -8,14 +8,19 @@
 .headerLinks {
   @include displayFlexRow();
   gap: 2vw;
-  font-size: 1.2rem;
   .headerLink {
     background-color: $primary;
+    font-size: 1.2rem;
+    color: white;
     padding: 0.7rem;
     border-radius: 0.8rem;
     transition: 400ms;
     &:hover {
       scale: 1.2;
+      cursor: pointer;
     }
+  }
+  .logout {
+    background-color: $dark1;
   }
 }
