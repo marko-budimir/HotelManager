@@ -38,9 +38,10 @@ const DashBoardReservationsPage = () => {
       ...query,
       filter: {
         ...filter,
+        checkInDate: formatDate(filter.checkInDate),
+        checkOutDate: formatDate(filter.checkOutDate),
       },
     };
-    console.log("requestQuery", requestQuery);
     api_reservation.getAllReservations(requestQuery).then((response) => {
       console.log(response);
       const [data, totalPages] = response;

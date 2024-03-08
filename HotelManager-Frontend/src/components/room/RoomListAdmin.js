@@ -1,15 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllRooms } from "../../services/api_room";
+import { getAllDashboardRooms } from "../../services/api_dashboard_room";
+import { useRoomFilter } from "../../context/RoomFilterContext";
+import { formatDate, formatReservationDate } from "../../common/HelperFunctions";
 
 export const RoomListAdmin = () => {
   const [rooms, setRooms] = useState([]);
+  const { filter } = useRoomFilter();
+  const [query, setQuery] = useState({
+    filter: {},
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 1,
+    sortBy: "Number",
+    sortOrder: "ASC",
+  });
 
   const fetchData = async () => {
     try {
-      const roomData = await getAllRooms();
-      const roomsData = roomData.data.items;
-      setRooms([...roomsData]);
+      const requestQuery = {
+        filter: {
+          searchQuery: filter.searchQuery,
+          minPrice: filter.minPrice,
+          maxPrice: filter.maxPrice,
+          minBeds: filter.minBeds,
+          roomTypeId: filter.roomTypeId,
+        },
+      };
+      const [roomData, totalPages] = await getAllDashboardRooms(requestQuery);
+      console.log("test tst",roomData);
+      setQuery({
+        ...query,
+        totalPages,
+      });
+      if (!roomData) {
+        setRooms([]);
+      }
+      setRooms(roomData);
     } catch (error) {
       console.error("Error fetching room:", error);
     }
@@ -17,11 +44,11 @@ export const RoomListAdmin = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [filter]);
 
   return (
     <div className="room-list">
-      {rooms.map((room) => (
+      {rooms && rooms.map((room) => (
         <div key={room.id}>
           <Link to={`/dashBoardRoom/${room.id}`} className="room-link">
             <img src={room.imageUrl} alt="room" className="room-link-image" />

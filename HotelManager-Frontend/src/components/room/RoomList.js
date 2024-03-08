@@ -1,34 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllRooms } from "../../services/api_room";
+import Paging from "../Common/Paging";
+import { useRoomFilter } from "../../context/RoomFilterContext";
+import { formatDate, formatReservationDate } from "../../common/HelperFunctions";
 
 export const RoomList = () => {
   const [rooms, setRooms] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const { filter } = useRoomFilter();
+  const [query, setQuery] = useState({
+    filter: {},
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 1,
+    sortBy: "Number",
+    sortOrder: "ASC",
+  });
 
-  const fetchData = async (pageNumber) => {
+  const fetchData = async () => {
     try {
-      const roomData = await getAllRooms(pageNumber);
-      const roomsData = roomData.data.items;
-      const paging = roomData.data;
-      console.log("room data:", roomData.data);
-      setRooms([...roomsData]);
-      setTotalPages(paging.totalPages);
+      const requestQuery = {
+        ...query,
+        filter: {
+          ...filter,
+          startDate: formatReservationDate(formatDate(filter.startDate), 13),
+          endDate: formatReservationDate(formatDate(filter.endDate), 10),
+        },
+      };
+      const [roomsData, totalPages] = await getAllRooms(requestQuery);
+      setQuery({
+        ...query,
+        totalPages,
+      });
+      if (!roomsData) {
+        setRooms([]);
+      }
+      setRooms(roomsData);
     } catch (error) {
       console.error("Error fetching room:", error);
     }
   };
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
+    fetchData();
+  }, [query.currentPage, filter]);
+
+  const handlePageChange = (pageNumber) => {
+    setQuery({
+      ...query,
+      currentPage: pageNumber,
+    });
+  };
 
   return (
     <div className="room-list">
-      {rooms.map((room) => (
+      {rooms && rooms.map((room) => (
         <div key={room.id}>
-          <Link to={`/room/${room.id}`} className="room-link">
+          <Link to={`/room/${room.id}?startDate=${formatDate(filter.startDate)}&endDate=${formatDate(filter.endDate)}`} className="room-link">
             <img src={room.imageUrl} alt="room" className="room-link-image" />
             <div className="room-link-info">
               <p className="room-link-number">Room {room.number}</p>
@@ -37,13 +65,7 @@ export const RoomList = () => {
           </Link>
         </div>
       ))}
-      <div className="pagination">
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <button key={index} onClick={() => setCurrentPage(index + 1)}>
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      <Paging totalPages={query.totalPages} currentPage={query.currentPage} onPageChange={handlePageChange} />
     </div>
   );
 };

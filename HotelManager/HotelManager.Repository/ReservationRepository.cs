@@ -263,11 +263,20 @@ namespace HotelManager.Repository
                 queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
             }
 
-            if (reservationFilter.MinPricePerNight > 0 && reservationFilter.MaxPricePerNight > 0)
+            if (reservationFilter.MinPricePerNight != null && reservationFilter.MinPricePerNight > 0)
             {
                 command.Parameters.AddWithValue("@MinPrice", reservationFilter.MinPricePerNight);
+                queryBuilder.AppendLine(" AND res.\"PricePerNight\" >= @MinPrice::money");
+                if (reservationFilter.MaxPricePerNight != null && reservationFilter.MaxPricePerNight > reservationFilter.MinPricePerNight)
+                {
+                    command.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
+                    queryBuilder.AppendLine(" AND res.\"PricePerNight\" <= @MaxPrice::money");
+                }
+            }
+            else if (reservationFilter.MaxPricePerNight != null)
+            {
                 command.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
-                queryBuilder.AppendLine(" AND res.\"PricePerNight\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+                queryBuilder.AppendLine(" AND res.\"PricePerNight\" <= @MaxPrice::money");
             }
 
             if (!string.IsNullOrEmpty(reservationFilter.SearchQuery))

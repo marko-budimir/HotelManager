@@ -72,11 +72,20 @@ namespace HotelManager.Repository
                             queryBuilder.AppendLine(" AND NOT EXISTS (\r\n    SELECT 1\r\n    FROM \"Reservation\" rsv\r\n    WHERE rsv.\"RoomId\" = r.\"Id\"\r\n    AND rsv.\"CheckOutDate\" >= @StartDate\r\n    AND rsv.\"CheckInDate\" <= @EndDate\r\n)");
                         }
 
-                        if (roomFilter.MinPrice != null && roomFilter.MaxPrice != null)
+                        if (roomFilter.MinPrice != null && roomFilter.MinPrice > 0)
                         {
                             cmd.Parameters.AddWithValue("@MinPrice", roomFilter.MinPrice);
+                            queryBuilder.AppendLine(" AND r.\"Price\" >= @MinPrice::money");
+                            if (roomFilter.MaxPrice != null && roomFilter.MaxPrice > roomFilter.MinPrice)
+                            {
+                                cmd.Parameters.AddWithValue("@MaxPrice", roomFilter.MaxPrice);
+                                queryBuilder.AppendLine(" AND r.\"Price\" <= @MaxPrice::money");
+                            }
+                        }
+                        else if (roomFilter.MaxPrice != null && roomFilter.MaxPrice > 0)
+                        {
                             cmd.Parameters.AddWithValue("@MaxPrice", roomFilter.MaxPrice);
-                            queryBuilder.AppendLine(" AND r.\"Price\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+                            queryBuilder.AppendLine(" AND r.\"Price\" <= @MaxPrice::money");
                         }
 
                         if (roomFilter.MinBeds > 0)
@@ -94,8 +103,9 @@ namespace HotelManager.Repository
 
                     if (sorting != null && !string.IsNullOrEmpty(sorting.SortBy))
                     {
-                        queryBuilder.Append(" ORDER BY ");
+                        queryBuilder.Append(" ORDER BY \"");
                         queryBuilder.Append(sorting.SortBy);
+                        queryBuilder.Append("\"");
 
                         if (!string.IsNullOrEmpty(sorting.SortOrder))
                         {
@@ -287,7 +297,7 @@ namespace HotelManager.Repository
                     await connection.OpenAsync();
 
                     var queryBuilder = new StringBuilder();
-                    queryBuilder.AppendLine("SELECT r.*, rt.\"Name\", res.\"CheckInDate\", res.\"CheckInDate\"");
+                    queryBuilder.AppendLine("SELECT DISTINCT r.*");
                     queryBuilder.AppendLine(" FROM \"Room\" r");
                     queryBuilder.AppendLine(" JOIN \"RoomType\" rt ON r.\"TypeId\" = rt.\"Id\"");
                     queryBuilder.AppendLine(" LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\"");
@@ -409,6 +419,7 @@ namespace HotelManager.Repository
 
         private static void SetValues(Room room, RoomUpdate roomUpdate)
         {
+            roomUpdate.Id = room.Id;
             roomUpdate.BedCount = room.BedCount;
             roomUpdate.Number = room.Number;
             roomUpdate.DateUpdated = room.DateUpdated;
