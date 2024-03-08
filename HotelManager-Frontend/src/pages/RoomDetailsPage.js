@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, } from "react";
 import { createSearchParams, useLocation, useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { getByIdRoom } from "../services/api_room";
 import { getAllDiscounts } from "../services/api_discount";
 import { formatReservationDate } from "../common/HelperFunctions";
@@ -25,11 +26,8 @@ export const RoomDetailsPage = () => {
   const startDate = queryParams.get("startDate");
   const endDate = queryParams.get("endDate");
   const [userRole, setUserRole] = useState("");
-  /*
-    console.log(startDate,"   ",endDate);
-    console.log(formatReservationDate(startDate,13));
-    console.log(formatReservationDate(endDate,10));
-  */
+ 
+
   useEffect(() => {
     const fetchRoom = async () => {
       try {
@@ -56,7 +54,7 @@ export const RoomDetailsPage = () => {
     fetchUserRole();
   }, []);
 
-  useEffect(() => {}, [query]);
+  useEffect(() => { }, [query]);
 
   const fetchDiscounts = async () => {
     try {
@@ -72,25 +70,40 @@ export const RoomDetailsPage = () => {
     setQuery({ ...query, filter: { code: discountCode } });
   };
 
+
+  const navigate = useNavigate();
+
   const handleReserve = () => {
-    console.log("Discount:", discount);
-    const appliedDiscount = discount[0];
-    if (appliedDiscount) {
-      console.log("Discount Code:", appliedDiscount.code);
-    } else {
-      console.log("No discounts found.");
+    const token = localStorage.getItem("token");
+
+    if (token != null) {
+      const isConfirmed = window.confirm(
+        "Are you sure you want to make this reservation?"
+      );
+      if (isConfirmed) {
+        const appliedDiscount = discount[0];
+        if (appliedDiscount) {
+        } else {
+          console.log("No discounts found.");
+        }
+        const reservationData = {
+          discountId: appliedDiscount ? appliedDiscount.id : null,
+          roomId: room.id,
+          pricePerNight: room.price,
+          checkInDate: formatReservationDate(startDate, 13),
+          checkOutDate: formatReservationDate(endDate, 10),
+        };
+
+        apiReservation.createReservation(reservationData);
+      }
+      else{
+        return false;
+      }
     }
+    else {
+      navigate("/login");
 
-    const reservationData = {
-      discountId: appliedDiscount ? appliedDiscount.id : null,
-      roomId: room.id,
-      pricePerNight: room.price,
-      checkInDate: formatReservationDate(startDate, 13),
-      checkOutDate: formatReservationDate(endDate, 10),
-    };
-
-    console.log(reservationData);
-    apiReservation.createReservation(reservationData);
+    }
   };
 
   if (!room) {

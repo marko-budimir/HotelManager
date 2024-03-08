@@ -31,15 +31,15 @@ const getByIdReservation = async (reservationId) => {
     console.error(error);
     return [];
   }
- };
+};
 
- const createReservation = async (reservationData) => {
+const createReservation = async (reservationData) => {
   try {
-    console.log(`${BASE_URL}/`,reservationData);
-    const response = await post(`${BASE_URL}/`,reservationData);
-    if(response.status ===200){
+    const response = await post(`${BASE_URL}/`, reservationData);
+    if (response.status === 200) {
+      alert("Sucessfully created reservation!")
       return true
-    }else{
+    } else {
       return false
     }
   } catch (error) {
@@ -49,25 +49,23 @@ const getByIdReservation = async (reservationId) => {
 };
 
 
-const updateReservation = async (reservationId,invoiceId,reservationData) => {
-try
-{
-  console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`,reservationData);
-  const response = await put(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`,reservationData);
-  if(response.status === 200){
-    return true
-  }else{
-    return false
+const updateReservation = async (reservationId, invoiceId, reservationData) => {
+  try {
+    console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`, reservationData);
+    const response = await put(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`, reservationData);
+    if (response.status === 200) {
+      return true
+    } else {
+      return false
+    }
   }
-}
-catch (error) 
-{
+  catch (error) {
     console.error("Error deleting reservation:", error);
     return false;
-}
+  }
 
 
- };
+};
 
 const deleteReservation = async (reservationId, invoiceId) => {
   try {
