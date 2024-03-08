@@ -307,6 +307,10 @@
   justify-content: center;
   flex-direction: row;
   justify-content: space-between;
+  /* 
+  .navbar-room-dashboard {
+    height: 100% !important;
+  } */
 }
 .main .page .navbar {
   display: flex;
@@ -315,9 +319,6 @@
   flex-direction: column;
   justify-content: flex-start;
   padding-top: 1vh;
-}
-.main .page .navbar-room-dashboard {
-  height: 100% !important;
 }
 .main .page .container {
   display: flex;
