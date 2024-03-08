@@ -22,7 +22,9 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(DISTINCT r.\"Id\") FROM \"Room\" r LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\" WHERE r.\"IsActive\" = TRUE";
+                command.CommandText = "SELECT COUNT(DISTINCT r.\"Id\") FROM \"Room\" r " +
+                              "LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\" " +
+                              "WHERE r.\"IsActive\" = TRUE";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try
@@ -393,7 +395,11 @@ namespace HotelManager.Repository
                 {
                     command.Parameters.AddWithValue("@StartDate", roomFilter.StartDate);
                     command.Parameters.AddWithValue("@EndDate", roomFilter.EndDate);
-                    command.CommandText += " AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)";
+                    command.CommandText += " AND NOT EXISTS (" +
+                                          "SELECT 1 FROM \"Reservation\" rsv " +
+                                          "WHERE rsv.\"RoomId\" = r.\"Id\" " +
+                                          "AND rsv.\"CheckOutDate\" >= @StartDate " +
+                                          "AND rsv.\"CheckInDate\" <= @EndDate)";
                 }
 
                 if (roomFilter.MinPrice != null && roomFilter.MaxPrice != null)
