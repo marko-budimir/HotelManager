@@ -63,9 +63,11 @@ const router = createBrowserRouter(
         <Route
           path="/dashboardRoom"
           element={
-            <AdminRouteGuard>
-              <DashboardRoomTablePage />
-            </AdminRouteGuard>
+            <RoomFilterProvider>
+              <AdminRouteGuard>
+                <DashboardRoomTablePage />
+              </AdminRouteGuard>
+            </RoomFilterProvider>
           }
         ></Route>
         <Route
@@ -131,9 +133,11 @@ const router = createBrowserRouter(
         <Route
           path="/dashboard-discount/"
           element={
-            <AdminRouteGuard>
-              <DashboardDiscountPage />
-            </AdminRouteGuard>
+            <DiscountFilterProvider>
+              <AdminRouteGuard>
+                <DashboardDiscountPage />
+              </AdminRouteGuard>
+            </DiscountFilterProvider>
           }
         ></Route>
         <Route
@@ -208,32 +212,6 @@ const router = createBrowserRouter(
           element={
             <AdminRouteGuard>
               <AddServicePage />
-            </AdminRouteGuard>
-          }
-        ></Route>
-
-        {/* DASHBOARD DISCOUNT admin only*/}
-        <Route
-          path="/dashboard-discount/"
-          element={
-            <AdminRouteGuard>
-              <DashboardDiscountPage />
-            </AdminRouteGuard>
-          }
-        ></Route>
-        <Route
-          path="/dashboard-discount/add"
-          element={
-            <AdminRouteGuard>
-              <AddDiscountPage />
-            </AdminRouteGuard>
-          }
-        ></Route>
-        <Route
-          path="/dashboard-discount/:discountId"
-          element={
-            <AdminRouteGuard>
-              <EditDiscountPage />
             </AdminRouteGuard>
           }
         ></Route>

@@ -7,7 +7,7 @@ const DashBoardRoomPage = () => {
     <div className="dashboard-add-room-page page">
       <DashboardEditViewNavbar />
       <div className="container">
-        <h2>Add room</h2>
+        <h2 className="edit-view-header">Add room</h2>
         <RoomForm />
       </div>
     </div>

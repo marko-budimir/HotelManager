@@ -27,19 +27,18 @@ const RoomTypeEdit = ({ roomId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const confirmed = window.confirm("Are you sure you want to update this room type?");
+    const confirmed = window.confirm(
+      "Are you sure you want to update this room type?"
+    );
     if (confirmed) {
-      try 
-      {
+      try {
         await updateRoomType(roomId, roomType);
         console.log("Room type updated successfully!");
         navigate(`/dashboard-roomtype`);
-      } catch (error) 
-      {
+      } catch (error) {
         console.error("Error updating room type:", error);
       }
-    } else 
-    {
+    } else {
       console.log("Update cancelled");
     }
   };
@@ -50,11 +49,18 @@ const RoomTypeEdit = ({ roomId }) => {
 
   return (
     <div>
-      <h2>Edit Room Type</h2>
-      <form className="roomtype-edit-form" onSubmit={handleSubmit}>
+      <h2 className="edit-view-header">Edit Room Type</h2>
+      <form
+        className="roomtype-edit-form edit-view-form"
+        id="roomtype-edit-form"
+        onSubmit={handleSubmit}
+      >
         <div>
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name" className="edit-view-label">
+            Name:
+          </label>
           <input
+            className="edit-view-input"
             type="text"
             id="name"
             name="name"
@@ -63,15 +69,20 @@ const RoomTypeEdit = ({ roomId }) => {
           />
         </div>
         <div>
-          <label htmlFor="description">Description:</label>
+          <label htmlFor="description" className="edit-view-label">
+            Description:
+          </label>
           <textarea
+            className="edit-view-textarea"
             id="description"
             name="description"
             value={roomType.description || ""}
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Update Room Type</button>
+        <button type="submit" className="edit-view-button">
+          Update Room Type
+        </button>
       </form>
     </div>
   );
