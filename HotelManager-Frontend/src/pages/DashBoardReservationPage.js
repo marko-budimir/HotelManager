@@ -132,12 +132,14 @@ const DashBoardReservationsPage = () => {
   return (
     <div className="dashboard-reservations-page page">
       <DashboardReservationsNavbar />
-      <DataTable data={reservations} columns={columns} handle={handle} />
-      <Paging
-        totalPages={query.totalPages}
-        currentPage={query.currentPage}
-        onPageChange={handlePageChange}
-      />
+      <div className="container">
+        <DataTable data={reservations} columns={columns} handle={handle} />
+        <Paging
+          totalPages={query.totalPages}
+          currentPage={query.currentPage}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

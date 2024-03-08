@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { createDiscount } from '../../services/api_discount';
+import React, { useState } from "react";
+import { createDiscount } from "../../services/api_discount";
 import { useNavigate } from "react-router-dom";
 
 const DiscountAdd = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    code: '',
+    code: "",
     percent: 0,
-    validFrom: '',
-    validTo: ''
+    validFrom: "",
+    validTo: "",
   });
 
   const handleChange = (e) => {
@@ -32,7 +32,7 @@ const DiscountAdd = () => {
   return (
     <div>
       <h2>Add New Discount</h2>
-      <form className='discount-add-form' onSubmit={handleSubmit}>
+      <form className="discount-add-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="code">Code:</label>
           <input

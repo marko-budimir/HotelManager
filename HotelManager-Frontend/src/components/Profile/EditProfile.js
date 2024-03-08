@@ -19,7 +19,7 @@ export const EditProfile = ({ handleEdit }) => {
   };
 
   return (
-    <div className="edit-profile">
+    <div className="edit-profile profile-form">
       <h2 className="form-heading">EDIT PROFILE</h2>
       <form className="form" onSubmit={handleSubmit}>
         <input

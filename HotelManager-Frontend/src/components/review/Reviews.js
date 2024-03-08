@@ -26,7 +26,7 @@ const Reviews = ({ id }) => {
         setTotalPages(totalPages);
       } catch (error) {
         console.error("Error fetching reviews:", error);
-        setError("Could not fetch reviews. Please try again later.");
+        setError("No reviews for this room");
       }
     };
 

@@ -11,33 +11,29 @@ const DashBoardReceiptFilter = () => {
     const value = parseInt(e.target.value);
     setFilter((prev) => ({
       ...prev,
-      [e.target.id]: value
-    }))
+      [e.target.id]: value,
+    }));
   };
 
   const handleIsPaidChange = (value) => {
     setFilter((prev) => ({
       ...prev,
-      isPaid: value
-    }))
+      isPaid: value,
+    }));
   };
 
   const handleSearchQueryChange = (e) => {
     setFilter((prev) => ({
       ...prev,
-      userEmailQuery: e.target.value
-    }))
+      userEmailQuery: e.target.value,
+    }));
   };
 
-
   return (
-    <div className="DashBoardReceiptFilter">
-      <PriceRange
-        minValue={filter.minPrice}
-        maxValue={filter.maxPrice}
-        onChange={handlePriceRangeChange} />
-      <IsPaidReceipt onChange={handleIsPaidChange} />
-      <SearchQuery onChange={handleSearchQueryChange} />
+    <div className="DashBoardReceiptFilter filter">
+      <PriceRange minValue={0} maxValue={100} />
+      <IsPaidReceipt />
+      <SearchQuery />
     </div>
   );
 };

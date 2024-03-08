@@ -6,7 +6,9 @@ export const DashboardHomeRoomTypeNavbar = () => {
   return (
     <div className="navbar">
       <DashboardNavigation />
-      <Link to="/addroomtype">Add room type</Link>
+      <Link to="/addroomtype" className="add-link">
+        Add room type
+      </Link>
     </div>
   );
 };
