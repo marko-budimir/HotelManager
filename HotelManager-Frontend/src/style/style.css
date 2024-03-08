@@ -711,6 +711,7 @@ button:hover {
 
 .edit-view-header {
   font-size: 2rem;
+  padding-bottom: 0.5rem;
 }
 
 .edit-view-textarea {
