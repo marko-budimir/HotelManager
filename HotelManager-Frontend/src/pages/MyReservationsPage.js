@@ -67,9 +67,7 @@ const MyReservationsPage = () => {
 
   const handleReviewClick = (item) => {
     const currentDate = new Date();
-    console.log(currentDate);
     const checkOutDate = new Date(item.checkOutDate);
-    console.log(checkOutDate);
     if (currentDate > checkOutDate) {
       navigate(`/addreview/${item.roomId}`);
     } else {

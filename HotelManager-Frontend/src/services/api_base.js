@@ -3,7 +3,6 @@ import axios from "axios";
 const BASE_URL = "https://localhost:44327";
 
 const get = async (url) => {
-    console.log("url", url);
     const headers = {
         Authorization: getToken(),
     };

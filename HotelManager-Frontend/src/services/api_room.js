@@ -8,7 +8,6 @@ const getAllRooms = async (query) => {
   const queryString = buildQueryString(query);
   try {
     const response = await get(`/api/room${queryString}`);
-    console.log("response", response);
     if (response.status === 200) {
       return [response.data.items, response.data.totalPages];
     }

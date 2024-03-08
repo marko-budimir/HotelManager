@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import DashboardNavigation from "./DashboardNavigation";
 
 export const AddReviewNavbar = () => {
   return (

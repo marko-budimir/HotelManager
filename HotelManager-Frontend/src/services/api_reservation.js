@@ -22,7 +22,6 @@ const getByIdReservation = async (reservationId) => {
   try {
     const response = await get(`${BASE_URL}/${reservationId}`)
     if (response.status === 200) {
-      console.log(response.data);
       return response;
     }
     return [];
@@ -51,7 +50,6 @@ const createReservation = async (reservationData) => {
 
 const updateReservation = async (reservationId, invoiceId, reservationData) => {
   try {
-    console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`, reservationData);
     const response = await put(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`, reservationData);
     if (response.status === 200) {
       return true
@@ -69,7 +67,6 @@ const updateReservation = async (reservationId, invoiceId, reservationData) => {
 
 const deleteReservation = async (reservationId, invoiceId) => {
   try {
-    console.log(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
     const response = await remove(`${BASE_URL}/${reservationId}?invoiceId=${invoiceId}`);
     if (response.status === 200) {
       return true;

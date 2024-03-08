@@ -28,7 +28,6 @@ export const RoomListAdmin = () => {
         },
       };
       const [roomData, totalPages] = await getAllDashboardRooms(requestQuery);
-      console.log("test tst",roomData);
       setQuery({
         ...query,
         totalPages,

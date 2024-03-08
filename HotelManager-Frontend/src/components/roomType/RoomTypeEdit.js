@@ -33,13 +33,10 @@ const RoomTypeEdit = ({ roomId }) => {
     if (confirmed) {
       try {
         await updateRoomType(roomId, roomType);
-        console.log("Room type updated successfully!");
         navigate(`/dashboard-roomtype`);
       } catch (error) {
         console.error("Error updating room type:", error);
       }
-    } else {
-      console.log("Update cancelled");
     }
   };
 

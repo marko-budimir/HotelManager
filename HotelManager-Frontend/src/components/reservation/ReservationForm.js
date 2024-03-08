@@ -35,7 +35,6 @@ export default function ReservationForm() {
     e.preventDefault();
     if (mode === "edit") {
     }
-    console.log(reservationData);
     try {
       const invoicesResponse = await api_receipt.getAllDashboardInvoice({
         filter: {

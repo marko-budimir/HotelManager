@@ -43,7 +43,6 @@ const DashBoardReservationsPage = () => {
       },
     };
     api_reservation.getAllReservations(requestQuery).then((response) => {
-      console.log(response);
       const [data, totalPages] = response;
       setReservations(
         data.map((reservation) => ({
