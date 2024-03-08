@@ -22,7 +22,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Room\" r WHERE r.\"IsActive\" = TRUE";
+                command.CommandText = "SELECT COUNT(DISTINCT r.\"Id\") FROM \"Room\" r LEFT JOIN \"Reservation\" res ON r.\"Id\" = res.\"RoomId\" WHERE r.\"IsActive\" = TRUE";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try
@@ -30,6 +30,7 @@ namespace HotelManager.Repository
                     await connection.OpenAsync();
                     object result = await command.ExecuteScalarAsync();
                     return Convert.ToInt32(result);
+
                 }
                 catch (Exception e)
                 {
@@ -68,7 +69,7 @@ namespace HotelManager.Repository
                         {
                             cmd.Parameters.AddWithValue("@StartDate", roomFilter.StartDate);
                             cmd.Parameters.AddWithValue("@EndDate", roomFilter.EndDate);
-                            queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
+                            queryBuilder.AppendLine(" AND NOT EXISTS (\r\n    SELECT 1\r\n    FROM \"Reservation\" rsv\r\n    WHERE rsv.\"RoomId\" = r.\"Id\"\r\n    AND rsv.\"CheckOutDate\" >= @StartDate\r\n    AND rsv.\"CheckInDate\" <= @EndDate\r\n)");
                         }
 
                         if (roomFilter.MinPrice != null && roomFilter.MaxPrice != null)
@@ -185,7 +186,7 @@ namespace HotelManager.Repository
 
 
         public async Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate, Guid userId)
-        { 
+        {
             Room room = await GetByIdAsync(id);
 
             if (roomUpdate == null)
@@ -242,7 +243,7 @@ namespace HotelManager.Repository
                     cmd.Parameters.AddWithValue("@DateUpdated", roomUpdate.DateUpdated);
                     queryBuilder.AppendLine(" \"DateUpdated\" = @DateUpdated,");
 
-                    cmd.Parameters.AddWithValue("@UpdatedBy", roomUpdate.UpdatedBy) ;
+                    cmd.Parameters.AddWithValue("@UpdatedBy", roomUpdate.UpdatedBy);
                     queryBuilder.AppendLine(" \"UpdatedBy\" = @UpdatedBy");
 
                     cmd.Parameters.AddWithValue("@id", id);
@@ -258,12 +259,12 @@ namespace HotelManager.Repository
 
             Room editedRoom = await GetByIdAsync(id);
             RoomUpdate roomUpdated = new RoomUpdate();
-            SetValues(editedRoom,roomUpdated);
+            SetValues(editedRoom, roomUpdated);
             return roomUpdated;
         }
 
 
-        public  async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
+        public async Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id)
         {
             Room room = await GetByIdAsync(id);
             RoomUpdate roomUpdate = new RoomUpdate();
