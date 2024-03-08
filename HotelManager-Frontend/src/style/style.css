@@ -2,6 +2,38 @@
 /*----------COMPONENTS----------*/
 /*-----common-----*/
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+.data-table {
+  width: 70vw;
+  max-height: 80vh;
+}
+.data-table .data-table-header {
+  background-color: #7a95ba;
+  color: white;
+}
+.data-table .data-table-header .data-table-header-row-cell {
+  height: 4vh;
+  padding-top: 0.7rem;
+}
+
+.data-table-body .data-table-body-row {
+  height: 4vh;
+  font-size: 1.1rem;
+  text-align: center;
+  padding-top: 0.2rem;
+}
+
+.data-table-body-row-cell-handle-button {
+  width: 5vw;
+  height: 3vh;
+  font-size: 0.9rem;
+  background-color: #00a6fb;
+  color: white;
+}
+
+.data-table-body-row-cell {
+  padding-top: 0.5rem;
+}
+
 .paging {
   margin-top: 1rem;
   display: flex;
@@ -28,16 +60,21 @@
   justify-content: center;
   flex-direction: row;
   gap: 2vw;
-  font-size: 1.2rem;
 }
 .headerLinks .headerLink {
   background-color: #7a95ba;
+  font-size: 1.2rem;
+  color: white;
   padding: 0.7rem;
   border-radius: 0.8rem;
   transition: 400ms;
 }
 .headerLinks .headerLink:hover {
   scale: 1.2;
+  cursor: pointer;
+}
+.headerLinks .logout {
+  background-color: #051923;
 }
 
 .navbar {
@@ -48,7 +85,48 @@
 
 /*-----discount-----*/
 /*-----authentification-----*/
+/*-----naviation-----*/
+.dashboard-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.7rem;
+  background-color: #003554;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: white;
+  border-radius: 0.8rem;
+}
+.dashboard-navigation .dashboard-navigation-header {
+  font-size: 2rem;
+  border-bottom: 0.1rem solid white;
+}
+.dashboard-navigation .navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.add-link {
+  font-size: 1.5rem;
+  text-decoration: underline;
+  color: white;
+}
+
 /*-----filter-----*/
+.submit-filter {
+  width: 3.5vw;
+  height: 3vh;
+  font-size: 0.9rem;
+  background-color: #003554;
+  color: white;
+  border: none;
+  border-radius: 0.8rem;
+}
+
 .number-of-beds-row {
   display: flex;
   align-items: center;
@@ -86,6 +164,19 @@
 }
 
 /*-----profile-----*/
+.profile-data {
+  background-color: white;
+  width: 50vw;
+  height: 30vh;
+  border-radius: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 2rem;
+}
+
 /*-----reservation-----*/
 /*-----review-----*/
 .review {
@@ -129,7 +220,7 @@
   flex-direction: column;
   justify-content: flex-start;
   width: 95vw;
-  height: 35vh;
+  height: 30vh;
   background-color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.8rem;
@@ -142,6 +233,8 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  justify-content: start;
+  padding: 5vh 0;
   width: 80vw;
   gap: 5vh;
   height: 91vh;
@@ -177,6 +270,10 @@
   font-size: 1.3rem;
 }
 
+.room-list::-webkit-scrollbar {
+  display: none;
+}
+
 /*----------PAGES----------*/
 .header {
   position: sticky;
@@ -208,12 +305,82 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 2vh;
 }
 .main .page .container {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 5vh;
   width: 80vw;
+  height: 91vh;
+}
+
+.authentification-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 10vh;
+  gap: 5vh;
+  height: 91vh;
+  width: 100vw;
+}
+.authentification-page .authentification-page-header {
+  font-size: 3rem;
+}
+.authentification-page .login-register-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+.authentification-page .login-register-link {
+  font-size: 0.9rem;
+  padding-top: 1rem;
+  transition: 250ms;
+}
+.authentification-page .login-register-link:hover {
+  color: #00a6fb;
+}
+.authentification-page .authentication-form-header {
+  font-size: 1.7rem;
+  padding-bottom: 1rem;
+}
+.authentification-page .authentication-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  width: 20vw;
+  padding: 0.5rem 0;
+}
+.authentification-page .authentication-form-row .authentication-form-row-input {
+  font-size: 0.9rem;
+  height: 4vh;
+  width: 10vw;
+  padding-left: 0.5rem;
+  border-radius: 0.8rem;
+  border: 0.05rem solid black;
+}
+.authentification-page .authentication-form-button {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  padding: 0.5rem 1.5rem;
+  background-color: #003554;
+  color: white;
+  border-radius: 0.8rem;
+  transition: 250ms;
+}
+.authentification-page .authentication-form-button:hover {
+  scale: 1.1;
 }
 
 .room-detail {
@@ -225,7 +392,7 @@
 }
 .room-detail .room-detail-image {
   width: 25vw;
-  height: 30vh;
+  height: 25vh;
 }
 .room-detail .room-info-section {
   display: flex;
@@ -238,7 +405,7 @@
   background-color: #003554;
   color: white;
   width: 25vw;
-  height: 30vh;
+  height: 25vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,6 +413,102 @@
   gap: 1rem;
   font-size: 1.3rem;
   border-radius: 0.8rem;
+}
+.room-detail .discount-reservation-form {
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 3rem;
+}
+.room-detail .discount-reservation-form .reservation-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.room-detail .discount-reservation-form .discount-form .discount-form-input {
+  width: 10vw;
+  height: 4vh;
+  padding-left: 0.5rem;
+  border: 0.1rem solid black;
+  border-radius: 0.8rem;
+  font-size: 0.9rem;
+}
+.room-detail .discount-reservation-form .discount-form .discount-form-button {
+  height: 4vh;
+  width: 5vw;
+  background-color: #003554;
+  color: white;
+  font-size: 1rem;
+  margin: 0.5rem;
+  border-radius: 0.8rem;
+  transition: 250ms;
+}
+.room-detail .discount-reservation-form .discount-form .discount-form-button:hover {
+  scale: 1.1;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.profile .profile-forms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 50vw;
+  gap: 5vw;
+}
+
+.profile-form {
+  border-radius: 0.8rem;
+  width: 20vw;
+  height: 40vh;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+.profile-form .form-heading {
+  font-size: 1.3rem;
+}
+.profile-form .form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+.profile-form .form-input {
+  height: 3.5vh;
+  width: 10vw;
+  font-size: 0.9rem;
+  padding-left: 0.5rem;
+  border: 0.01rem solid black;
+  border-radius: 0.8rem;
+}
+.profile-form .form-submit-button {
+  height: 5vh;
+  width: 5vw;
+  font-size: 1rem;
+  background-color: #003554;
+  color: white;
+  border: none;
+  border-radius: 0.8rem;
+  transition: 250ms;
+}
+.profile-form .form-submit-button:hover {
+  scale: 1.1;
+  cursor: pointer;
 }
 
 /*----------BASE----------*/
@@ -319,7 +582,9 @@ video {
   vertical-align: baseline;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+     -moz-text-size-adjust: none;
+          text-size-adjust: none;
 }
 
 footer,
@@ -404,6 +669,10 @@ button:hover {
   border: 0.05rem solid black;
   border-radius: 0.8rem;
   padding-left: 0.5rem;
+}
+
+.filter {
+  padding: 0.3rem;
 }
 
 /*----------LAYOUT----------*//*# sourceMappingURL=style.css.map */

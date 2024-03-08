@@ -15,9 +15,8 @@ export const ProfileData = ({ user }) => {
         return (
           <div className="profile-data-field" key={key}>
             <span className="profile-data-field-heading">
-              {handleKeyString(key)}
+              {handleKeyString(key) + ": "}
             </span>
-            <span> </span>
             <span className="profile-data-field-text">{value}</span>
           </div>
         );

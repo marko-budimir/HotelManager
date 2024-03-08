@@ -8,7 +8,9 @@ export const DashboardHomeRoomNavbar = () => {
     <div className="navbar">
       <DashboardNavigation />
       <DashboardRoomFilter />
-      <Link to="/dashBoardRoom/add">Add room</Link>
+      <Link to="/dashBoardRoom/add" className="add-link">
+        Add room
+      </Link>
     </div>
   );
 };

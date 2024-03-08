@@ -23,7 +23,7 @@ const FilterRoomType = ({ isDisabled, onChangeHandle }) => {
   };
 
   return (
-    <div className="FilterRoomType">
+    <div className="FilterRoomType filter">
       <label className="filter-label">Room Type:</label>
       <RadioGroup value={selectedRoomType} onChange={handleRoomTypeChange}>
         {roomTypes.map((roomType, index) => (

@@ -19,8 +19,15 @@ export const DashboardServicesHomeNavbar = () => {
   return (
     <div className="navbar">
       <DashboardNavigation />
+<<<<<<< HEAD
       <PriceRange minValue={filter.minPrice} maxValue={filter.maxPrice} onChange={handlePriceRangeChange} />
       <Link to="/add-service">Add service</Link>
+=======
+      <PriceRange />
+      <Link to="/add-service" className="add-link">
+        Add service
+      </Link>
+>>>>>>> 5c5f451 (add styling for most components and pages)
     </div>
   );
 };

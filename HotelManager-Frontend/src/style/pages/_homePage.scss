@@ -20,10 +20,15 @@
     justify-content: space-between;
     .navbar {
       @include displayFlexColumn();
+      justify-content: flex-start;
+      padding-top: 2vh;
     }
     .container {
-      @include displayFlex();
+      @include displayFlexColumn();
+      justify-content: flex-start;
+      padding-top: 5vh;
       width: 80vw;
+      height: 91vh;
     }
   }
 }

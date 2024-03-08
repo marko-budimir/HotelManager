@@ -3,6 +3,8 @@
 
 .room-list {
   @include displayFlexColumn();
+  justify-content: start;
+  padding: 5vh 0;
   width: 80vw;
   gap: 5vh;
   height: 91vh;
@@ -30,4 +32,8 @@
       }
     }
   }
+}
+
+.room-list::-webkit-scrollbar {
+  display: none;
 }

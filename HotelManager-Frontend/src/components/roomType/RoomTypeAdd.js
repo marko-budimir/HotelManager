@@ -12,7 +12,9 @@ const RoomTypeAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const confirmed = window.confirm("Are you sure you want to add this room type?");
+    const confirmed = window.confirm(
+      "Are you sure you want to add this room type?"
+    );
     if (confirmed) {
       try {
         await createRoomType(roomType);

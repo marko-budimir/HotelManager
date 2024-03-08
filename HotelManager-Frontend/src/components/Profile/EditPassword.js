@@ -17,7 +17,7 @@ export const EditPassword = ({ handleEdit }) => {
     console.log(passwordData);
   };
   return (
-    <div className="edit-profile">
+    <div className="edit-profile profile-form">
       <h2 className="form-heading">CHANGE PASSWORD</h2>
       <form className="form" onSubmit={handleSubmit}>
         <input

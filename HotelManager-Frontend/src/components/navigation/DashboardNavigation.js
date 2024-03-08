@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const DashboardNavigation = () => {
   return (
     <div className="dashboard-navigation">
-      <h2>Dashboard</h2>
+      <h2 className="dashboard-navigation-header">Dashboard</h2>
       <nav className="navigation">
         <Link to="/dashboardRoom">Rooms</Link>
         <Link to="/dashboardReceipt">Receipts</Link>

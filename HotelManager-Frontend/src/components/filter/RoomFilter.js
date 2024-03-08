@@ -41,11 +41,19 @@ const RoomFilter = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="room-filter">
       <DateSelectUser startDate={filter.startDate} endDate={filter.endDate} onChange={handleDateChange} />
       <PriceRange minValue={filter.minPrice} maxValue={filter.maxPrice} onChange={handlePriceRangeChange} />
       <NumberOfBeds numberOfBeds={filter.minBeds} handleChange={handleNumberOfBedsChange} />
       <RoomTypes onChangeHandle={handleRoomTypeChange}/>
+=======
+    <div className="room-filter filter">
+      <DateSelectUser />
+      <PriceRange minValue={0} maxValue={100} />
+      <NumberOfBeds />
+      <RoomTypes />
+>>>>>>> 5c5f451 (add styling for most components and pages)
     </div>
   );
 };
