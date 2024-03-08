@@ -4,8 +4,10 @@ import { format } from "date-fns";
 import DataTable from "../Common/DataTable";
 import { deleteDiscount, getAllDiscounts } from "../../services/api_discount";
 import Paging from "../Common/Paging";
+import { useDiscountFilter } from "../../context/DiscountFilterContext";
 
 export const DashboardDiscount = () => {
+  const { filter } = useDiscountFilter();
   const [discounts, setDiscounts] = useState([]);
   const navigate = useNavigate();
   const [query, setQuery] = useState({
@@ -18,8 +20,14 @@ export const DashboardDiscount = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const requestQuery = {
+        ...query,
+        filter: {
+          ...filter,
+        },
+      };
       try {
-        const [items, totalPages] = await getAllDiscounts(query);
+        const [items, totalPages] = await getAllDiscounts(requestQuery);
         if (items && Array.isArray(items)) {
           const formattedDiscounts = items.map(discount => ({
             ...discount,
@@ -40,7 +48,7 @@ export const DashboardDiscount = () => {
     };
   
     fetchData();
-  }, [query.currentPage]);
+  }, [query.currentPage, filter]);
   
   const columns = [
     { key: "code", label: "Code" },

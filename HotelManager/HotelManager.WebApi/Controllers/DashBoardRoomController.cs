@@ -51,19 +51,19 @@ namespace HotelManager.WebApi.Controllers
             [FromUri] int pageSize = 10,
             [FromUri] string sortBy = "",
             [FromUri] string isAsc = "ASC",
-            [FromUri] string SearchQuery = null,
-            [FromUri] DateTime? StartDate = null,
-            [FromUri] DateTime? EndDate = null,
-            [FromUri] decimal? MinPrice = null,
-            [FromUri] decimal? MaxPrice = null,
-            [FromUri] int? MinBeds = null,
-            [FromUri] Guid? RoomTypeId = null)
+            [FromUri] string searchQuery = null,
+            [FromUri] DateTime? startDate = null,
+            [FromUri] DateTime? endDate = null,
+            [FromUri] decimal? minPrice = null,
+            [FromUri] decimal? maxPrice = null,
+            [FromUri] int? minBeds = null,
+            [FromUri] Guid? roomTypeId = null)
         {
             try
             {
                 Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
-                RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery, StartDate = StartDate, EndDate = EndDate, MinBeds = MinBeds, MaxPrice = MaxPrice, MinPrice = MinPrice, RoomTypeId = RoomTypeId };
+                RoomFilter roomFilter = new RoomFilter() { SearchQuery = searchQuery, StartDate = startDate, EndDate = endDate, MinBeds = minBeds, MaxPrice = maxPrice, MinPrice = minPrice, RoomTypeId = roomTypeId };
                 var roomsUpdated = await _roomService.GetUpdatedRoomsAsync(paging, sorting, roomFilter);
                 if (roomsUpdated.Items.Any())
                 {

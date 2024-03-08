@@ -36,12 +36,17 @@ import DashBoardReservationsPage from "./pages/DashBoardReservationPage.js";
 import ViewEditReservationPage from "./pages/DashBoardReservationViewEdit.js";
 import DashboardRoomTablePage from "./pages/DashboardRoomTablePage.js";
 import DashboardReceiptViewPage from "./pages/DashboardReceiptViewPage.js";
+import { ReceiptFilterProvider } from "./context/ReceiptFilterContext.js";
+import { RoomFilterProvider } from "./context/RoomFilterContext.js";
+import { ReservationFilterProvider } from "./context/ReservationFilterContext.js";
+import { ServicesFilterProvider } from "./context/ServicesFilterContext.js";
+import { DiscountFilterProvider } from "./context/DiscountFilterContext.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} errorElement={<Error />}>
-        <Route path="/" element={<RoomsPage />}></Route>
+        <Route path="/" element={<RoomFilterProvider><RoomsPage /></RoomFilterProvider>}></Route>
         <Route path="my-profile" element={<ProfilePage />}></Route>
         <Route path="/my-reservations" element={<MyReservationsPage />}></Route>
         <Route path="/room/:id" element={<RoomDetailsPage />}></Route>
@@ -50,8 +55,8 @@ const router = createBrowserRouter(
         {/* DASHBOARD ROOM admin only*/}
         <Route
           path="/dashboardRoom"
-          element={<AdminRouteGuard><DashboardRoomTablePage/></AdminRouteGuard>}
-        ></Route> 
+          element={<RoomFilterProvider><AdminRouteGuard><DashboardRoomTablePage /></AdminRouteGuard></RoomFilterProvider>}
+        ></Route>
         <Route
           path="/dashBoardRoom/:id"
           element={<AdminRouteGuard><DashboardRoomEditPage /></AdminRouteGuard>}
@@ -78,15 +83,15 @@ const router = createBrowserRouter(
           path="/editroomtype/:roomId"
           element={<AdminRouteGuard><EditRoomTypePage /></AdminRouteGuard>}
         ></Route>
-        <Route 
-          path="/addroomtype" 
+        <Route
+          path="/addroomtype"
           element={<AdminRouteGuard><AddRoomTypePage /></AdminRouteGuard>}>
         </Route>
 
         {/* DASHBOARD DISCOUNT admin only*/}
         <Route
           path="/dashboard-discount/"
-          element={<AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard>}
+          element={<DiscountFilterProvider><AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard></DiscountFilterProvider>}
         ></Route>
         <Route
           path="/dashboard-discount/add"
@@ -100,7 +105,7 @@ const router = createBrowserRouter(
         {/* DASHBOARD RECEIPT admin only*/}
         <Route
           path="/dashboardReceipt"
-          element={<AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard>}
+          element={<ReceiptFilterProvider><AdminRouteGuard><DashboardReceiptPage /></AdminRouteGuard></ReceiptFilterProvider> }
         ></Route>
         <Route
           path="/dashboardReceipt/edit/:receiptId"
@@ -112,38 +117,24 @@ const router = createBrowserRouter(
         ></Route>
 
         {/* PAGE FOR ADDING REVIEW */}
-        <Route 
-          path="/addreview/:roomId" 
+        <Route
+          path="/addreview/:roomId"
           element={<AddReviewPage />}>
         </Route>
 
         {/* DASHBOARD SERVICES admin only*/}
         <Route
           path="/dashboardServices"
-          element={<AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard>}
+          element={<ServicesFilterProvider><AdminRouteGuard><DashboardServicesPage /></AdminRouteGuard></ServicesFilterProvider>}
         ></Route>
         <Route
           path="/edit-service/:serviceId"
           element={<AdminRouteGuard><EditServicePage /></AdminRouteGuard>}
         ></Route>
-        <Route 
-          path="/add-service" 
+        <Route
+          path="/add-service"
           element={<AdminRouteGuard><AddServicePage /></AdminRouteGuard>}>
         </Route>
-
-        {/* DASHBOARD DISCOUNT admin only*/}
-        <Route
-          path="/dashboard-discount/"
-          element={<AdminRouteGuard><DashboardDiscountPage /></AdminRouteGuard>}
-        ></Route>
-        <Route
-          path="/dashboard-discount/add"
-          element={<AdminRouteGuard><AddDiscountPage /></AdminRouteGuard>}
-        ></Route>
-        <Route
-          path="/dashboard-discount/:discountId"
-          element={<AdminRouteGuard><EditDiscountPage /></AdminRouteGuard>}
-        ></Route>
 
         {/* DASHBOARD RECEIPT admin only*/}
         <Route
@@ -158,7 +149,7 @@ const router = createBrowserRouter(
         {/* DASHBOARD RESERVATION admin only*/}
         <Route
           path="/dashboard-reservation/"
-          element={<AdminRouteGuard><DashBoardReservationsPage /></AdminRouteGuard>}
+          element={<ReservationFilterProvider><AdminRouteGuard><DashBoardReservationsPage /></AdminRouteGuard></ReservationFilterProvider>}
         ></Route>
         <Route
           path="/dashboard-reservation/view/:id"

@@ -1,14 +1,15 @@
 import DataTable from "../components/Common/DataTable";
-import { NavBar } from "../components/Common/NavBar";
 import { useState, useEffect } from "react";
 import api_reservation from "../services/api_reservation";
 import api_receipt from "../services/api_dashboard_invoice";
 import { useNavigate } from "react-router";
 import Paging from "../components/Common/Paging";
-import DashBoardReservationFilter from "../components/filter/DashBoardReservationFilter";
 import { DashboardReservationsNavbar } from "../components/navigation/DashboardReservationsNavbar";
+import { formatDate } from "../common/HelperFunctions";
+import { useReservationFilter } from "../context/ReservationFilterContext";
 
 const DashBoardReservationsPage = () => {
+  const { filter } = useReservationFilter();
   const navigate = useNavigate();
   const [query, setQuery] = useState({
     filter: {},
@@ -27,18 +28,20 @@ const DashBoardReservationsPage = () => {
 
   const [reservations, setReservations] = useState([]);
 
-  const formatDate = (dateString) => {
-    const options = { day: "numeric", month: "numeric", year: "numeric" };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", options);
-  };
 
   useEffect(() => {
     fetch();
-  }, [query.currentPage, query.sortBy, query.sortOrder]);
+  }, [query.currentPage, query.sortBy, query.sortOrder, filter]);
 
   const fetch = () => {
-    api_reservation.getAllReservations(query).then((response) => {
+    const requestQuery = {
+      ...query,
+      filter: {
+        ...filter,
+      },
+    };
+    console.log("requestQuery", requestQuery);
+    api_reservation.getAllReservations(requestQuery).then((response) => {
       console.log(response);
       const [data, totalPages] = response;
       setReservations(
@@ -83,7 +86,7 @@ const DashBoardReservationsPage = () => {
     },
   ];
 
-  useEffect(() => {}, [queryReceipt]);
+  useEffect(() => { }, [queryReceipt]);
 
   const handleDeleteReservation = async (reservationId) => {
     try {

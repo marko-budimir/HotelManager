@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-const FilterNumberOfBeds = ({ isDisabled = false }) => {
-  const [numberOfBeds, setNumberOfBeds] = useState("");
-
-  const handleChange = (event) => {
-    setNumberOfBeds(event.target.value);
-  };
+const FilterNumberOfBeds = ({ numberOfBeds, handleChange, isDisabled = false }) => {
 
   return (
     <label className="number-of-beds-row filter-label">

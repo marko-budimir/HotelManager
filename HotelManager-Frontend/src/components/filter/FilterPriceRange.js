@@ -1,43 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 
-const PriceRange = () => {
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(100);
-
-  const handleMinChange = (event) => {
-    const value = parseInt(event.target.value);
-    setMinValue(value);
-  };
-
-  const handleMaxChange = (event) => {
-    const value = parseInt(event.target.value);
-    setMaxValue(value);
-  };
+const PriceRange = ({minValue, maxValue, onChange, minId="minPrice", maxId="maxPrice"}) => {
 
   return (
     <div className="range-price">
       <div className="input-container">
-        <label htmlFor="min" className="filter-label">
+        <label htmlFor="minPrice" className="filter-label">
           Min:
         </label>
         <input
           className="input-container filter-input"
           type="number"
-          id="min"
+          id={minId}
           value={minValue}
-          onChange={handleMinChange}
+          onChange={onChange}
         />
       </div>
       <div className="input-container">
-        <label htmlFor="max" className="filter-label">
+        <label htmlFor="maxPrice" className="filter-label">
           Max:
         </label>
         <input
           className="input-container filter-input"
           type="number"
-          id="max"
+          id={maxId}
           value={maxValue}
-          onChange={handleMaxChange}
+          onChange={onChange}
         />
       </div>
     </div>

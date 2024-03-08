@@ -6,8 +6,10 @@ import DataTable from "../components/Common/DataTable";
 import { deleteService } from "../services/api_hotel_service";
 import Paging from "../components/Common/Paging";
 import { DashboardServicesHomeNavbar } from "../components/navigation/DashboardServicesHomeNavbar";
+import { useServicesFilter } from "../context/ServicesFilterContext";
 
 export const DashboardServicesPage = () => {
+  const { filter } = useServicesFilter();
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
   const [query, setQuery] = useState({
@@ -20,8 +22,14 @@ export const DashboardServicesPage = () => {
   });
 
   const fetchData = async () => {
+    const requestQuery = {
+      ...query,
+      filter: {
+        ...filter,
+      },
+    };
     try {
-      const [servicesData, newTotalPages] = await getAllServices(query);
+      const [servicesData, newTotalPages] = await getAllServices(requestQuery);
       [...servicesData].map((service) => {
         service.price = service.price + "€";
       });
@@ -34,7 +42,7 @@ export const DashboardServicesPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [query.currentPage]);
+  }, [query.currentPage, filter]);
 
   const columns = [
     { key: "name", label: "Service name" },

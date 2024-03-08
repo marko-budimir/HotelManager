@@ -30,18 +30,18 @@ namespace HotelManager.WebApi.Controllers
             int pageSize = 10,
             string sortBy = "",
             string isAsc = "ASC",
-            string SearchQuery = null,
-            DateTime? StartDate = null,
-            DateTime? EndDate = null,
-            decimal? MinPrice = null,
-            decimal? MaxPrice = null,
-            int? MinBeds = null,
-            Guid? RoomTypeId = null)
+            string searchQuery = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            int? minBeds = null,
+            Guid? roomTypeId = null)
         {
             try { 
                 Paging paging = new Paging() { PageNumber=pageNumber,PageSize=pageSize};
                 Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
-                RoomFilter roomFilter = new RoomFilter() { SearchQuery = SearchQuery,StartDate=StartDate,EndDate=EndDate,MinBeds=MinBeds,MaxPrice=MaxPrice,MinPrice=MinPrice,RoomTypeId=RoomTypeId };
+                RoomFilter roomFilter = new RoomFilter() { SearchQuery = searchQuery,StartDate=startDate,EndDate=endDate,MinBeds=minBeds,MaxPrice=maxPrice,MinPrice=minPrice,RoomTypeId=roomTypeId };
                 var rooms = await _roomService.GetAllAsync(paging, sorting,roomFilter);
                 
                 if(rooms.Items.Any())

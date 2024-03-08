@@ -9,9 +9,10 @@ const FilterIsPaid = ({ onChange }) => {
     return (
         <div className="FilterIsPaid">
             <label>Is paid:</label>
-            <RadioGroup onChange={handleTypeChange}>
-                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                <FormControlLabel value="No" control={<Radio />} label="No" />
+            <RadioGroup onChange={handleTypeChange} defaultValue="">
+                <FormControlLabel value="" control={<Radio />} label="Both" />
+                <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
         </div>
     );

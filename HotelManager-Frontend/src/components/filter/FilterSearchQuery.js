@@ -1,28 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const SearchInput = ({ onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleChange = (event) => {
-    console.log(event.target.value);
-    setSearchQuery(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    alert("Searching \t"+ searchQuery);
-    //onSearch(searchQuery);
-  };
+const SearchInput = ({ searchQuery, onChange }) => {
 
   return (
-    <form className="FilterSearchQuery" onSubmit={handleSubmit}>
+    <form className="FilterSearchQuery">
       <input
         type="text"
         value={searchQuery}
-        onChange={handleChange}
+        onChange={onChange}
         placeholder="Search by email..."
       />
-      <button type="submit">Search</button>
     </form>
   );
 };

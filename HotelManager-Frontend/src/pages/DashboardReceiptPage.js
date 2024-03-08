@@ -5,8 +5,10 @@ import api_receipt from "../services/api_dashboard_invoice";
 import { useNavigate } from "react-router";
 import { formatDate } from "../common/HelperFunctions";
 import { DashboardReceiptsNavbar } from "../components/navigation/DashboardReceiptsNavbar";
+import { useReceiptFilter } from "../context/ReceiptFilterContext";
 
 const DashboardReceiptPage = () => {
+  const { filter } = useReceiptFilter();
   const navigate = useNavigate();
   const [receipts, setReceipts] = useState([]);
   const [query, setQuery] = useState({
@@ -24,7 +26,13 @@ const DashboardReceiptPage = () => {
   });
 
   useEffect(() => {
-    api_receipt.getAllDashboardInvoice(query).then((response) => {
+    const requestQuery = {
+      ...query,
+      filter: {
+        ...filter,
+      },
+    }
+    api_receipt.getAllDashboardInvoice(requestQuery).then((response) => {
       const [data, totalPages] = response;
       setReceipts(
         data.map((receipt) => ({
@@ -38,7 +46,7 @@ const DashboardReceiptPage = () => {
         totalPages,
       });
     });
-  }, [query.currentPage, query.sortBy, query.sortOrder, query.filter]);
+  }, [query.currentPage, query.sortBy, query.sortOrder, filter]);
 
   const handlePageChange = (pageNumber) => {
     setQuery({

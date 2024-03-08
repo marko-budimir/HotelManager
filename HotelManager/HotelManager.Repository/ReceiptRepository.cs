@@ -155,7 +155,7 @@ namespace HotelManager.Repository
             {
                 commandText.Append(" LEFT JOIN \"Reservation\" ON \"Invoice\".\"ReservationId\" = \"Reservation\".\"Id\"");
                 commandText.Append(" LEFT JOIN \"User\" ON \"Reservation\".\"UserId\" = \"User\".\"Id\"");
-                commandText.Append(" WHERE \"User\".\"Email\" LIKE @emailQuery");
+                commandText.Append(" WHERE \"User\".\"Email\" ILIKE @emailQuery");
                 commandText.Append(" AND \"Invoice\".\"IsActive\"=true");
                 command.Parameters.AddWithValue("@emailQuery", $"%{filter.userEmailQuery}%");
             }
