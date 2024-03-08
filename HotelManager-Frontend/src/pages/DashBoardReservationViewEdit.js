@@ -7,7 +7,7 @@ export default function ReservationViewEdit() {
     <div className="dashboard-reservation-view-page page">
       <DashboardEditViewNavbar />
       <div className="container">
-        <h2>Reservation Details</h2>
+        <h2 className="edit-view-header">Reservation Details</h2>
         <ReservationForm />
       </div>
     </div>

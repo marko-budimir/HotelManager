@@ -89,13 +89,21 @@ const DashboardReceiptViewPage = () => {
     <div className="dashboard-receipt-view-page page">
       <DashboardEditViewNavbar />
       <div className="container">
-        <h2 className="dashboard-receipt-view-title">View receipt</h2>
+        <h2 className="dashboard-receipt-view-title edit-view-header">
+          View receipt
+        </h2>
         <div className="dashboard-receipt-view-info">
           <h3 className="dashboard-receipt-view-info-title">
             Receipt Overview
           </h3>
           {receipt && (
-            <>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.2rem",
+              }}
+            >
               <p>Receipt Number: {receipt.invoiceNumber}</p>
               <p>Issue Date: {formatDate(new Date())}</p>
               <p>Check-In Date: {formatDate(receipt.checkInDate)}</p>
@@ -137,18 +145,18 @@ const DashboardReceiptViewPage = () => {
 
               <h4>Total Price:</h4>
               <p>{formatCurrency(totalPrice)}</p>
-            </>
+            </div>
           )}
         </div>
         <div className="dashboard-receipt-view-buttons">
           <button
-            className="dashboard-receipt-view-button-paid"
+            className="dashboard-receipt-view-button-paid edit-view-button"
             onClick={handleSendReceipt}
           >
             Paid
           </button>
           <button
-            className="dashboard-receipt-view-button-edit"
+            className="dashboard-receipt-view-button-edit edit-view-button"
             onClick={handleEditReceipt}
           >
             Edit

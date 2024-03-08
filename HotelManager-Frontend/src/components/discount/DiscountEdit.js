@@ -13,9 +13,15 @@ const DiscountEdit = ({ discountId }) => {
         const response = await getByIdDiscount(discountId);
         const { validFrom, validTo, ...rest } = response.data;
         // Formatiraj datume iz odgovora u odgovarajući format "yyyy-MM-dd"
-        const formattedValidFrom = new Date(validFrom).toISOString().split('T')[0];
-        const formattedValidTo = new Date(validTo).toISOString().split('T')[0];
-        setDiscount({ ...rest, validFrom: formattedValidFrom, validTo: formattedValidTo });
+        const formattedValidFrom = new Date(validFrom)
+          .toISOString()
+          .split("T")[0];
+        const formattedValidTo = new Date(validTo).toISOString().split("T")[0];
+        setDiscount({
+          ...rest,
+          validFrom: formattedValidFrom,
+          validTo: formattedValidTo,
+        });
         setLoading(false);
       } catch (error) {
         console.error("Error fetching discount:", error);
@@ -29,7 +35,7 @@ const DiscountEdit = ({ discountId }) => {
     const { name, value } = e.target;
     if (name === "validFrom" || name === "validTo") {
       // Formatirajte datum u odgovarajući format "yyyy-MM-dd"
-      const formattedDate = new Date(value).toISOString().split('T')[0];
+      const formattedDate = new Date(value).toISOString().split("T")[0];
       setDiscount({ ...discount, [name]: formattedDate });
     } else {
       setDiscount({ ...discount, [name]: value });
@@ -55,11 +61,17 @@ const DiscountEdit = ({ discountId }) => {
 
   return (
     <div>
-      <h2>Edit Discount</h2>
-      <form className="discount-edit-form" onSubmit={handleSubmit}>
+      <h2 className="edit-view-header">Edit Discount</h2>
+      <form
+        className="discount-edit-form edit-view-form"
+        onSubmit={handleSubmit}
+      >
         <div>
-          <label htmlFor="code">Code:</label>
+          <label htmlFor="code" className="edit-view-label">
+            Code:
+          </label>
           <input
+            className="edit-view-input"
             type="text"
             id="code"
             name="code"
@@ -68,8 +80,11 @@ const DiscountEdit = ({ discountId }) => {
           />
         </div>
         <div>
-          <label htmlFor="percent">Percentage:</label>
+          <label htmlFor="percent" className="edit-view-label">
+            Percentage:
+          </label>
           <input
+            className="edit-view-input"
             type="number"
             id="percent"
             name="percent"
@@ -78,8 +93,11 @@ const DiscountEdit = ({ discountId }) => {
           />
         </div>
         <div>
-          <label htmlFor="validFrom">Valid from:</label>
+          <label htmlFor="validFrom" className="edit-view-label">
+            Valid from:
+          </label>
           <input
+            className="edit-view-input"
             type="date"
             id="validFrom"
             name="validFrom"
@@ -88,8 +106,11 @@ const DiscountEdit = ({ discountId }) => {
           />
         </div>
         <div>
-          <label htmlFor="validTo">Valid to:</label>
+          <label htmlFor="validTo" className="edit-view-label">
+            Valid to:
+          </label>
           <input
+            className="edit-view-input"
             type="date"
             id="validTo"
             name="validTo"
@@ -97,7 +118,9 @@ const DiscountEdit = ({ discountId }) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Update Discount</button>
+        <button type="submit" className="edit-view-button">
+          Update Discount
+        </button>
       </form>
     </div>
   );

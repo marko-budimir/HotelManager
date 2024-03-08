@@ -31,9 +31,13 @@ const DashBoardReceiptFilter = () => {
 
   return (
     <div className="DashBoardReceiptFilter filter">
-      <PriceRange minValue={0} maxValue={100} />
-      <IsPaidReceipt />
-      <SearchQuery />
+      <PriceRange
+        minValue={filter.minPrice}
+        maxValue={filter.maxPrice}
+        onChange={handlePriceRangeChange}
+      />
+      <IsPaidReceipt onChange={handleIsPaidChange} />
+      <SearchQuery onChange={handleSearchQueryChange} />
     </div>
   );
 };

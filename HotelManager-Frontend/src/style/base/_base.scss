@@ -44,3 +44,53 @@ button {
   border-radius: 0.8rem;
   padding-left: 0.5rem;
 }
+
+.edit-view-label {
+  font-size: 1.2rem;
+}
+
+.edit-view-input {
+  height: 3.5vh;
+  width: 10vw;
+  font-size: 1.1rem;
+  background: white;
+  border: 0.05rem solid black;
+  border-radius: 0.8rem;
+  padding-left: 0.5rem;
+}
+
+.edit-view-header {
+  font-size: 2rem;
+}
+
+.edit-view-textarea {
+  font-size: 1.1rem;
+  width: 20vw;
+  padding-left: 0.5rem;
+  height: 10vh;
+  border: 0.05 solid black;
+  border-radius: 0.8rem;
+}
+
+.edit-view-form {
+  @include displayFlexColumn();
+  gap: 0.5rem;
+}
+
+.edit-view-option {
+  font-size: 1.2rem;
+}
+
+.edit-view-button {
+  background-color: $primary;
+  font-size: 1.2rem;
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 0.8rem;
+  transition: 400ms;
+  &:hover {
+    scale: 1.2;
+    cursor: pointer;
+  }
+}

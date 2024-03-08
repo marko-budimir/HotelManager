@@ -77,37 +77,45 @@ const DashboardReceiptEditPage = () => {
   return (
     <div className="receipt-edit-page page">
       <DashboardEditViewNavbar />
-      <div className="container">
-        <h2 className="dashboard-receipt-edit-title">Edit receipt</h2>
+      <div className="container edit-view-form">
+        <h2 className="dashboard-receipt-edit-title edit-view-header">
+          Edit receipt
+        </h2>
         <div className="dashboard-receipt-edit-input-service">
           <label
-            className="dashboard-receipt-edit-input-service-label"
+            className="dashboard-receipt-edit-input-service-label edit-view-label"
             htmlFor="service"
           >
             Service:
           </label>
           <select
-            className="dashboard-receipt-edit-input-service-select"
+            className="dashboard-receipt-edit-input-service-select edit-view-input"
             id="service"
             name="service"
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
           >
-            <option value="">Select a service</option>
+            <option value="" className="edit-view-option">
+              Select a service
+            </option>
             {services.map((service) => (
-              <option key={service.id} value={service.id}>
+              <option
+                key={service.id}
+                value={service.id}
+                className="edit-view-option"
+              >
                 {service.name}
               </option>
             ))}
           </select>
           <label
-            className="dashboard-receipt-edit-input-quantity-lable"
+            className="dashboard-receipt-edit-input-quantity-lable edit-view-label"
             htmlFor="quantity"
           >
             Quantity:
           </label>
           <input
-            className="dashboard-receipt-edit-input-quantity-input"
+            className="dashboard-receipt-edit-input-quantity-input edit-view-input"
             type="number"
             id="quantity"
             name="quantity"
@@ -115,7 +123,7 @@ const DashboardReceiptEditPage = () => {
             onChange={(e) => setQuantity(e.target.value)}
           />
           <button
-            className="dashboard-receipt-edit-input-add-button"
+            className="dashboard-receipt-edit-input-add-button edit-view-button"
             onClick={handleAddService}
           >
             Add

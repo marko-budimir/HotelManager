@@ -35,32 +35,34 @@ export const ServiceAddForm = () => {
 
   return (
     <div className="service-add">
-      <h2 className="service-add-heading">Add Service</h2>
-      <form className="service-add-form" onSubmit={handleSubmit}>
-        <label className="service-add-form-label">Name:</label>
+      <h2 className="service-add-heading edit-view-header">Add Service</h2>
+      <form className="service-add-form edit-view-form" onSubmit={handleSubmit}>
+        <label className="service-add-form-label edit-view-label">Name:</label>
         <input
-          className="service-add-form-input"
+          className="service-add-form-input edit-view-input"
           placeholder="Enter service name"
           type="text"
           name="name"
           onChange={handleChange}
         />
-        <label className="service-add-form-label">Description:</label>
+        <label className="service-add-form-label edit-view-label">
+          Description:
+        </label>
         <textarea
-          className="service-add-form-input"
+          className="service-add-form-input edit-view-textarea"
           placeholder="Enter service description"
           onChange={handleChange}
           name="description"
         />
-        <label className="service-add-form-label">Price:</label>
+        <label className="service-add-form-label edit-view-label">Price:</label>
         <input
-          className="service-add-form-input"
+          className="service-add-form-input edit-view-input"
           placeholder="Enter service price"
           type="number"
           onChange={handleChange}
           name="price"
         />
-        <input type="submit" value="Add" />
+        <input type="submit" className="edit-view-button" value="Add" />
       </form>
     </div>
   );

@@ -42,35 +42,42 @@ export const ServiceEditForm = () => {
 
   return (
     <div className="service-edit">
-      <h2 className="service-edit-heading">Edit Service</h2>
-      <form className="service-edit-form" onSubmit={handleSubmit}>
-        <label className="service-edit-form-label">Name:</label>
+      <h2 className="service-edit-heading edit-view-header">Edit Service</h2>
+      <form
+        className="service-edit-form edit-view-form"
+        onSubmit={handleSubmit}
+      >
+        <label className="service-edit-form-label edit-view-label">Name:</label>
         <input
-          className="service-edit-form-input"
+          className="service-edit-form-input edit-view-input"
           type="text"
           id="name"
           name="name"
           value={service.name}
           onChange={handleChange}
         />
-        <label className="service-edit-form-label">Description:</label>
+        <label className="service-edit-form-label edit-view-label">
+          Description:
+        </label>
         <textarea
-          className="service-edit-form-input"
+          className="service-edit-form-input edit-view-textarea"
           id="description"
           name="description"
           value={service.description}
           onChange={handleChange}
         />
-        <label className="service-edit-form-label">Price:</label>
+        <label className="service-edit-form-label edit-view-label">
+          Price:
+        </label>
         <input
-          className="service-edit-form-input"
+          className="service-edit-form-input edit-view-input"
           type="number"
           id="price"
           name="price"
           value={service.price}
           onChange={handleChange}
         />
-        <input type="submit" value="Apply" />
+        <input type="submit" className="edit-view-button" value="Apply" />
       </form>
     </div>
   );
