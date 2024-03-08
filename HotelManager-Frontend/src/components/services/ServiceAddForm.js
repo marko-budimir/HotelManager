@@ -16,11 +16,6 @@ export const ServiceAddForm = () => {
       ...service,
       [e.target.name]: e.target.value,
     });
-
-    console.log({
-      ...service,
-      [e.target.name]: e.target.value,
-    });
   };
 
   const handleSubmit = async (e) => {

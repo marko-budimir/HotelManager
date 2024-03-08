@@ -31,7 +31,6 @@ export const ServiceEditForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(serviceId, service);
       await updateService(serviceId, service);
 
       navigate("/dashboardServices");

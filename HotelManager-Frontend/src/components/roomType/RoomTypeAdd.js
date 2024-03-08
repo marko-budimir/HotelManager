@@ -18,13 +18,10 @@ const RoomTypeAdd = () => {
     if (confirmed) {
       try {
         await createRoomType(roomType);
-        console.log("Room type added successfully!");
         navigate("/dashboard-roomtype");
       } catch (error) {
         console.error("Error adding room type:", error);
       }
-    } else {
-      console.log("Addition cancelled");
     }
   };
 

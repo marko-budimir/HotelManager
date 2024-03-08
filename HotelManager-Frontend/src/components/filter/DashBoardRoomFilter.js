@@ -1,10 +1,9 @@
 import React from "react";
-import DateSelectAdmin from "./FilterDateSelectAdmin.js";
-import DatePickerUser from "./FilterDateSelectUser.js";
 import PriceRange from "./FilterPriceRange.js";
 import NumberOfBeds from "./FilterNumberOfBeds.js";
 import RoomTypes from "./FilterRoomTypes.js";
 import { useRoomFilter } from "../../context/RoomFilterContext.js";
+import DatePickerAdmin from "./FilterDateSelectAdmin.js";
 
 const DashBoardRoomFilter = () => {
   const { filter, setFilter } = useRoomFilter();
@@ -43,7 +42,7 @@ const DashBoardRoomFilter = () => {
 
   return (
     <div className="DashBoardRoomFilter filter">
-      <DatePickerUser
+      <DatePickerAdmin
         startDate={filter.startDate}
         endDate={filter.endDate}
         onChange={handleDateChange}

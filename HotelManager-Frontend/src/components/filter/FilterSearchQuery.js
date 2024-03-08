@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 
 const SearchInput = ({ searchQuery, onChange }) => {
-  const handleChange = (event) => {
-    console.log(event.target.value);
-    setSearchQuery(event.target.value);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();

@@ -47,7 +47,6 @@ const DiscountEdit = ({ discountId }) => {
     if (window.confirm("Are you sure you want to update this discount?")) {
       try {
         await updateDiscount(discountId, discount);
-        console.log("Discount updated successfully!");
         navigate(`/dashboard-discount`);
       } catch (error) {
         console.error("Error updating discount:", error);

@@ -1,21 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const EditPassword = ({ handleEdit }) => {
   const [passwordData, setPasswordData] = useState({});
+  const [passwordError, setPasswordError] = useState("");
 
   const handleChange = (e) => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleEdit(passwordData);
-    e.target.reset();
-  };
+  useEffect(() => {
+    handlePasswordValidation();
+  }, [passwordData]);
 
   const handlePasswordValidation = () => {
-    console.log(passwordData);
+    if (passwordData.passwordNew !== passwordData.passwordConfirm) {
+      setPasswordError("Passwords do not match");
+    } else {
+      setPasswordError("");
+    }
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!passwordError) {
+      handleEdit(passwordData);
+      e.target.reset();
+    } else {
+      alert("Passwords do not match");
+    }
+  };
+
   return (
     <div className="edit-profile profile-form">
       <h2 className="form-heading">CHANGE PASSWORD</h2>
@@ -40,8 +55,9 @@ export const EditPassword = ({ handleEdit }) => {
           placeholder="New password again"
           type="password"
           id="newPasswordConfirm"
+          name="passwordConfirm"
           className="form-input"
-          onChange={handlePasswordValidation}
+          onChange={handleChange}
         />
 
         <input type="submit" className="form-submit-button" value="Apply" />

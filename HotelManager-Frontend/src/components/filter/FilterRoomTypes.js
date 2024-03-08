@@ -12,7 +12,6 @@ const FilterRoomType = ({ isDisabled, onChangeHandle }) => {
 
   const fetchData = async () => {
     const [data, totalPages] = await getAllRoomType();
-    console.log(data, totalPages);
     setRoomTypes(data);
   };
 

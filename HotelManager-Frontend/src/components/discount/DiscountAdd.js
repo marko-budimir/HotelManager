@@ -21,7 +21,6 @@ const DiscountAdd = () => {
     if (window.confirm("Are you sure you want to create this discount?")) {
       try {
         await createDiscount(formData);
-        console.log("Discount added successfully!");
         navigate(`/dashboard-discount/`);
       } catch (error) {
         console.error("Error adding discount:", error);

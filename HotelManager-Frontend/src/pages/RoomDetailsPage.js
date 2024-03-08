@@ -83,8 +83,6 @@ export const RoomDetailsPage = () => {
       if (isConfirmed) {
         const appliedDiscount = discount[0];
         if (appliedDiscount) {
-        } else {
-          console.log("No discounts found.");
         }
         const reservationData = {
           discountId: appliedDiscount ? appliedDiscount.id : null,

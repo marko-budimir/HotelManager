@@ -1,24 +1,19 @@
-import React, { useState } from "react";
-import { DateRangePicker } from "react-date-range";
-import { addDays } from "date-fns";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
+import React from "react";
+import DatePicker from 'react-datepicker';
 
-const DatePickerAdmin = ({ onChange, ...props }) => {
-  const [state, setState] = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      key: "selection",
-    },
-  ]);
+const DatePickerAdmin = ({startDate, endDate, onChange}) => {
 
-  const handleSelect = (item) => {
-    setState([item.selection]);
-    onChange && onChange(item);
-  };
-
-  return <DateRangePicker onChange={handleSelect} ranges={state} {...props} />;
+  return (
+    <DatePicker
+    selected={startDate}
+    onChange={onChange}
+    startDate={startDate}
+    endDate={endDate}
+    selectsRange
+    selectsDisabledDaysInRange
+    inline
+    />
+  );
 };
 
 export default DatePickerAdmin;

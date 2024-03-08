@@ -4,9 +4,7 @@ const URL_PATH = "/api/user";
 
 const getUserRole = async () => {
   var personData = await get("/api/user");
-  console.log(personData);
   var role = personData.data.role;
-  console.log(role);
   return role;
 };
 
