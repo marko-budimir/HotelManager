@@ -41,6 +41,7 @@ export default function RoomForm() {
       updateDashboardRoom(id, roomData)
         .then(() => handleSuccess())
         .catch((error) => console.error("Error updating room:", error));
+      setMode("view");
     }
   };
 
@@ -100,6 +101,8 @@ export default function RoomForm() {
 
         <label className="NumberOfBedsRow edit-view-label">
           <span>Number of beds:</span>
+          <br />
+          <br />
           <input
             className="edit-view-input"
             type="text"
@@ -110,7 +113,7 @@ export default function RoomForm() {
             }
           />
         </label>
-
+        <br />
         <label htmlFor="price" className="edit-view-label">
           Price for room:{" "}
         </label>

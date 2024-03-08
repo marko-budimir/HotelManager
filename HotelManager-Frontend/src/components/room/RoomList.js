@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { getAllRooms } from "../../services/api_room";
 import Paging from "../Common/Paging";
 import { useRoomFilter } from "../../context/RoomFilterContext";
-import { formatDate, formatReservationDate } from "../../common/HelperFunctions";
+import {
+  formatDate,
+  formatReservationDate,
+} from "../../common/HelperFunctions";
 
 export const RoomList = () => {
   const [rooms, setRooms] = useState([]);
@@ -54,18 +57,28 @@ export const RoomList = () => {
 
   return (
     <div className="room-list">
-      {rooms && rooms.map((room) => (
-        <div key={room.id}>
-          <Link to={`/room/${room.id}?startDate=${formatDate(filter.startDate)}&endDate=${formatDate(filter.endDate)}`} className="room-link">
-            <img src={room.imageUrl} alt="room" className="room-link-image" />
-            <div className="room-link-info">
-              <p className="room-link-number">Room {room.number}</p>
-              <p className="room-link-price">{room.price}€/per night</p>
-            </div>
-          </Link>
-        </div>
-      ))}
-      <Paging totalPages={query.totalPages} currentPage={query.currentPage} onPageChange={handlePageChange} />
+      {rooms &&
+        rooms.map((room) => (
+          <div key={room.id}>
+            <Link
+              to={`/room/${room.id}?startDate=${formatDate(
+                filter.startDate
+              )}&endDate=${formatDate(filter.endDate)}`}
+              className="room-link"
+            >
+              <img src={room.imageUrl} alt="room" className="room-link-image" />
+              <div className="room-link-info">
+                <p className="room-link-number">Room {room.number}</p>
+                <p className="room-link-price">{room.price}€/per night</p>
+              </div>
+            </Link>
+          </div>
+        ))}
+      <Paging
+        totalPages={query.totalPages}
+        currentPage={query.currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
