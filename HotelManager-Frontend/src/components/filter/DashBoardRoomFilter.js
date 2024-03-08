@@ -42,7 +42,7 @@ const DashBoardRoomFilter = () => {
   };
 
   return (
-    <div className="DashBoardRoomFilter">
+    <div className="DashBoardRoomFilter filter">
       <DatePickerUser
         startDate={filter.startDate}
         endDate={filter.endDate}

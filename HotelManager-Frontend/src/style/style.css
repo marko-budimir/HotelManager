@@ -314,7 +314,7 @@
   justify-content: center;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: 2vh;
+  padding-top: 1vh;
 }
 .main .page .navbar-room-dashboard {
   height: 100% !important;
@@ -748,8 +748,12 @@ button:hover {
   cursor: pointer;
 }
 
+.react-datepicker {
+  scale: 0.8;
+}
+
 .filter {
-  padding: 0.3rem;
+  padding: 0.1rem;
 }
 
 /*----------LAYOUT----------*//*# sourceMappingURL=style.css.map */

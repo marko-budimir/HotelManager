@@ -1,7 +1,12 @@
 import React from "react";
 
-const PriceRange = ({minValue, maxValue, onChange, minId="minPrice", maxId="maxPrice"}) => {
-
+const PriceRange = ({
+  minValue,
+  maxValue,
+  onChange,
+  minId = "minPrice",
+  maxId = "maxPrice",
+}) => {
   return (
     <div className="range-price filter">
       <div className="input-container">

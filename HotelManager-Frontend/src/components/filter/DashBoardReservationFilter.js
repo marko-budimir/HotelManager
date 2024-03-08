@@ -33,7 +33,7 @@ const DashBoardReservationFilter = () => {
   };
 
   return (
-    <div className="DashBoardReservationFilter">
+    <div className="DashBoardReservationFilter filter">
       <DateSelectUser
         startDate={filter.startDate}
         endDate={filter.endDate}

@@ -7,7 +7,7 @@ const FilterIsPaid = ({ onChange }) => {
   };
 
   return (
-    <div className="FilterIsPaid">
+    <div className="FilterIsPaid filter">
       <label>Is paid:</label>
       <RadioGroup onChange={handleTypeChange} defaultValue="">
         <FormControlLabel value="" control={<Radio />} label="Both" />

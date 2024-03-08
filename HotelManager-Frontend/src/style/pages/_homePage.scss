@@ -24,7 +24,7 @@
     .navbar {
       @include displayFlexColumn();
       justify-content: flex-start;
-      padding-top: 2vh;
+      padding-top: 1vh;
     }
     .navbar-room-dashboard {
       height: 100% !important;
