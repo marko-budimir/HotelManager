@@ -47,5 +47,8 @@ namespace HotelManager.Service
             return await RoomTypeRepository.UpdateAsync(id, roomTypeUpdate, userId);    
         }
        
+        public async Task<bool> DeleteAsync(Guid id) { 
+            return await RoomTypeRepository.DeleteAsync(id);
+        }
     }
 }

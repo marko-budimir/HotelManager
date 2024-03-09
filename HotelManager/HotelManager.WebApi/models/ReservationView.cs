@@ -13,5 +13,7 @@ namespace HotelManager.WebApi.Models
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public string UserEmail { get; set; }
+        public Guid RoomId { get; set; }
+        public int RoomNumber { get; set; }
     }
 }

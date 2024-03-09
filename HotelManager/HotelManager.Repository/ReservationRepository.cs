@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace HotelManager.Repository
 {
+
     public class ReservationRepository : IReservationRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
@@ -33,7 +34,7 @@ namespace HotelManager.Repository
                     cmd.Parameters.AddWithValue("@RoomId", reservationRoom.RoomId);
                     cmd.Parameters.AddWithValue("@CheckInDate", reservationRoom.CheckInDate);
                     cmd.Parameters.AddWithValue("@CheckOutDate", reservationRoom.CheckOutDate);
-                    int result = (int)await cmd.ExecuteScalarAsync();
+                    int result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
                     isAvailable = result == 0;
                     
                 }
@@ -53,9 +54,10 @@ namespace HotelManager.Repository
                     await connection.OpenAsync();
 
                     var queryBuilder = new StringBuilder();
-                    queryBuilder.AppendLine("SELECT res.*, u.\"Email\"");
+                    queryBuilder.AppendLine("SELECT res.*, u.\"Email\", ro.\"Number\" AS \"RoomNumber\"");
                     queryBuilder.AppendLine(" FROM \"Reservation\" res");
                     queryBuilder.AppendLine(" JOIN \"User\" u ON res.\"UserId\" = u.\"Id\"");
+                    queryBuilder.AppendLine(" JOIN \"Room\" ro ON res.\"RoomId\" = ro.\"Id\"");
                     queryBuilder.AppendLine(" WHERE res.\"IsActive\" = TRUE");
 
                     
@@ -89,8 +91,8 @@ namespace HotelManager.Repository
                                     DateCreated = (DateTime)reader["DateCreated"],
                                     DateUpdated = (DateTime)reader["DateUpdated"],
                                     IsActive = (bool)reader["IsActive"],
-                                    UserEmail = (string)reader["Email"]
-
+                                    UserEmail = (string)reader["Email"],
+                                    RoomNumber = (int)reader["RoomNumber"]
                                 });
                             }
                         }
@@ -261,17 +263,31 @@ namespace HotelManager.Repository
                 queryBuilder.AppendLine(" AND NOT (res.\"CheckOutDate\" >= @StartDate AND res.\"CheckInDate\" <= @EndDate)");
             }
 
-            if (reservationFilter.MinPricePerNight > 0 && reservationFilter.MaxPricePerNight > 0)
+            if (reservationFilter.MinPricePerNight != null && reservationFilter.MinPricePerNight > 0)
             {
                 command.Parameters.AddWithValue("@MinPrice", reservationFilter.MinPricePerNight);
+                queryBuilder.AppendLine(" AND res.\"PricePerNight\" >= @MinPrice::money");
+                if (reservationFilter.MaxPricePerNight != null && reservationFilter.MaxPricePerNight > reservationFilter.MinPricePerNight)
+                {
+                    command.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
+                    queryBuilder.AppendLine(" AND res.\"PricePerNight\" <= @MaxPrice::money");
+                }
+            }
+            else if (reservationFilter.MaxPricePerNight != null)
+            {
                 command.Parameters.AddWithValue("@MaxPrice", reservationFilter.MaxPricePerNight);
-                queryBuilder.AppendLine(" AND res.\"PricePerNight\" BETWEEN @MinPrice::money AND @MaxPrice::money");
+                queryBuilder.AppendLine(" AND res.\"PricePerNight\" <= @MaxPrice::money");
             }
 
             if (!string.IsNullOrEmpty(reservationFilter.SearchQuery))
             {
                 command.Parameters.AddWithValue("@SearchQuery", $"%{reservationFilter.SearchQuery}%");
                 queryBuilder.AppendLine(" AND u.\"Email\" ILIKE @SearchQuery");
+            }
+            if(reservationFilter.UserId != null && reservationFilter.UserId != Guid.Empty)
+            {
+                command.Parameters.AddWithValue("@UserId", reservationFilter.UserId);
+                queryBuilder.AppendLine(" AND res.\"UserId\" = @UserId");
             }
 
             command.CommandText = queryBuilder.ToString();
@@ -308,7 +324,7 @@ namespace HotelManager.Repository
             using (connection)
             {
                 NpgsqlCommand command = new NpgsqlCommand();
-                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Invoice\"";
+                command.CommandText = "SELECT COUNT(\"Id\") FROM \"Reservation\" res WHERE res.\"IsActive\" = TRUE";
                 ApplyFilter(command, filter);
                 command.Connection = connection;
                 try
@@ -328,5 +344,39 @@ namespace HotelManager.Repository
                 }
             }
         }
+
+        public async Task<ReservationUpdate> DeleteAsync(Guid id)
+        {
+            ReservationUpdate reservationUpdate = new ReservationUpdate
+            {
+                IsActive = false
+            };
+
+            try
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var sql = "UPDATE \"Reservation\" SET \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
+
+                    using (var cmd = new NpgsqlCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@IsActive", reservationUpdate.IsActive);
+                        cmd.Parameters.AddWithValue("@Id", id);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                return reservationUpdate;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating reservation: " + ex.Message);
+            }
+        }
+
+
     }
 }

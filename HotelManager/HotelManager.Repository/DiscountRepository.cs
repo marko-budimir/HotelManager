@@ -244,8 +244,8 @@ namespace HotelManager.Repository
             }
             if(filter.Code != "")
             {
-                commandText.Append(" AND \"Discount\".\"Code\" ILIKE @code");
-                command.Parameters.AddWithValue("code", $"%{filter.Code}%");
+                commandText.Append(" AND \"Discount\".\"Code\" LIKE @code");
+                command.Parameters.AddWithValue("code", filter.Code);
             }
             command.CommandText = commandText.ToString();
         }

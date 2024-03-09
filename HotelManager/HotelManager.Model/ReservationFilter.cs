@@ -14,6 +14,7 @@ namespace HotelManager.Model
         public decimal? MinPricePerNight { get; set; }
         public decimal? MaxPricePerNight { get; set; }
         public string SearchQuery { get; set; }
+        public Guid? UserId { get; set; }
 
     }
 }

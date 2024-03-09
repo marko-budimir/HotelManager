@@ -14,7 +14,6 @@ using System.Web;
 
 namespace HotelManager.Service
 {
-
     public class ReservationService : IReservationService
 
     {
@@ -106,6 +105,7 @@ namespace HotelManager.Service
                     var totalPrice = numberOfDaysOfStay * reservationUpdate.PricePerNight;
                     InvoiceUpdate invoiceUpdate = new InvoiceUpdate()
                     {
+                        IsActive = true,
                         UpdatedBy = userId,
                         TotalPrice = totalPrice
                     };
@@ -154,7 +154,32 @@ namespace HotelManager.Service
             return Math.Abs(timeSpan.Days);
         }
 
-        
+        public async Task<ReservationUpdate> DeleteAsync(Guid id, Guid invoiceId)
+        {
+            try
+            {
+                ReservationUpdate reservationUpdate = await _reservationRepository.DeleteAsync(id);
+
+                if (reservationUpdate != null)
+                {
+                    InvoiceUpdate invoiceUpdate = new InvoiceUpdate
+                    {
+                        IsActive = false
+                    };
+                    await _receiptService.PutTotalPriceAsync(invoiceId, invoiceUpdate);
+                    return reservationUpdate;
+                }
+                else
+                {
+                    throw new Exception("Reservation not found or could not be updated.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting reservation: " + ex.Message);
+            }
+        }
+
     }
 
 }

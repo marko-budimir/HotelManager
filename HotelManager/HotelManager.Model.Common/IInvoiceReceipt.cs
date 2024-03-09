@@ -8,7 +8,7 @@ namespace HotelManager.Model.Common
         decimal TotalPrice { get; set; }
         bool IsPaid { get; set; }
         Guid ReservationId { get; set; }
-        Guid DiscountId { get; set; }
+        Guid? DiscountId { get; set; }
         Guid CreatedBy { get; set; }
         Guid UpdatedBy { get; set; }
         DateTime DateCreated { get; set; }

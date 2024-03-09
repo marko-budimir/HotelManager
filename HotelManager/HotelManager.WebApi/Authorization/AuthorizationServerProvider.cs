@@ -23,7 +23,7 @@ namespace HotelManager.WebApi.Authorization
             var user = await _userService.ValidateUserAsync(context.UserName, context.Password);
             if (user == null)
             {
-                context.SetError("invalid_grant", "Provided username and password is incorrect");
+                context.SetError("invalid_grant", "Provided email and password is incorrect");
                 return;
             }
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);

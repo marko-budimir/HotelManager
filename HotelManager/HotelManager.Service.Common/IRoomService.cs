@@ -16,5 +16,7 @@ namespace HotelManager.Service.Common
         Task<RoomUpdate> UpdateRoomAsync(Guid id, RoomUpdate roomUpdate);
         Task<RoomUpdate> GetRoomUpdateByIdAsync(Guid id);
         Task<PagedList<RoomUpdate>> GetUpdatedRoomsAsync(Paging paging, Sorting sorting, RoomFilter roomsFilter);
+        Task<Room> PostRoomAsync(Room room);
+
     }
 }

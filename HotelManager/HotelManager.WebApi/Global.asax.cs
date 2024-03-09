@@ -1,4 +1,5 @@
 ﻿using HotelManager.WebApi.App_Start;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace HotelManager.WebApi
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             GlobalConfiguration.Configure(DIConfig.Register);
+
+            var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }

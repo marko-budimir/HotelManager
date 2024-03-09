@@ -4,6 +4,7 @@ using HotelManager.Model;
 using HotelManager.Service.Common;
 using HotelManager.WebApi.Models;
 using Microsoft.Ajax.Utilities;
+using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +27,18 @@ namespace HotelManager.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<HttpResponseMessage> GetAllRoomTypesAsync(
             int pageNumber = 1,
             int pageSize = 10,
             string sortBy = "",
-            string isAsc = "ASC"
+            string sortOrder = "ASC"
             )
         {
             try
             {
                 Paging paging = new Paging() { PageNumber = pageNumber, PageSize = pageSize };
-                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = isAsc };
+                Sorting sorting = new Sorting() { SortBy = sortBy, SortOrder = sortOrder };
                 var roomTypes = await _roomTypeService.GetAllAsync(paging, sorting);
 
                 if (roomTypes.Items.Any())
@@ -64,7 +64,7 @@ namespace HotelManager.WebApi.Controllers
             {
                 var roomType = await _roomTypeService.GetByIdAsync(id);
 
-                if (roomType != null)
+                if (roomType != null && roomType.Id != Guid.Empty)
                 {
                     var roomTypeView = _mapper.Map<RoomTypeView>(roomType);
                     return Request.CreateResponse(HttpStatusCode.OK, roomTypeView);
@@ -103,6 +103,28 @@ namespace HotelManager.WebApi.Controllers
             {
                 var updatedRoomType = await _roomTypeService.UpdateAsync(id, roomTypeUpdate);
                 return Request.CreateResponse(HttpStatusCode.OK, updatedRoomType);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        public async Task<HttpResponseMessage> DeleteRoomTypeAsync([FromUri] Guid id)
+        {
+            try
+            {
+                bool result = await _roomTypeService.DeleteAsync(id);
+                if (result)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Room type successfully deleted.");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Room type not found or already deleted.");
+                }
             }
             catch (Exception ex)
             {

@@ -42,7 +42,7 @@ namespace HotelManager.Repository
                             TotalPrice = (decimal)reader["TotalPrice"],
                             IsPaid = (bool)reader["IsPaid"],
                             ReservationId = (Guid)reader["ReservationId"],
-                            DiscountId = (Guid)reader["DiscountId"],
+                            DiscountId = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? (Guid?)null : reader.GetGuid(reader.GetOrdinal("DiscountId")),
                             CreatedBy = (Guid)reader["CreatedBy"],
                             UpdatedBy = (Guid)reader["UpdatedBy"],
                             DateCreated = (DateTime)reader["DateCreated"],
@@ -68,7 +68,7 @@ namespace HotelManager.Repository
             IInvoiceReceipt receipt = null;
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             string commandText = "SELECT i.*, r.\"CheckInDate\", r.\"CheckOutDate\", r.\"PricePerNight\", r.\"ReservationNumber\", " +
-                        "rm.\"Number\" AS \"RoomNumber\", d.\"Code\" AS \"DiscountCode\", d.\"Percent\" AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
+                        "rm.\"Number\" AS \"RoomNumber\", COALESCE(d.\"Code\", '') AS \"DiscountCode\", COALESCE(d.\"Percent\", 0) AS \"DiscountPercent\", u.\"FirstName\", u.\"LastName\", u.\"Email\" " +
                         "FROM \"Invoice\" i " +
                         "JOIN \"Reservation\" r ON i.\"ReservationId\" = r.\"Id\" " +
                         "JOIN \"Room\" rm ON r.\"RoomId\" = rm.\"Id\" " +
@@ -96,7 +96,7 @@ namespace HotelManager.Repository
                                 TotalPrice = (decimal)reader["TotalPrice"],
                                 IsPaid = (bool)reader["IsPaid"],
                                 ReservationId = reader.GetGuid(reader.GetOrdinal("ReservationId")),
-                                DiscountId = reader.GetGuid(reader.GetOrdinal("DiscountId")),
+                                DiscountId = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? (Guid?)null : reader.GetGuid(reader.GetOrdinal("DiscountId")),
                                 CreatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("CreatedBy")),
                                 UpdatedBy = (Guid)reader.GetGuid(reader.GetOrdinal("UpdatedBy")),
                                 DateCreated = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
@@ -112,11 +112,11 @@ namespace HotelManager.Repository
                                     ReservationNumber = (string)reader["ReservationNumber"]
                                 },
                                 RoomNumber = (int)reader["RoomNumber"],
-                                Discount = reader["DiscountId"] != DBNull.Value ? new Discount()
+                                Discount = reader.IsDBNull(reader.GetOrdinal("DiscountId")) ? null : new Discount()
                                 {
                                     Code = (string)reader["DiscountCode"],
                                     Percent = (int)reader["DiscountPercent"]
-                                } : null,
+                                },
                                 User = new User()
                                 {
                                     FirstName = (string)reader["FirstName"],
@@ -155,15 +155,19 @@ namespace HotelManager.Repository
             {
                 commandText.Append(" LEFT JOIN \"Reservation\" ON \"Invoice\".\"ReservationId\" = \"Reservation\".\"Id\"");
                 commandText.Append(" LEFT JOIN \"User\" ON \"Reservation\".\"UserId\" = \"User\".\"Id\"");
-                commandText.Append(" WHERE \"User\".\"Email\" LIKE @emailQuery");
+                commandText.Append(" WHERE \"User\".\"Email\" ILIKE @emailQuery");
                 commandText.Append(" AND \"Invoice\".\"IsActive\"=true");
                 command.Parameters.AddWithValue("@emailQuery", $"%{filter.userEmailQuery}%");
             }
 
-            if (filter.minPrice > 0 && filter.maxPrice < 1000)
+            if (filter.minPrice >= 0 )
             {
-                commandText.Append(" AND \"Invoice\".\"TotalPrice\" BETWEEN @minPrice::money AND @maxPrice::money");
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" >= @minPrice::money");
                 command.Parameters.AddWithValue("minPrice", filter.minPrice);
+            }
+            if (filter.maxPrice != null && filter.maxPrice >= filter.minPrice )
+            {
+                commandText.Append(" AND \"Invoice\".\"TotalPrice\" <= @maxPrice::money");
                 command.Parameters.AddWithValue("maxPrice", filter.maxPrice);
             }
 
@@ -183,6 +187,11 @@ namespace HotelManager.Repository
                 commandText.Append(" AND \"Invoice\".\"DateUpdated\"=@endDate");
                 command.Parameters.AddWithValue("endDate", filter.dateUpdated);
             }
+            if (filter.ReservationId != null)
+            {
+                commandText.Append(" AND \"Invoice\".\"ReservationId\"=@reservationId");
+                command.Parameters.AddWithValue("reservationId", filter.ReservationId);
+            }
 
             command.CommandText = commandText.ToString();
         }
@@ -190,7 +199,7 @@ namespace HotelManager.Repository
         private void ApplySorting(NpgsqlCommand command, Sorting sorting)
         {
             StringBuilder commandText = new StringBuilder(command.CommandText);
-            commandText.Append(" ORDER BY \"");
+            commandText.Append(" ORDER BY \"Invoice\".\"");
             commandText.Append(sorting.SortBy).Append("\" ");
             commandText.Append(sorting.SortOrder == "ASC" ? "ASC" : "DESC");
             command.CommandText = commandText.ToString();
@@ -264,7 +273,14 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@TotalPrice", invoice.TotalPrice);
                 command.Parameters.AddWithValue("@IsPaid", invoice.IsPaid);
                 command.Parameters.AddWithValue("@ReservationId", invoice.ReservationId);
-                command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
+                if (invoice.DiscountId != null && invoice.DiscountId != Guid.Empty)
+                {
+                    command.Parameters.AddWithValue("@DiscountId", invoice.DiscountId);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@DiscountId", DBNull.Value);
+                }
                 command.Parameters.AddWithValue("@CreatedBy", invoice.CreatedBy);
                 command.Parameters.AddWithValue("@UpdatedBy", invoice.UpdatedBy);
                 command.Parameters.AddWithValue("@DateCreated", DateTime.UtcNow);
@@ -297,7 +313,7 @@ namespace HotelManager.Repository
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id AND \"IsActive\" = TRUE";
+                string query = "UPDATE \"Invoice\" SET \"TotalPrice\" = @TotalPrice, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated, \"IsActive\" = @IsActive WHERE \"Id\" = @Id";
 
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 
@@ -306,6 +322,8 @@ namespace HotelManager.Repository
                 command.Parameters.AddWithValue("@UpdatedBy", invoiceUpdate.UpdatedBy);
                 command.Parameters.AddWithValue("@DateUpdated", DateTime.UtcNow);
                 command.Parameters.AddWithValue("@Id", invoiceId);
+
+
 
                 try
                 {
@@ -329,6 +347,39 @@ namespace HotelManager.Repository
                 catch (Exception ex)
                 {
                     throw new Exception("An error occurred while updating the total price of the invoice.", ex);
+                }
+            }
+        }
+
+        public async Task<bool> PutIsPaidAsync(Guid invoiceId, InvoicePaid invoicePaid)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = "UPDATE \"Invoice\" SET \"IsPaid\" = @IsPaid, \"UpdatedBy\" = @UpdatedBy, \"DateUpdated\" = @DateUpdated WHERE \"Id\" = @Id";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@IsPaid", invoicePaid.IsPaid);
+                command.Parameters.AddWithValue("@UpdatedBy", invoicePaid.UpdatedBy);
+                command.Parameters.AddWithValue("@DateUpdated", invoicePaid.DateUpdated);
+                command.Parameters.AddWithValue("@Id", invoiceId);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    if (rowsAffected > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occurred while updating the is paid status of the invoice.", ex);
                 }
             }
         }

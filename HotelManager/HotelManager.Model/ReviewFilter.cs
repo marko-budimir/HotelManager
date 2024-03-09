@@ -12,6 +12,5 @@ namespace HotelManager.Model
         public int Rating { get; set; }
         public string Comment { get; set; }
         public Guid RoomId { get; set; }
-        public Guid UserId { get; set; }
     }
 }

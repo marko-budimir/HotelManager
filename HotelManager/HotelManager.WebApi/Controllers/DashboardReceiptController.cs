@@ -30,7 +30,7 @@ namespace HotelManager.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [HttpGet]
         // GET: api/DashboardReceipt
-        public async Task<HttpResponseMessage> GetReceipts([FromUri] int minPrice = 0, int maxPrice = 100, bool? isPaid = null, string userEmailQuery = null, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "TotalPrice", DateTime? dateCreated = null, DateTime? dateUpdated = null)
+        public async Task<HttpResponseMessage> GetReceipts([FromUri] decimal minPrice = 0, decimal? maxPrice = null, bool? isPaid = null, string userEmailQuery = null, int pageNum = 1, int pageSize = 10, string sortOrder = "ASC", string sortBy = "TotalPrice", DateTime? dateCreated = null, DateTime? dateUpdated = null, Guid? reservationId = null)
         {
             ReceiptFilter filter = new ReceiptFilter
             {
@@ -39,7 +39,8 @@ namespace HotelManager.WebApi.Controllers
                 userEmailQuery = userEmailQuery,
                 dateCreated = dateCreated,
                 dateUpdated = dateUpdated,
-                isPaid = isPaid
+                isPaid = isPaid,
+                ReservationId = reservationId
             };
 
             Sorting sorting = new Sorting
@@ -66,6 +67,7 @@ namespace HotelManager.WebApi.Controllers
             }
  
             PagedList<ReceiptView> receiptViews = new PagedList<ReceiptView>();
+            receiptViews.Items = new  List<ReceiptView>();
             foreach (var receipt in receipts.Items)
             {
                 var receiptView = _mapper.Map<ReceiptView>(receipt);
